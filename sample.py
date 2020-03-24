@@ -1,5 +1,4 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
-#from data import Articles
 from flaskext.mysql import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, DateField, IntegerField
 from passlib.hash import sha256_crypt
@@ -29,6 +28,10 @@ class RegisterFrom(Form):
    mobile_no = IntegerField('Mobile Number', [validators.Length(min=10)])
    address = TextAreaField('Address', [validators.length(max=200)])
    dob = DateField('Date of Birth',format='%d-%m-%Y')
+
+def move_forward():
+   #Moving forward code
+   print("Moving Forward...")
 
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
