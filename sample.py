@@ -14,7 +14,7 @@ app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
-
+user_creds = {}
 
 @app.route('/')
 def index():
@@ -47,8 +47,7 @@ def register():
       cur = mysql.connection.cursor()
 
      # Execute query
-      cur.execute("INSERT INTO users(name, email, mobile_no, address, dob, password) VALUES(%s, %s, %s, %s)", (name, email, mobile_no, address, dob, password))
-
+      cur.execute("INSERT INTO UserCredentials(email, password) VALUES(%s, %s)", ( email, password))
   
       # Commit to DB
       mysql.connection.commit()
@@ -59,10 +58,16 @@ def register():
       flash('You are now registered and can log in', 'success')
 
       return redirect(url_for('login'))
+   else:
+	if user_creds[form.email.data] == sha256_crypt.encrypt(str(form.password.data)):
+	   return redirect(url_for('login'))
    return render_template('register.html', form=form)
 
 
 
 if __name__ == '__main__':
     app.secret_key='secret123'
+    cur = mysql.connection.cursor()
+    for row in cur.execute("SELECT email, password FROM UserCredentials").fetchall():
+	user_creds[row["email"]] = user_creds[row["password"]]
     app.run(debug=True)
