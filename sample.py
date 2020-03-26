@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
-from flaskext.mysql import MySQL
+from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, DateField, IntegerField
 from passlib.hash import sha256_crypt
 from functools import wraps
@@ -9,12 +9,16 @@ app = Flask(__name__)
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = '123456'
+app.config['MYSQL_PASSWORD'] = '[19071999]'
 app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 # init MYSQL
 mysql = MySQL(app)
 user_creds = {}
+
+@app.route('/student-dashboard')
+def studentdashboard():
+   return render_template('/dashboard.html')
 
 @app.route('/')
 def index():
@@ -29,12 +33,11 @@ class RegisterFrom(Form):
    address = TextAreaField('Address', [validators.length(max=200)])
    dob = DateField('Date of Birth',format='%d-%m-%Y')
 
-def move_forward():
-   #Moving forward code
-   print("Moving Forward...")
-
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
+   cur = mysql.connection.cursor()
+   for row in cur.execute("SELECT email, password FROM UserCredentials").fetchall():
+      user_creds[row["email"]] = user_creds[row["password"]]
    form = RegisterFrom(request.form)
    if request.method == 'POST' and form.validate():
       name = form.name.data
@@ -59,15 +62,12 @@ def register():
 
       return redirect(url_for('login'))
    else:
-	if user_creds[form.email.data] == sha256_crypt.encrypt(str(form.password.data)):
-	   return redirect(url_for('login'))
+	   if user_creds[form.email.data] == sha256_crypt.encrypt(str(form.password.data)):
+	      return redirect(url_for('login'))
    return render_template('register.html', form=form)
 
 
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    cur = mysql.connection.cursor()
-    for row in cur.execute("SELECT email, password FROM UserCredentials").fetchall():
-	user_creds[row["email"]] = user_creds[row["password"]]
     app.run(debug=True)
