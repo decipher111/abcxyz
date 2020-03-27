@@ -69,9 +69,12 @@ def register():
 
 if __name__ == '__main__':
     app.secret_key='secret123'
+    with app.app_context()
+    	init_db() 
     cur = mysql.connection.cursor()
     for row in cur.execute("SELECT email, password FROM UserCredentials").fetchall():
 	user_creds[row["email"]] = row["password"]
     for row in cur.execute("SELECT email, role, course_id, college_name, branch_name, course_name FROM UserData ORDER BY 1, 2, 3").fetchall():
 	user_roles[row["email"]] = row["role"]
+    cur.close()
     app.run(debug=True)
