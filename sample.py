@@ -55,9 +55,9 @@ def register():
       user_creds[email] = user_creds[password]
       flash('You are now registered and can log in', 'success')
       return redirect(url_for('login'))
-   elif request.method == 'GET' and form.validate(): 
+   elif request.method == 'GET' and form.validate():
       if user_creds[form.email.data] is sha256_crypt.encrypt(str(form.password.data)):
-         return redirect(url_for('login')) 
+         return redirect(url_for('login'))
       flash('Username or Password is incorrect. Register, if not a user yet.')
    return render_template('register.html', form=form)
 
@@ -66,7 +66,8 @@ if __name__ == '__main__':
    app.secret_key='secret123'
    with app.app_context():
       cur = mysql.connection.cursor()
-      for (email,password) in cur.execute("SELECT email, password FROM UserCredentials"):
+      cur.execute("SELECT email, password FROM UserCredentials")
+      for (email,password) in :
          print(email, password)
          user_creds[email] = password
       for (email, role, course_id, college_name, branch_name, course_name) in cur.execute("SELECT email, role, course_id, college_name, branch_name, course_name FROM UserData ORDER BY 1, 2, 3"):
