@@ -52,7 +52,7 @@ def register():
       mysql.connection.commit()
       cur.close()
 
-      user_creds[email] = user_creds[password]
+      user_creds[email] = password
       flash('You are now registered and can log in', 'success')
       return redirect(url_for('login'))
    elif request.method == 'GET' and form.validate():
