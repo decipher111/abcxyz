@@ -1,5 +1,5 @@
 from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
-from flaskext.mysql import MySQL
+from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, DateField, IntegerField
 from passlib.hash import sha256_crypt
 from functools import wraps
@@ -37,13 +37,14 @@ def move_forward():
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
    form = RegisterFrom(request.form)
-   if request.method == 'POST' and form.validate():
+   if request.method == 'POST':
       email = form.email.data
       password = sha256_crypt.encrypt(str(form.password.data))
 
       cur = mysql.connection.cursor()
-
+      print()
       if user_roles[email] is None:
+          print(email)
           flash('This username is not registered with us. Please get in touch '
           'with us or college authorities for more information', 'failure')
           return render_template('register.html', form=form)
@@ -52,14 +53,36 @@ def register():
       mysql.connection.commit()
       cur.close()
 
-      user_creds[email] = user_creds[password]
+      user_creds[email] = password
       flash('You are now registered and can log in', 'success')
-      return redirect(url_for('login'))
+      return redirect(url_for('index'))
    elif request.method == 'GET' and form.validate():
       if user_creds[form.email.data] is sha256_crypt.encrypt(str(form.password.data)):
-         return redirect(url_for('login'))
+         return redirect(url_for('index'))
       flash('Username or Password is incorrect. Register, if not a user yet.')
    return render_template('register.html', form=form)
+
+   # User login
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+   if request.method == 'POST':
+      ç
+      email = request.form['email']
+      user_password = request.form['password']
+
+      cur = mysql.connection.cursor()
+
+      result = cur.execute("SELECT * FROM UserCredentials WHERE email = %s", [email])
+
+      if result > 0:
+         data = cur.fetchone() #returns tuple?
+         password = data['password']
+
+         if sha256_crypt.verify(user_password, password):
+               return render_template('dashboard.html')
+         else:
+               print('password not matched!')
+   return render_template('login.html')
 
 
 if __name__ == '__main__':
@@ -67,12 +90,10 @@ if __name__ == '__main__':
    with app.app_context():
       cur = mysql.connection.cursor()
       cur.execute("SELECT email, password FROM UserCredentials")
-      for row in cursor:
-         print row['email']
+      for row in cur:
          user_creds[row['email']] = row['password']
       cur.execute("SELECT email, role, course_id, college_name, branch_name, course_name FROM UserData ORDER BY 1, 2, 3")
-      for row in cursor:
-          print row['email']
-         user_creds[row['email']] = row['role']
+      for row in cur:
+         user_roles[row['email']] = row['role']
       cur.close()
    app.run(debug=True)

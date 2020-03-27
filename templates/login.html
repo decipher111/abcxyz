@@ -1,0 +1,22 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<h1 class="text-center mt-5">Sign in to ABCXYZ</h1>
+  <div class="container text-center col-md-3 p-3 border bg-light mt-5 shadow-lg mb-5 bg-white rounded ">
+    <form class="form-signin" method="POST">
+      <h1 class="h3 mb-5 font-weight-normal">Please sign in</h1>
+      <label for="email" class="sr-only">Email address</label>
+      <input type="email" name="email" class="mb-3 form-control" placeholder="Email address" required autofocus>
+      <label for="password" class="sr-only">Password</label>
+      <input type="password" name="password" class="form-control" placeholder="Password">
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
+      </div>
+      <button class="btn btn-lg btn-primary btn-block" id="btn" value="submit" type="submit">Sign in</button>
+      <a class="btn  btn-lg btn-primary btn-block bg-secondary" href="{{ url_for('register')}}" role="button">Register</a>
+      <p class="mt-5 mb-3 text-muted">&copy; 2020 All rights reserved</p>
+    </form>
+  </div>
+{% endblock %}
