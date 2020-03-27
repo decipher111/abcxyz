@@ -67,11 +67,12 @@ if __name__ == '__main__':
    with app.app_context():
       cur = mysql.connection.cursor()
       cur.execute("SELECT email, password FROM UserCredentials")
-      for (email,password) in :
-         print(email, password)
-         user_creds[email] = password
-      for (email, role, course_id, college_name, branch_name, course_name) in cur.execute("SELECT email, role, course_id, college_name, branch_name, course_name FROM UserData ORDER BY 1, 2, 3"):
-         print(email, role, course_id, college_name, branch_name, course_name)
-         user_creds[email] = role
+      for row in cursor:
+         print row['email']
+         user_creds[row['email']] = row['password']
+      cur.execute("SELECT email, role, course_id, college_name, branch_name, course_name FROM UserData ORDER BY 1, 2, 3")
+      for row in cursor:
+          print row['email']
+         user_creds[row['email']] = row['role']
       cur.close()
    app.run(debug=True)
