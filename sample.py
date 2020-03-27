@@ -46,8 +46,11 @@ def register():
       if user_roles[email] is None:
           print(email)
           flash('This username is not registered with us. Please get in touch '
-          'with us or college authorities for more information', 'failure')
-          return render_template('register.html', form=form)
+          'with us or college authorities for more information.', 'failure')
+          return render_template('_signin.html')
+     if user_cred has email:
+	  flash('This username is already registered with us. Please sign-in.', 'failure')
+	  return render_template('_signin.html')
 
       cur.execute("INSERT INTO UserCredentials(email, password) VALUES(%s, %s)", (email, password))
       mysql.connection.commit()
@@ -60,6 +63,7 @@ def register():
       if user_creds[form.email.data] is sha256_crypt.encrypt(str(form.password.data)):
          return redirect(url_for('index'))
       flash('Username or Password is incorrect. Register, if not a user yet.')
+      return render_template('_signin.html')
    return render_template('register.html', form=form)
 
    # User login
