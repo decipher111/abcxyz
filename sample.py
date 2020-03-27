@@ -21,7 +21,7 @@ user_roles = {}
 def index():
    return render_template('_signin.html')
 
-class RegisterFrom(Form): 
+class RegisterFrom(Form):
    name = StringField('Name', [validators.Length(min=1)])
    email = StringField('Email', [validators.Length(min=6)])
    password = PasswordField('Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords do not match')])
@@ -44,37 +44,32 @@ def register():
 
       cur = mysql.connection.cursor()
 
-     # Execute query
       if user_roles[email] is None:
-	flash('This username is not registered with us. Please get in touch with us or college authorities for more information', 'failure')
-	return render_template('register.html', form=form)
+          flash('This username is not registered with us. Please get in touch '
+          'with us or college authorities for more information', 'failure')
+          return render_template('register.html', form=form)
+
       cur.execute("INSERT INTO UserCredentials(email, password) VALUES(%s, %s)", (email, password))
-  
-      # Commit to DB
       mysql.connection.commit()
-
-      # Close connection
       cur.close()
+
       user_creds[email] = user_creds[password]
-
       flash('You are now registered and can log in', 'success')
-
       return redirect(url_for('login'))
    else:
 	if user_creds[form.email.data] == sha256_crypt.encrypt(str(form.password.data)):
-	   return redirect(url_for('login'))
+        return redirect(url_for('login'))
 	flash('Username or Password is incorrect. Register, if not a user yet.')
    return render_template('register.html', form=form)
 
 
 if __name__ == '__main__':
     app.secret_key='secret123'
-    with app.app_context()
-    	init_db() 
+    mysql.init_app(app)
     cur = mysql.connection.cursor()
     for row in cur.execute("SELECT email, password FROM UserCredentials").fetchall():
-	user_creds[row["email"]] = row["password"]
+        user_creds[row["email"]] = row["password"]
     for row in cur.execute("SELECT email, role, course_id, college_name, branch_name, course_name FROM UserData ORDER BY 1, 2, 3").fetchall():
-	user_roles[row["email"]] = row["role"]
+        user_roles[row["email"]] = row["role"]
     cur.close()
     app.run(debug=True)
