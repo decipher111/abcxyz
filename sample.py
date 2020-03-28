@@ -12,14 +12,25 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '19071999'
 app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+
 # init MYSQL
 mysql = MySQL(app)
 user_creds = {}
 user_roles = {}
 
+def is_logged_in(f):
+    @wraps(f)
+    def wrap(*args, **kwargs):
+        if 'logged_in' in session:
+            return f(*args, **kwargs)
+        else:
+            flash('Unauthorized, Please login', 'danger')
+            return redirect(url_for('login'))
+    return wrap
+
 @app.route('/')
 def index():
-   return render_template('_signin.html')
+   return render_template('login.html')
 
 class RegisterFrom(Form):
    name = StringField('Name', [validators.Length(min=1)])
@@ -44,13 +55,13 @@ def register():
       cur = mysql.connection.cursor()
       print()
       if user_roles[email] is None:
-          print(email)
-          flash('This username is not registered with us. Please get in touch '
-          'with us or college authorities for more information.', 'failure')
-          return render_template('_signin.html')
-     if user_cred has email:
-	  flash('This username is already registered with us. Please sign-in.', 'failure')
-	  return render_template('_signin.html')
+         flash('This username is not registered with us. Please get in touch '
+         'with us or college authorities for more information.', 'danger')
+         return render_template('_signin.html')
+
+      if email in user_creds:
+         flash('This username is already registered with us. Please sign-in.', 'danger')
+         return render_template('_signin.html')
 
       cur.execute("INSERT INTO UserCredentials(email, password) VALUES(%s, %s)", (email, password))
       mysql.connection.commit()
@@ -70,7 +81,6 @@ def register():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
    if request.method == 'POST':
-      ç
       email = request.form['email']
       user_password = request.form['password']
 
@@ -83,10 +93,34 @@ def login():
          password = data['password']
 
          if sha256_crypt.verify(user_password, password):
-               return render_template('dashboard.html')
+            session['logged_in'] = True
+            session['email'] = email
+            
+            flash('Login Successful', 'success')
+            return redirect(url_for('dashboard'))
          else:
-               print('password not matched!')
+            error = 'Invalid Login'
+            return render_template('login.html', error = error)
+         cur.close()
+      else: 
+         error = 'Email not found'
+         return render_template('login.html', error = error)
    return render_template('login.html')
+
+def dummy():
+   print('Click!')
+
+@app.route('/logout')
+def logout():
+   session.clear()
+   flash('Logged Out', 'success')
+   return redirect(url_for('login'))
+
+@app.route('/dashboard')
+@is_logged_in
+def dashboard():
+   return render_template('dashboard.html')
+
 
 
 if __name__ == '__main__':
