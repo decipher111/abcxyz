@@ -40,6 +40,14 @@ def table():
 def course():
    return render_template('course-content.html')
 
+# @app.route('/course-content', methods=["POST"])
+# def courseContent():
+#    print('got a request form frontend')   
+#    response = request.get_json()
+#    print(response)
+#    data = 'data'
+#    return redirect(url_for('login'))
+
 @app.route('/account')
 def account():
    return render_template('account.html')

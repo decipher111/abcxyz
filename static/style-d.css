@@ -291,3 +291,13 @@ li{
     width: 100%;
     text-align: center;
   }
+
+  .register-helper{
+      color: red;
+  }
+
+  .notfication-notes{
+    color: red;
+    font-size: 14px;
+    font-style: bold;
+  }

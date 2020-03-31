@@ -40,6 +40,7 @@ class CALENDAR {
         this.drawYearAndCurrentDay();
         this.drawEvents();
         this.updateTimeTable();
+        this.eventListeners();
     }
 
 
@@ -65,8 +66,23 @@ class CALENDAR {
 
 
 
+    }
 
-         //************************ end of update time table************************* //
+    //************************ end of update time table************************* //
+
+
+    eventListeners(){
+        $('.row-border').click(function(){
+            console.log('click')
+            $.ajax({
+                url: "http://localhost:5000/course-content",
+                type: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({"day": 'this string'})
+            }).done(function(data) {
+                console.log(data);
+            });
+        })
     }
 
 
