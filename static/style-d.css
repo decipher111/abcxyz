@@ -246,3 +246,48 @@ li{
     color: rgba(59, 59, 59, 0.9);
     text-align: justify;
 }
+
+.jumbotron-account{
+    background-color: white;
+    text-align: center;
+    height: 70px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+}
+
+
+#a-tag{
+    text-decoration: none;
+    color: rgb(97, 97, 97);
+}
+
+
+.card-account {
+    box-shadow: 0 4px 45px 0 rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    min-height: 550px;
+    max-height: fit-content;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .title-account {
+    color: grey;
+    font-size: 18px;
+  }
+
+#user-circle{
+  max-width:40%;
+  max-height:40%;
+  align-self: center;
+  margin-top: 50px;
+  margin-bottom: 20px;
+}
+
+
+.field-center {
+    background-color: rgb(231, 231, 231);
+    height: 44px;
+    width: 100%;
+    text-align: center;
+  }

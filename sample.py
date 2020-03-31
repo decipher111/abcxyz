@@ -40,6 +40,10 @@ def table():
 def course():
    return render_template('course-content.html')
 
+@app.route('/account')
+def account():
+   return render_template('account.html')
+
 class RegisterFrom(Form):
    name = StringField('Name', [validators.Length(min=1)])
    email = StringField('Email', [validators.Length(min=6)])
