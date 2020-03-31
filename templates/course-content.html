@@ -1,0 +1,32 @@
+{% extends 'inner-layout.html' %}
+
+{% block body %}
+<div id="wrapper">
+
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+  
+      <!-- Page Heading -->
+      <div class="jumbotron jumbotron-course">
+          <h1 class="list-heading"><a id="a-tag" href="#">Course Description</a></h1>
+      </div>
+  
+    <div class="container course-describe">
+      <div class="card course-describe card-course">
+        <img src="{{url_for('static', filename='business-process.png')}}" alt="course-image" style="width:100%" height="45%">
+        <h2 class="">Operational Research</h2>
+        <p class="title-course">MPAE Division, NSUT</p>
+        <p class="course-para">After taking this course students should be able to:
+          1. Formulate and solve linear programming problems.
+          2. Solve the problems on networks models such as Transportation, Assignment, Shortest path,
+          minimal spanning tree, and Maximal flow.
+          3. Solve the problems of Project Management using CPM and PERT
+          4. Solve Non-linear Programming problems of some kinds.
+          5. Implement the Linear programming techniques using C or any other optimization software</p>
+      </div>
+    </div>
+
+
+    </div>
+{% endblock %}

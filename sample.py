@@ -1,4 +1,4 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, request, logging
+from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, DateField, IntegerField
 from passlib.hash import sha256_crypt
@@ -30,7 +30,15 @@ def is_logged_in(f):
 
 @app.route('/')
 def index():
-   return render_template('login.html')
+   return redirect(url_for('login'))
+
+@app.route('/table')
+def table():
+   return render_template('table.html')
+
+@app.route('/course-content')
+def course():
+   return render_template('course-content.html')
 
 class RegisterFrom(Form):
    name = StringField('Name', [validators.Length(min=1)])
@@ -96,7 +104,6 @@ def login():
             session['logged_in'] = True
             session['email'] = email
             
-            flash('Login Successful', 'success')
             return redirect(url_for('dashboard'))
          else:
             error = 'Invalid Login'
@@ -115,14 +122,25 @@ def logout():
    session.clear()
    flash('Logged Out', 'success')
    return redirect(url_for('login'))
+   
 
 @app.route('/dashboard')
-@is_logged_in
+# @is_logged_in      ##FIX THISSSSS AFTERRR
 def dashboard():
    return render_template('dashboard.html')
 
 
+# TEST
+@app.route('/api/', methods=["POST"])
+def main_interface():
+   print('got a request form frontend')   
+   response = request.get_json()
+   print(response)
+   data = 'data'
+   return jsonify(data)
 
+
+   
 if __name__ == '__main__':
    app.secret_key='secret123'
    with app.app_context():
