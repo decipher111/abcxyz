@@ -12,7 +12,7 @@ body {
     font-weight: 400;
     line-height: 1.5;
     text-align: left;
-    background-color: #fff;
+    background-color: rgb(241, 241, 241);
     color: rgb(65, 65, 65);
   }
 
@@ -162,7 +162,7 @@ li{
 .row-border{
     height: 55px;
     width: 620px;
-    background-color: rgb(247, 247, 247);
+    background-color: rgb(255, 255, 255);
     border-radius: 5px;
     /* border: solid; */
 }
@@ -178,7 +178,7 @@ li{
 }
 
 .row-border:hover {
-    background-color: rgb(245, 245, 245);
+    /* background-color: rgb(245, 245, 245); */
     box-shadow: 0px 0px 6px 0px rgb(175, 175, 175);
 }
 
@@ -195,7 +195,7 @@ li{
     text-align: center;
 }
 
-.jumbotron{
+.jumbotron-table{
     background-color: white;
     text-align: center;
 }
@@ -203,11 +203,11 @@ li{
 
 #a-tag{
     text-decoration: none;
-    color: rgb(97, 97, 97);
+    color: rgb(39, 39, 39);
 }
 
 .jumbotron-course{
-    background-color: white;
+    background-color: transparent;
     text-align: center;
     height: 70px;
     padding-top: 30px;
@@ -248,7 +248,7 @@ li{
 }
 
 .jumbotron-account{
-    background-color: white;
+    background-color: transparent;
     text-align: center;
     height: 70px;
     padding-top: 30px;
@@ -258,7 +258,7 @@ li{
 
 #a-tag{
     text-decoration: none;
-    color: rgb(97, 97, 97);
+    color: rgb(80, 80, 80);
 }
 
 
@@ -301,3 +301,4 @@ li{
     font-size: 14px;
     font-style: bold;
   }
+
