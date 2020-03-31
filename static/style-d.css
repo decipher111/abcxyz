@@ -302,3 +302,10 @@ li{
     font-style: bold;
   }
 
+#d-dropdown{
+    background-color: rgb(66, 66, 66);
+    border-radius: 50px;
+    border: none;
+    height: 30px;
+    width: 55px;
+}

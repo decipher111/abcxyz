@@ -58,6 +58,7 @@ class CALENDAR {
         }).done(function(data) {
             console.log(data);
             $('.monday10').html('data');
+            
         });
 
 
@@ -72,17 +73,17 @@ class CALENDAR {
 
 
     eventListeners(){
-        $('.row-border').click(function(){
-            console.log('click')
-            $.ajax({
-                url: "http://localhost:5000/course-content",
-                type: "POST",
-                contentType: "application/json",
-                data: JSON.stringify({"day": 'this string'})
-            }).done(function(data) {
-                console.log(data);
-            });
-        })
+        // $('.row-border').click(function(){
+        //     console.log('click')
+        //     $.ajax({
+        //         url: "http://localhost:5000/course-content",
+        //         type: "POST",
+        //         contentType: "application/json",
+        //         data: JSON.stringify({"day": 'this string'})
+        //     }).done(function(data) {
+        //         console.log(data);
+        //     });
+        // })
     }
 
 
