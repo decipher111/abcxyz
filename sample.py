@@ -67,35 +67,40 @@ def move_forward():
 
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
-   form = RegisterFrom(request.form)
    if request.method == 'POST':
-      email = form.email.data
-      password = sha256_crypt.encrypt(str(form.password.data))
+      print('now here')
+   return redirect(url_for('account'))
 
-      cur = mysql.connection.cursor()
-      print()
-      if user_roles[email] is None:
-         flash('This username is not registered with us. Please get in touch '
-         'with us or college authorities for more information.', 'danger')
-         return render_template('_signin.html')
+   
+#    form = RegisterFrom(request.form)
+#    if request.method == 'POST':
+#       email = form.email.data
+#       password = sha256_crypt.encrypt(str(form.password.data))
 
-      if email in user_creds:
-         flash('This username is already registered with us. Please sign-in.', 'danger')
-         return render_template('_signin.html')
+#       cur = mysql.connection.cursor()
+#       print()
+#       if user_roles[email] is None:
+#          flash('This username is not registered with us. Please get in touch '
+#          'with us or college authorities for more information.', 'danger')
+#          return render_template('_signin.html')
 
-      cur.execute("INSERT INTO UserCredentials(email, password) VALUES(%s, %s)", (email, password))
-      mysql.connection.commit()
-      cur.close()
+#       if email in user_creds:
+#          flash('This username is already registered with us. Please sign-in.', 'danger')
+#          return render_template('_signin.html')
 
-      user_creds[email] = password
-      flash('You are now registered and can log in', 'success')
-      return redirect(url_for('index'))
-   elif request.method == 'GET' and form.validate():
-      if user_creds[form.email.data] is sha256_crypt.encrypt(str(form.password.data)):
-         return redirect(url_for('index'))
-      flash('Username or Password is incorrect. Register, if not a user yet.')
-      return render_template('_signin.html')
-   return render_template('register.html', form=form)
+#       cur.execute("INSERT INTO UserCredentials(email, password) VALUES(%s, %s)", (email, password))
+#       mysql.connection.commit()
+#       cur.close()
+
+#       user_creds[email] = password
+#       flash('You are now registered and can log in', 'success')
+#       return redirect(url_for('index'))
+#    elif request.method == 'GET' and form.validate():
+#       if user_creds[form.email.data] is sha256_crypt.encrypt(str(form.password.data)):
+#          return redirect(url_for('index'))
+#       flash('Username or Password is incorrect. Register, if not a user yet.')
+#       return render_template('_signin.html')
+#    return render_template('register.html', form=form)
 
    # User login
 @app.route('/login', methods=['GET', 'POST'])
@@ -111,7 +116,7 @@ def login():
       if result > 0:
          data = cur.fetchone() #returns tuple?
          password = data['password']
-
+         
          if sha256_crypt.verify(user_password, password):
             session['logged_in'] = True
             session['email'] = email
@@ -148,8 +153,9 @@ def main_interface():
    print('got a request form frontend')   
    response = request.get_json()
    print(response)
-   data = 'data'
-   return jsonify(data)
+   value = 'Metrology and Quality Control and more'
+   value2 = 'value2'
+   return jsonify({"key" : value, "key2" : value2})
 
 
    

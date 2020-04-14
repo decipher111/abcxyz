@@ -1,7 +1,14 @@
+$(document).ready(function(){
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-toggle="tooltip"]').click(function(){
+            $('[data-toggle="tooltip"]').tooltip('hide')
+        })
+      })
 const AVAILABLE_WEEK_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 const localStorageName = 'calendar-events';
 
-class CALENDAR {
+class DASHBOARD {
     constructor(options) {
         this.options = options;
         this.elements = {
@@ -9,28 +16,85 @@ class CALENDAR {
             week: this.getFirstElementInsideIdByClassName('calendar-week'),
             month: this.getFirstElementInsideIdByClassName('calendar-month'),
             year: this.getFirstElementInsideIdByClassName('calendar-current-year'),
-            eventList: this.getFirstElementInsideIdByClassName('current-day-events-list'),
-            eventField: this.getFirstElementInsideIdByClassName('add-event-day-field'),
-            eventAddBtn: this.getFirstElementInsideIdByClassName('add-event-day-field-btn'),
+            // eventList: this.getFirstElementInsideIdByClassName('current-day-events-list'),
+            // eventField: this.getFirstElementInsideIdByClassName('add-event-day-field'),
+            // eventAddBtn: this.getFirstElementInsideIdByClassName('add-event-day-field-btn'),
             currentDay: this.getFirstElementInsideIdByClassName('calendar-left-side-day'),
             currentWeekDay: this.getFirstElementInsideIdByClassName('calendar-left-side-day-of-week'),
             prevYear: this.getFirstElementInsideIdByClassName('calendar-change-year-slider-prev'),
             nextYear: this.getFirstElementInsideIdByClassName('calendar-change-year-slider-next')
         };
 
-        this.eventList = JSON.parse(localStorage.getItem(localStorageName)) || {};
-
         this.date = +new Date();
         this.options.maxDays = 37;
         this.init();
+        // this.renderTimeTable();
+
+    }
+
+
+
+    renderTimeTable(){
+        $('.test').html('')
+        var week = 1;
+        $.ajax({
+            url: "http://localhost:5000/api/",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({"week": week})
+        }).done(function(data) {
+            for (var key in data) {
+                var subjectName = data[key]
+                if(subjectName.length>33){
+                    subjectName = subjectName.slice(0,32) + '...'
+                }
+                $('.test').append(
+                `<div class="container-fluid m-0 ml-3">
+                    <div class="row-border">
+                    <ul class="list-inline mt-2 d-flex container-fluid">
+                        <li class="col-2 pt-3 list-inline-item">10:00am</li>
+                        <li class="col-2 pt-3 list-inline-item">BT0001</li>
+                        <li class="col-5 pt-3 special list-inline-item">${subjectName}</li>
+                        <li class="col-1 pt-3 list-inline-item">
+                        <div class="dropdown show">
+                            <a id="a-tag" class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-rotate-180 fa-lg fa-download"></i><sup class="notfication-notes"><i class="fa fa-check-circle" style="color: green;"></i></sup></a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="#">Upload Material</a>
+                            <a class="dropdown-item" href="#">Upload Assignment</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">View Uploads</a>
+                            <a class="dropdown-item" href="#">View Submissions</a>
+                            </div>
+                        </div>
+                        </li>
+                        <li class="col-1 pt-3 ml-3 list-inline-item">
+                        <div class="dropdown show">
+                            <a id="a-tag" class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-clipboard fa"></i><sup class="notfication-notes">3</sup></a>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                            <a class="dropdown-item" href="#">Upload Material</a>
+                            <a class="dropdown-item" href="#">Upload Assignment</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="#">View Uploads</a>
+                            <a class="dropdown-item" href="#">View Submissions<sup class="notfication-notes">41</sup></a>
+                            </div>
+                        </div>
+                        </li>
+                    </ul>
+                    </div>
+                </div>`)
+            }   
+        });
     }
 
 // App methods
     init() {
-        if (!this.options.id) return false;
+        // if (!this.options.id) return false;
         this.eventsTrigger();
         this.drawAll();
     }
+
+    
+
 
     // draw Methods
     drawAll() {
@@ -38,72 +102,20 @@ class CALENDAR {
         this.drawMonths();
         this.drawDays();
         this.drawYearAndCurrentDay();
-        this.drawEvents();
-        this.updateTimeTable();
-        this.eventListeners();
     }
 
 
-        //************************ update time table************************* //
-
-    updateTimeTable(){
-        let calendar = this.getCalendar();
-        console.log(calendar.active.week)
-        var current = calendar.active.week
-        $.ajax({
-            url: "http://localhost:5000/api/",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({"day": current})
-        }).done(function(data) {
-            console.log(data);
-            $('.monday10').html('data');
-            
-        });
 
 
 
-
-
-
-
-    }
-
-    //************************ end of update time table************************* //
-
-
-    eventListeners(){
-        // $('.row-border').click(function(){
-        //     console.log('click')
-        //     $.ajax({
-        //         url: "http://localhost:5000/course-content",
-        //         type: "POST",
-        //         contentType: "application/json",
-        //         data: JSON.stringify({"day": 'this string'})
-        //     }).done(function(data) {
-        //         console.log(data);
-        //     });
-        // })
-    }
-
-
-    drawEvents() {
-        let calendar = this.getCalendar();
-        let eventList = this.eventList[calendar.active.formatted] || ['There is not any events'];
-        let eventTemplate = "";
-        eventList.forEach(item => {
-            eventTemplate += `<li>${item}</li>`;
-        });
-    }
 
     drawYearAndCurrentDay() {
         let calendar = this.getCalendar();
         this.elements.year.innerHTML = calendar.active.year;
         this.elements.currentDay.innerHTML = calendar.active.day;
         this.elements.currentWeekDay.innerHTML = AVAILABLE_WEEK_DAYS[calendar.active.week];
-        // console.log(calendar.active.week)
+        console.log(calendar.active.week)
     }
-
 
     
 
@@ -150,13 +162,13 @@ class CALENDAR {
         days = days.map(day => {
             let newDayParams = day;
             let formatted = this.getFormattedDate(new Date(`${Number(day.month) + 1}/${day.dayNumber}/${day.year}`));
-            newDayParams.hasEvent = this.eventList[formatted];
+            // newDayParams.hasEvent = this.eventList[formatted];
             return newDayParams;
         });
 
         let daysTemplate = "";
         days.forEach(day => {
-            daysTemplate += `<li class="${day.currentMonth ? '' : 'another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}${day.hasEvent ? ' event-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" data-year="${day.year}"></li>`
+            daysTemplate += `<li class="${day.currentMonth ? '' : 'another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" data-year="${day.year}"></li>`
         });
 
         this.elements.days.innerHTML = daysTemplate;
@@ -216,20 +228,8 @@ class CALENDAR {
             let strDate = `${Number(month) + 1}/${day}/${year}`;
             this.updateTime(strDate);
             this.drawAll()
+            this.renderTimeTable()
         });
-
-
-        this.elements.eventAddBtn.addEventListener('click', e => {
-            let fieldValue = this.elements.eventField.value;
-            if (!fieldValue) return false;
-            let dateFormatted = this.getFormattedDate(new Date(this.date));
-            if (!this.eventList[dateFormatted]) this.eventList[dateFormatted] = [];
-            this.eventList[dateFormatted].push(fieldValue);
-            localStorage.setItem(localStorageName, JSON.stringify(this.eventList));
-            this.elements.eventField.value = '';
-            this.drawAll()
-        });
-
 
     }
 
@@ -286,13 +286,17 @@ class CALENDAR {
     }
 
     getFirstElementInsideIdByClassName(className) {
-        return document.getElementById(this.options.id).getElementsByClassName(className)[0];
+        return document.getElementById('calendar').getElementsByClassName(className)[0];
     }
+
+
 }
 
 
 (function () {
-    new CALENDAR({
-        id: "calendar"
+    new DASHBOARD({
+
     })
 })();
+
+});

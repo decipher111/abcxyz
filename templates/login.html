@@ -1,22 +1,33 @@
 {% extends 'layout.html' %}
 
 {% block body %}
-<h1 class="text-center mt-5">Sign in to ABCXYZ</h1>
-  <div class="container text-center col-md-3 p-3 border bg-light mt-5 shadow-lg mb-5 bg-white rounded ">
-    <form class="form-signin" method="POST">
-      <h1 class="h3 mb-5 font-weight-normal">Please sign in</h1>
-      <label for="email" class="sr-only">Email address</label>
-      <input type="email" name="email" class="mb-3 form-control" placeholder="Email address" required autofocus>
-      <label for="password" class="sr-only">Password</label>
-      <input type="password" name="password" class="form-control" placeholder="Password">
-      <div class="checkbox mb-3">
-        <label>
-          <input type="checkbox" value="remember-me"> Remember me
-        </label>
+  <div class="row" style="align-items: center;">
+    <div class="col-sm-6 logo-login"><a class="navbar-brand ml-3 logo-tag" href="/login"><img src="{{url_for('static', filename='cb.png')}}" alt="Chalkboards" style="width:100%" height="100%"></a></div>
+    <div class="col-sm-3 login-div-right">
+      <div class="form-bg container p-3 float-right">
+        <form class="form-signin" method="POST">
+          <label for="email" class="sr-only">email address</label>
+          <input id="reg" type="email" name="email" class="mb-3 form-control" placeholder="email address" required autofocus>
+          <label for="password" class="sr-only">password</label>
+          <input type="password" name="password" class="form-control" placeholder="password">
+          <button class="mt-3 btn-lg btn-login btn-block" value="submit" type="submit">sign in</button>
+        </form>
+        <div class="d-flex mt-5 mb-5">
+          <hr class="my-auto flex-grow-1 form-divider">
+          <div class="px-4">OR</div>
+          <hr class="my-auto flex-grow-1 form-divider">
+        </div>
+        <form class="form-signin" method="POST" action="/register">
+          <label for="email" class="sr-only">email address</label>
+          <input type="email" name="email" class="mb-3 form-control" placeholder="email address" required autofocus>
+          <button class="btn-lg btn-login btn-block" value="submit" type="submit">register</button>
+        </form>
+        <p class="mt-4 mb-3 copyright">&copy; 2020 All rights reserved</p>
       </div>
-      <button class="btn-lg btn-primary btn-block btn" id="btn" value="submit" type="submit" style="background-color: #F23B5F;">Sign in</button>
-      <a class="btn  btn-lg btn-primary btn-block bg-secondary" href="{{ url_for('register')}}" role="button">Register</a>
-      <p class="mt-5 mb-3 text-muted">&copy; 2020 All rights reserved</p>
-    </form>
+    </div>
   </div>
+
+
+
+
 {% endblock %}
