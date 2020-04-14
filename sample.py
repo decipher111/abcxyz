@@ -69,7 +69,8 @@ def move_forward():
 def register():
    if request.method == 'POST':
       print('now here')
-   return redirect(url_for('account'))
+      flash('You are now registered, confirm with you email', 'success')
+   return redirect(url_for('login'))
 
    
 #    form = RegisterFrom(request.form)

@@ -1,0 +1,77 @@
+@font-face {
+    font-family: chalkboard;
+    src: url(DkCrayonCrumble-ddll.ttf);
+   }
+
+.logo{
+    font-family: chalkboard;
+    font-size: 3rem;
+  }
+  
+  .login-div-right{
+    margin: 80px;
+    margin-top: 140px;
+    margin-bottom: 0;
+  }
+  
+  .login-bg{
+    background-image: url('bg4.jpg');
+    background-size: cover;
+}
+  
+  .btn-login{
+    background-color: transparent;
+    width: fit-content;
+    margin-left: 100px;
+    border: none;
+    color: white;
+    font-size: 2.5rem;
+  }
+  
+  .btn-login:hover{
+    color: rgb(229, 255, 0);
+  }
+  
+  
+  
+  .form-bg{
+    font-family: chalkboard;
+    font-size: 2.5rem;
+    border-radius: 10px;
+    color: white;
+  }
+  
+  .copyright{
+    font-size: 1rem;
+  }
+  
+  @media all and (min-width: 1080px){
+    .logo-login{
+        padding-left: 170px;
+    }
+  
+    .logo-tag{
+        width: 500px; height: 110px;
+    }
+  }
+  
+  @media all and (max-width: 720px){
+    .logo-tag{
+        width: 300px; height: 80px;
+    }
+  
+    .logo-login{
+        margin: 0;
+        padding-left: 0;
+    }
+  }
+  
+  .form-divider{
+    color: white;
+    background-color: white;
+  }
+  
+  #reg{
+    color: rgb(39, 39, 39);
+    font-size: 1.1rem;
+  }
