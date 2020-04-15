@@ -2,6 +2,11 @@
     font-family: chalkboard;
     src: url(DkCrayonCrumble-ddll.ttf);
    }
+   
+@font-face {
+  font-family: handwriting;
+  src: url(Caveat-Regular.ttf);
+}
 
 .logo{
     font-family: chalkboard;
@@ -71,7 +76,10 @@
     background-color: white;
   }
   
-  #reg{
-    color: rgb(39, 39, 39);
-    font-size: 1.1rem;
+
+  .form-control{
+    font-family: handwriting;
+    font-size: 1.4rem;
   }
+
+  
