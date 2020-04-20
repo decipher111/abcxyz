@@ -106,30 +106,30 @@ def register():
    # User login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-   if request.method == 'POST':
-      email = request.form['email']
-      user_password = request.form['password']
+   # if request.method == 'POST':
+   #    email = request.form['email']
+   #    user_password = request.form['password']
 
-      cur = mysql.connection.cursor()
+   #    cur = mysql.connection.cursor()
 
-      result = cur.execute("SELECT * FROM UserCredentials WHERE email = %s", [email])
+   #    result = cur.execute("SELECT * FROM UserCredentials WHERE email = %s", [email])
 
-      if result > 0:
-         data = cur.fetchone() #returns tuple?
-         password = data['password']
+   #    if result > 0:
+   #       data = cur.fetchone() #returns tuple?
+   #       password = data['password']
          
-         if sha256_crypt.verify(user_password, password):
-            session['logged_in'] = True
-            session['email'] = email
+   #       if sha256_crypt.verify(user_password, password):
+   #          session['logged_in'] = True
+   #          session['email'] = email
             
-            return redirect(url_for('dashboard'))
-         else:
-            error = 'Invalid Login'
-            return render_template('login.html', error = error)
-         cur.close()
-      else: 
-         error = 'Email not found'
-         return render_template('login.html', error = error)
+   #          return redirect(url_for('dashboard'))
+   #       else:
+   #          error = 'Invalid Login'
+   #          return render_template('login.html', error = error)
+   #       cur.close()
+   #    else: 
+   #       error = 'Email not found'
+   #       return render_template('login.html', error = error)
    return render_template('login.html')
 
 def dummy():
@@ -142,21 +142,97 @@ def logout():
    return redirect(url_for('login'))
    
 
-@app.route('/dashboard')
+@app.route('/dashboard') 
 # @is_logged_in      ##FIX THISSSSS AFTERRR
 def dashboard():
    return render_template('dashboard.html')
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 # TEST
-@app.route('/api/', methods=["POST"])
+@app.route('/api/')
 def main_interface():
-   print('got a request form frontend')   
-   response = request.get_json()
+   print('got a request form frontend!')   
+   username = request.args['username']
+   password = request.args['password']
+   print(username, password)
+   return jsonify({"username" : username})
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@app.route('/get_time_table', methods=['GET', 'POST'])
+def fun1():
+   print('got this!')
+   response = request.get_json   
    print(response)
-   value = 'Metrology and Quality Control and more'
-   value2 = 'value2'
-   return jsonify({"key" : value, "key2" : value2})
+   return jsonify({"user_id": 1, "email": "abc@gmail.com", "courses": [{"course_id": 1, "couse_name": "Microbiology", "section": "Biotechnology", "institution": "NSIT", "role": "Professor", "lectures": [{"lecture_id": 1, "course_id": 1, "date_time": "04/20/2020, 10:30:00", "notes_available": 'true', "assignment_available": 'true', "submissions": 1}]}]})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+def generate_upload_signed_url(lecture_id, file_type, content_type):
+    url = 'https://chalkboards_uploads.storage.googleapis.com/assignments/package.json?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=uploads%40chalkboards.iam.gserviceaccount.com%2F20200419%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20200419T000303Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&x-goog-signature=7515dbdb603692c326cd4c9c2732dd17297aa8dac27047cfe7abee8db23e9f093362b03a39d1bf463296225c9062fa45f39e7e36cad4f70e0070a9255daaf2b781f33f91c2d7dc18fb94f32b67e9bd6e7e674ec3822e85b847f8cc5f7da654f2e81c498a8d401b5a01ae70a2cc5effb5d9c1bc55a134ad4ebfd2340433e4f8b2b7db9f3dcc49ecce3dd326f05d3614cdb2324bebd3f6c834f728e1e710d76df929cb2a1fae03438f2cb8461e73bce9e6411d275d57f822712fa61da5e134fee2c2f7e4326e5bd7415c26877f23200dc4b4629a58f9620a9d2e1ddada40fbf23011a8f9e371b47c656bafa7d110a9b0c8b4f5afde4b667e15ef288d1dd2633574'
+    return url
+
+@app.route('/get_upload_assignment_url', methods=["POST"])
+def get_upload_assignment_url():
+    data = request.get_json()
+    print(data)
+    if (
+        data is None
+        or 'user_id' not in data
+        or 'lecture_id' not in data
+        or 'content_type' not in data):
+        return flash('MALFORMED_REQUEST', 'danger')
+    url = 'https://chalkboards_uploads.storage.googleapis.com/assignments/package.json?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=uploads%40chalkboards.iam.gserviceaccount.com%2F20200419%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20200419T000303Z&X-Goog-Expires=604800&X-Goog-SignedHeaders=host&x-goog-signature=7515dbdb603692c326cd4c9c2732dd17297aa8dac27047cfe7abee8db23e9f093362b03a39d1bf463296225c9062fa45f39e7e36cad4f70e0070a9255daaf2b781f33f91c2d7dc18fb94f32b67e9bd6e7e674ec3822e85b847f8cc5f7da654f2e81c498a8d401b5a01ae70a2cc5effb5d9c1bc55a134ad4ebfd2340433e4f8b2b7db9f3dcc49ecce3dd326f05d3614cdb2324bebd3f6c834f728e1e710d76df929cb2a1fae03438f2cb8461e73bce9e6411d275d57f822712fa61da5e134fee2c2f7e4326e5bd7415c26877f23200dc4b4629a58f9620a9d2e1ddada40fbf23011a8f9e371b47c656bafa7d110a9b0c8b4f5afde4b667e15ef288d1dd2633574'
+    return url
+
+
+
+@app.route('/saveDoc', methods=["POST"])
+def saveImage():
+   data = request.form
+   print(data)
+   key = 'value'
+   return jsonify({"key" : key})
 
 
    

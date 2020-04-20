@@ -1,0 +1,45 @@
+.jumbotron{
+    background-color: white;
+    text-align: center;
+  }
+  
+  .jumbotron-course{
+    background-color: transparent;
+    text-align: center;
+    height: 70px;
+    padding-top: 30px;
+    padding-bottom: 20px;
+  }
+  
+  
+  .a-tag{
+    text-decoration: none;
+    color: rgb(97, 97, 97);
+  }
+  
+  .card-course{
+    box-shadow: 0 4px 45px 0 rgba(0, 0, 0, 0.2);
+    max-width: 450px;
+    min-height: 550px;
+    max-height: fit-content;
+    margin: auto;
+    text-align: center;
+  }
+  
+  .card-course:hover{
+    box-shadow: 10px 10px 200px 0 rgba(0, 0, 0, 0.2);
+    transform:translate(-3px,-3px)
+  }
+  
+  .title-course {
+    color: grey;
+    font-size: 18px;
+  }
+  
+  .course-para{
+    width: 90%;
+    align-self: center;
+    color: rgba(59, 59, 59, 0.9);
+    text-align: justify;
+  }
+  

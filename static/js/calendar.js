@@ -1,12 +1,5 @@
-$(document).ready(function(){
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-        $('[data-toggle="tooltip"]').click(function(){
-            $('[data-toggle="tooltip"]').tooltip('hide')
-        })
-      })
+if (window.location.pathname == '/dashboard') {
 const AVAILABLE_WEEK_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-const localStorageName = 'calendar-events';
 
 class DASHBOARD {
     constructor(options) {
@@ -16,9 +9,6 @@ class DASHBOARD {
             week: this.getFirstElementInsideIdByClassName('calendar-week'),
             month: this.getFirstElementInsideIdByClassName('calendar-month'),
             year: this.getFirstElementInsideIdByClassName('calendar-current-year'),
-            // eventList: this.getFirstElementInsideIdByClassName('current-day-events-list'),
-            // eventField: this.getFirstElementInsideIdByClassName('add-event-day-field'),
-            // eventAddBtn: this.getFirstElementInsideIdByClassName('add-event-day-field-btn'),
             currentDay: this.getFirstElementInsideIdByClassName('calendar-left-side-day'),
             currentWeekDay: this.getFirstElementInsideIdByClassName('calendar-left-side-day-of-week'),
             prevYear: this.getFirstElementInsideIdByClassName('calendar-change-year-slider-prev'),
@@ -28,67 +18,12 @@ class DASHBOARD {
         this.date = +new Date();
         this.options.maxDays = 37;
         this.init();
-        // this.renderTimeTable();
+        renderTimeTable();
 
-    }
-
-
-
-    renderTimeTable(){
-        $('.test').html('')
-        var week = 1;
-        $.ajax({
-            url: "http://localhost:5000/api/",
-            type: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({"week": week})
-        }).done(function(data) {
-            for (var key in data) {
-                var subjectName = data[key]
-                if(subjectName.length>33){
-                    subjectName = subjectName.slice(0,32) + '...'
-                }
-                $('.test').append(
-                `<div class="container-fluid m-0 ml-3">
-                    <div class="row-border">
-                    <ul class="list-inline mt-2 d-flex container-fluid">
-                        <li class="col-2 pt-3 list-inline-item">10:00am</li>
-                        <li class="col-2 pt-3 list-inline-item">BT0001</li>
-                        <li class="col-5 pt-3 special list-inline-item">${subjectName}</li>
-                        <li class="col-1 pt-3 list-inline-item">
-                        <div class="dropdown show">
-                            <a id="a-tag" class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-rotate-180 fa-lg fa-download"></i><sup class="notfication-notes"><i class="fa fa-check-circle" style="color: green;"></i></sup></a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#">Upload Material</a>
-                            <a class="dropdown-item" href="#">Upload Assignment</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">View Uploads</a>
-                            <a class="dropdown-item" href="#">View Submissions</a>
-                            </div>
-                        </div>
-                        </li>
-                        <li class="col-1 pt-3 ml-3 list-inline-item">
-                        <div class="dropdown show">
-                            <a id="a-tag" class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-clipboard fa"></i><sup class="notfication-notes">3</sup></a>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                            <a class="dropdown-item" href="#">Upload Material</a>
-                            <a class="dropdown-item" href="#">Upload Assignment</a>
-                            <div class="dropdown-divider"></div>
-                            <a class="dropdown-item" href="#">View Uploads</a>
-                            <a class="dropdown-item" href="#">View Submissions<sup class="notfication-notes">41</sup></a>
-                            </div>
-                        </div>
-                        </li>
-                    </ul>
-                    </div>
-                </div>`)
-            }   
-        });
     }
 
 // App methods
     init() {
-        // if (!this.options.id) return false;
         this.eventsTrigger();
         this.drawAll();
     }
@@ -106,15 +41,12 @@ class DASHBOARD {
 
 
 
-
-
-
     drawYearAndCurrentDay() {
         let calendar = this.getCalendar();
         this.elements.year.innerHTML = calendar.active.year;
         this.elements.currentDay.innerHTML = calendar.active.day;
         this.elements.currentWeekDay.innerHTML = AVAILABLE_WEEK_DAYS[calendar.active.week];
-        console.log(calendar.active.week)
+        // console.log(calendar.active.week)
     }
 
     
@@ -202,6 +134,43 @@ class DASHBOARD {
             this.drawAll()
         });
 
+        $('#viewSub').click(function(){
+            console.log($(this).attr('LectureID'))
+        });
+
+
+// ------------------------------------------- UPLOAD FILE -----------------------------------//
+
+
+
+        $('#upload-file').submit(function(e){
+            e.preventDefault()
+            // console.log(this.files[0].mozFullPath)
+            const formData = new FormData()
+            // console.log($('#fileID').prop('files')[0]) //JQuery .files equivalent
+            formData.append('key', $('#fileID')[0].files[0], 'filenameToServer')
+            console.log(Array.from(formData))
+
+            fetch('/get_upload_assignment_url', {
+                method: 'POST',
+                body: JSON.stringify({user_id: 'user_id', lecture_id: 'lecture_id'}), 
+                'Content-Type': 'application/json'
+            })
+            .then(function(response){
+                return response.text
+            })
+            .then(function(text){
+                console.log(text)
+            })
+            .catch(error => {
+                console.error(error)
+            })
+            })
+
+// ------------------------------------------- UPLOAD FILE END -----------------------------------//
+
+
+
         this.elements.nextYear.addEventListener('click', e => {
             let calendar = this.getCalendar();
             this.updateTime(calendar.nYear);
@@ -219,6 +188,12 @@ class DASHBOARD {
         });
 
 
+        $('#viewSub').click(function(){
+            var date = calendar.getDate
+            console.log(date)
+        })
+
+        //Event Listener Setup here
         this.elements.days.addEventListener('click', e => {
             let element = e.srcElement;
             let day = element.getAttribute('data-day');
@@ -228,7 +203,8 @@ class DASHBOARD {
             let strDate = `${Number(month) + 1}/${day}/${year}`;
             this.updateTime(strDate);
             this.drawAll()
-            this.renderTimeTable()
+            // this.renderTimeTable(strDate)
+            renderTimeTable(strDate);
         });
 
     }
@@ -294,9 +270,7 @@ class DASHBOARD {
 
 
 (function () {
-    new DASHBOARD({
-
-    })
+    new DASHBOARD({})
 })();
+}
 
-});

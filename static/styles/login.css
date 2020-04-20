@@ -1,11 +1,11 @@
 @font-face {
     font-family: chalkboard;
-    src: url(DkCrayonCrumble-ddll.ttf);
+    src: url(../fonts/KgTenThousandReasons-R1ll.ttf);
    }
    
 @font-face {
   font-family: handwriting;
-  src: url(Caveat-Regular.ttf);
+  src: url(../fonts/KgTenThousandReasons-R1ll.ttf);
 }
 
 .logo{
@@ -20,34 +20,35 @@
   }
   
   .login-bg{
-    background-image: url('bg4.jpg');
+    background-image: url('../images/loginbg.jpg');
     background-size: cover;
 }
   
   .btn-login{
     background-color: transparent;
     width: fit-content;
-    margin-left: 100px;
+    margin-left: 78px;
     border: none;
     color: white;
-    font-size: 2.5rem;
+    font-size: 2rem;
+    font-weight: lighter;
   }
   
   .btn-login:hover{
-    color: rgb(229, 255, 0);
+    color: rgb(255, 250, 196);
   }
   
   
   
   .form-bg{
     font-family: chalkboard;
-    font-size: 2.5rem;
+    font-size: 1rem;
     border-radius: 10px;
     color: white;
   }
   
   .copyright{
-    font-size: 1rem;
+    font-size: 0.65rem;
   }
   
   @media all and (min-width: 1080px){
@@ -62,7 +63,7 @@
   
   @media all and (max-width: 720px){
     .logo-tag{
-        width: 300px; height: 80px;
+        width: 350px; height: 80px;
     }
   
     .logo-login{
@@ -78,8 +79,8 @@
   
 
   .form-control{
-    font-family: handwriting;
-    font-size: 1.4rem;
+    font-family: chalkboard;
+    font-size: 1rem;
   }
 
   

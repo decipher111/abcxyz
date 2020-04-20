@@ -1,0 +1,139 @@
+ @font-face {
+  font-family: system-font;
+  src: url(../fonts/BalooPaaji2-Regular.ttf);
+}
+
+body {
+  margin: 0;
+  font-family: system-font;
+  font-size: 0.95rem;
+  font-weight: 900;
+  line-height: 1.5;
+  background-color: rgb(241, 241, 241);
+  color: rgb(65, 65, 65);
+}
+
+.navbar{
+  background-color: rgb(40, 40, 40);
+  box-shadow: 1px 1px 12px 0px rgb(128, 127, 127);
+}
+
+
+.nav-inputs{
+    font-size: 10pt;
+    height: 33px;
+    
+}
+
+.btn-radius2{
+  border-radius: 500px;
+}
+
+.justify-content-center {
+  justify-content: center;
+}
+
+
+.btn-radius{
+  border-radius: 25px;
+}
+
+.row-header{
+  position: relative;
+  margin: 20px;
+  height: 10px;
+}
+
+
+
+li{
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+
+
+.row-border{
+  height: 75px;
+  background-color: rgb(255, 255, 255);
+  border-top: solid;
+  border-width: thin;
+  border-color: rgb(221, 221, 221);
+}
+
+
+.first-row{
+  margin-top: 28px;
+}
+
+
+.row-border:hover {
+  background-color: rgb(250, 250, 250);
+}
+
+
+.special{
+  margin-right: 0px;
+  padding-right: 0px;
+  padding-left: 0px;
+  text-align: left;
+}
+
+#d-dropdown{
+  background-color: rgb(66, 66, 66);
+  border-radius: 50px;
+  border: none;
+  height: 30px;
+  width: 55px;
+}
+
+.margin-special{
+  margin-top: 39px;
+}
+
+#d-dropdown1{
+  background-color: rgb(255, 255, 255);
+  color: black;
+  border-radius: 50px;
+  border: solid;
+  border-color: rgb(36, 36, 36);
+  border-width: thin;
+  height: 30px;
+  width: 55px;
+}
+
+
+.dropdown-item:hover{
+  background-color: white;
+}
+
+.upload-btn-wrapper {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+}
+
+.btnUp {
+  border: 2px solid gray;
+  color: gray;
+  background-color: white;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.upload-btn-wrapper input[type=file] {
+  font-size: 100px;
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+}
+
+
+
+
+
+
+
