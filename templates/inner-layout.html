@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard</title>
+    <title>Chalkboards</title>
+    <link rel="icon" href="{{url_for('static', filename='images/user-icon.png')}}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto">
     <link rel="stylesheet" href="{{ url_for('static', filename='font-awesome/font-awesome.min.css')}}">
@@ -19,7 +20,6 @@
   {% block body %}{% endblock %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="{{url_for('static', filename='js/login.js')}}"></script>
 <script src="{{url_for('static', filename='js/dashboard.js')}}"></script>
 <script src="{{url_for('static', filename='js/calendar.js')}}"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>

@@ -1,4 +1,5 @@
 if (window.location.pathname == '/dashboard') {
+
 const AVAILABLE_WEEK_DAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 class DASHBOARD {
@@ -18,18 +19,14 @@ class DASHBOARD {
         this.date = +new Date();
         this.options.maxDays = 37;
         this.init();
-        renderTimeTable();
 
     }
 
-// App methods
+    // App methods
     init() {
         this.eventsTrigger();
         this.drawAll();
     }
-
-    
-
 
     // draw Methods
     drawAll() {
@@ -39,8 +36,6 @@ class DASHBOARD {
         this.drawYearAndCurrentDay();
     }
 
-
-
     drawYearAndCurrentDay() {
         let calendar = this.getCalendar();
         this.elements.year.innerHTML = calendar.active.year;
@@ -48,9 +43,6 @@ class DASHBOARD {
         this.elements.currentWeekDay.innerHTML = AVAILABLE_WEEK_DAYS[calendar.active.week];
         // console.log(calendar.active.week)
     }
-
-    
-
 
     drawDays() {
         let calendar = this.getCalendar();
@@ -134,43 +126,6 @@ class DASHBOARD {
             this.drawAll()
         });
 
-        $('#viewSub').click(function(){
-            console.log($(this).attr('LectureID'))
-        });
-
-
-// ------------------------------------------- UPLOAD FILE -----------------------------------//
-
-
-
-        $('#upload-file').submit(function(e){
-            e.preventDefault()
-            // console.log(this.files[0].mozFullPath)
-            const formData = new FormData()
-            // console.log($('#fileID').prop('files')[0]) //JQuery .files equivalent
-            formData.append('key', $('#fileID')[0].files[0], 'filenameToServer')
-            console.log(Array.from(formData))
-
-            fetch('/get_upload_assignment_url', {
-                method: 'POST',
-                body: JSON.stringify({user_id: 'user_id', lecture_id: 'lecture_id'}), 
-                'Content-Type': 'application/json'
-            })
-            .then(function(response){
-                return response.text
-            })
-            .then(function(text){
-                console.log(text)
-            })
-            .catch(error => {
-                console.error(error)
-            })
-            })
-
-// ------------------------------------------- UPLOAD FILE END -----------------------------------//
-
-
-
         this.elements.nextYear.addEventListener('click', e => {
             let calendar = this.getCalendar();
             this.updateTime(calendar.nYear);
@@ -208,7 +163,6 @@ class DASHBOARD {
         });
 
     }
-
 
     updateTime(time) {
         this.date = +new Date(time);

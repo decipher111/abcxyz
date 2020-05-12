@@ -1,53 +1,59 @@
 {% extends 'inner-layout.html' %}
 
 {% block body %}
-<div class="d-flex p-2 container-fluid bd-highlight main-box">
-  <div class="d-flex p-2 container-lg col-lg-6">
-  <div class="container-fluid">
 
-      <div class="row row-header pb-0 mb-5">
-        <div class="container-fluid">
-            <ul class="list-inline d-flex container-fluid">
-              <li class="col-2 mb-4 pt-3 list-inline-item"><b>TIME</b></li>
-              <li class="col-2 mb-4 pt-3 list-inline-item"><b>CODE</b></li>
-              <li class="col-5 mb-4 pt-3 list-inline-item"><b>COURSE</b></li>
-              <li class="col-3 mb-4 pt-3 list-inline-item"><b>ACTIONS</b></li>
+<div class="d-flex container-fluid bd-highlight main-box timetable-padding ">
+  <div class="d-flex container-lg col-lg-6 timetable-padding">
+  <div class="container-fluid timetable-padding">
+
+        <div class="container-fluid mt-4">
+            <ul class="list-inline mt-2 d-flex container-fluid">
+              <li class="col-2 pt-3 list-inline-item dash-header">TIME</li>
+              <li class="col-2 pt-3 list-inline-item dash-header">CODE</li>
+              <li class="col-5 pt-3 list-inline-item dash-header">COURSE</li>
+              <li class="col-1 pt-3 list-inline-item dash-header">ACTION</li>
             </ul>
         </div>
-      </div>
 
 
         <div class="test">
-          <div class="container-fluid m-0 ml-3 c">
-            <div class="row-border pr-2">
+          <div class="container-fluid m-0">
+            <div class="row-border">
               <ul class="list-inline mt-2 d-flex container-fluid">
                   <li class="col-2 pt-3 list-inline-item">10:00am</li>
                   <li class="col-2 pt-3 list-inline-item">BT0001</li>
-                  <li class="col-5 pt-3 special list-inline-item">${subjectName}</li>
-                  <li class="col-1 pt-3 list-inline-item">
-                  <div id="" class="dropdown show dropright">
-                      <a id="" class="dropdown-toggle a-tag" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fa fa-rotate-180 fa-lg fa-download"></i></a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                      <a class="dropdown-item">Notes<i class="ml-1 fa fa-check-circle" style="color: green;"></i></a>
-                      <a href="" class="ml-4">Upload</a><a href="" class="ml-2">View</a><a href="" class="ml-2 mr-4">Remove</a>
-                      <div class="dropdown-divider"></div>
-                      <a class="dropdown-item">Assignment</a>
-                      <form id="upload-file">
-                      <input id='fileID' type='file' class="ml-3" name="Upload"/>
-                      <button type="sumit" class="ml-3 btn">Upload</button>
-                      </form>
-                      </div>
-                  </div>
-                  </li>
-                  <li class="col-2 pt-3 list-inline-item">
-                  <a id="viewSub" lectureID="abc123" class="a-tag" data-toggle="tooltip" data-placement="top" title="View Submissions"><i class="fa fa-clipboard fa-lg"></i><sup class="notfication-notes">41</sup></a>
-                  </li>
+                  <li class="col-5 pt-3 list-inline-item">${subjectName}<sup><i class="fa fa-circle fa-smaller"></i></sup></li>
+                  <li class="down-arrow col-1 list-inline-item icon-padding"><img src="{{url_for('static', filename='images/as4.png')}}" style="width:31px" height="31px"></li>
+                  <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="{{url_for('static', filename='images/n-1.png')}}" style="width:31px" height="31px"></li>
               </ul>
+              <div class="line-break"></div>
+              <div class="action d-none">
+                <ul class="list-inline d-flex container">
+                  <li class="upload col-6 pt-2 list-inline-item">
+                    <button class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Assignment</button>
+                  </li>
+                    <li class="col-6 pt-2 list-inline-item">
+                      <form class="form" id="uploadAssignment">
+                          <input  type="file" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                          <label for="file-1" class="p-2"><i class="icon ml-1 fa fa-plus"></i><span class="mr-1 ml-1">Submit Assignment</span></label>
+                          <i class="ml-1 fa fa-times d-none" style="color: rgb(43, 43, 43);"></i>
+                        <input class="btn-dashboard btn d-none" type="submit" value="Upload">
+                    </form>
+                  </li>
+                </ul>
+              </div>
+              <div class="action2 d-none">
+                <ul class="list-inline d-flex container">
+                  <li class="upload col-12 pt-3 list-inline-item"><button class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download Notes</button></li>
+                </ul>
+              </div>
+              <div class="progress progress-upload d-none">
+                <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+              </div>
             </div>
           </div>
+
         </div>
-
-
   </div>
 </div>
 

@@ -1,6 +1,6 @@
  @font-face {
   font-family: system-font;
-  src: url(../fonts/BalooPaaji2-Regular.ttf);
+  src: url(../fonts/IBMPlexSans-Regular.ttf);
 }
 
 body {
@@ -9,21 +9,31 @@ body {
   font-size: 0.95rem;
   font-weight: 900;
   line-height: 1.5;
-  background-color: rgb(241, 241, 241);
-  color: rgb(65, 65, 65);
+  /* background-color: rgb(241, 241, 241); */
+  background-color: rgb(255, 255, 255);
+  color: rgb(87, 87, 87);
 }
 
 .navbar{
-  background-color: rgb(40, 40, 40);
-  box-shadow: 1px 1px 12px 0px rgb(128, 127, 127);
+  background-color: rgb(255, 255, 255);
+  border-bottom: solid rgb(228, 228, 228) thin;
+}
+
+@media all and (min-width: 720px){
+  .navbar{
+    padding: 20px;
+    padding-right: 100px;
+    padding-left: 100px;
+  }
 }
 
 
-.nav-inputs{
+
+/* .nav-inputs{
     font-size: 10pt;
     height: 33px;
     
-}
+} */
 
 .btn-radius2{
   border-radius: 500px;
@@ -54,21 +64,31 @@ li{
 
 
 .row-border{
-  height: 75px;
+  height: 70px;
   background-color: rgb(255, 255, 255);
-  border-top: solid;
+  border: solid;
   border-width: thin;
   border-color: rgb(221, 221, 221);
+  border-radius: 3px;
+  transition-duration: 0.1s;
 }
 
-
-.first-row{
-  margin-top: 28px;
+.row-border-expanded1{
+  height: 140px;
+  transition-duration: 0.1s;
 }
 
+.row-border-expanded2{
+  height: 140px;
+  transition-duration: 0.1s;
+}
 
-.row-border:hover {
-  background-color: rgb(250, 250, 250);
+.down-arrow{
+  cursor: pointer;
+}
+
+.down-arrow2{
+  cursor: pointer;
 }
 
 
@@ -131,9 +151,110 @@ li{
   opacity: 0;
 }
 
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
 
+.inputfile + label {
+  background-color: rgb(0, 0, 0);
+  border: none;
+  color: rgb(255, 255, 255);
+  border-radius: 55px;
+}
 
+.inputfile:focus + label,
+.inputfile + label:hover {
+  background-color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
+}
 
+.inputfile + label {
+	cursor: pointer; 
+}
 
+.inputfile + label * {
+	pointer-events: none;
+}
 
+.progress-upload{
+  height: 5px;
+  width: 100%;
+  margin: 0 auto;
+}
 
+@media all and (min-width: 720px){
+  .timetable-padding{
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+}
+
+@media all and (max-width: 720px){
+  .timetable-padding{
+    padding: 0px;
+  }
+}
+
+button:disabled {
+  cursor: auto;
+}
+
+input:disabled {
+  cursor: move;
+
+}
+
+.btn-nav{
+  background-color: rgb(255, 255, 255);
+  border: none;
+  color: rgb(32, 32, 32);
+}
+
+.btn-nav:hover{
+  color: rgb(136, 136, 136);
+}
+
+.icon-padding{
+  padding-top: 12px;
+}
+
+.fa-smaller{
+  font-size: 7px;
+  color: rgb(255, 0, 0);
+}
+
+button:disabled {
+  cursor: auto;
+  background-color: rgb(207, 207, 207);
+  color: rgb(65, 65, 65);
+}
+
+button:disabled:hover {
+  cursor: auto;
+  color: rgb(71, 71, 71);
+  background-color: rgb(207, 207, 207);
+}
+
+.inputfile:disabled + label,
+.inputfile + label:disabled {
+  background-color: rgb(216, 216, 216);
+  color: rgb(100, 100, 100);
+  cursor: auto;
+}
+
+.btn-dashboard{
+  background-color: rgb(0, 0, 0);
+  border: none;
+  color: rgb(255, 255, 255);
+}
+
+.btn-dashboard:hover{
+  background-color: rgb(0, 0, 0);
+  border: none;
+  color: rgb(255, 255, 255);
+}

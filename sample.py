@@ -1,32 +1,139 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify
+from flask import Flask, render_template, flash, redirect, url_for, session, request, logging, jsonify, make_response
 from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, DateField, IntegerField
 from passlib.hash import sha256_crypt
 from functools import wraps
+import datetime
+# from flask_restful import Api
+from flask_jwt_extended import (JWTManager, jwt_required, 
+                                jwt_refresh_token_required, 
+                                jwt_optional, fresh_jwt_required, 
+                                get_raw_jwt, get_jwt_identity,
+                                create_access_token, create_refresh_token, 
+                                set_access_cookies, set_refresh_cookies, 
+                                unset_jwt_cookies,unset_access_cookies)
+from flask_cors import CORS, cross_origin
+
 
 app = Flask(__name__)
 
 # Config MySQL
 app.config['MYSQL_HOST'] = 'localhost'
+app.config['BASE_URL'] = 'http://127.0.0.1:5000'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '19071999'
 app.config['MYSQL_DB'] = 'myflaskapp'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
+app.config['JWT_SECRET_KEY'] = 'super-secret'
+app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+app.config['JWT_COOKIE_CSRF_PROTECT'] = True
+app.config['JWT_CSRF_CHECK_FORM'] = True
+app.config['CORS_HEADERS'] = 'Content-Type'
+# cors = CORS(app, resources={"/get_time_table": {"origins": "http://localhost:port"}})
+jwt = JWTManager(app) 
 
 # init MYSQL
 mysql = MySQL(app)
 user_creds = {}
 user_roles = {}
 
-def is_logged_in(f):
-    @wraps(f)
-    def wrap(*args, **kwargs):
-        if 'logged_in' in session:
-            return f(*args, **kwargs)
-        else:
-            flash('Unauthorized, Please login', 'danger')
-            return redirect(url_for('login'))
-    return wrap
+# def is_logged_in(f):
+#     @wraps(f)
+#     def wrap(*args, **kwargs):
+#         if 'logged_in' in session:
+#             return f(*args, **kwargs)
+#         else:
+#             flash('Unauthorized, Please login', 'danger')
+#             return redirect(url_for('login'))
+#     return wrap
+
+
+def assign_access_refresh_tokens(user_id, url):
+    access_token = create_access_token(identity=str(user_id))
+    refresh_token = create_refresh_token(identity=str(user_id))
+    resp = make_response(redirect(url, 302))
+    set_access_cookies(resp, access_token)
+    set_refresh_cookies(resp, refresh_token)
+    print(access_token)
+    return resp
+
+def unset_jwt():
+    resp = make_response(redirect(app.config['BASE_URL'] + '/', 302))
+    unset_jwt_cookies(resp)
+    return resp
+
+@jwt.unauthorized_loader
+def unauthorized_callback(callback):
+    # No auth header
+    return redirect(app.config['BASE_URL'] + '/login', 302)
+
+@jwt.invalid_token_loader
+def invalid_token_callback(callback):
+    # Invalid Fresh/Non-Fresh Access token in auth header
+    resp = make_response(redirect(app.config['BASE_URL'] + '/login'))
+    unset_jwt_cookies(resp)
+    return resp, 302
+
+@jwt.expired_token_loader
+def expired_token_callback(callback):
+    # Expired auth header
+    resp = make_response(redirect(app.config['BASE_URL'] + '/token/refresh'))
+    unset_access_cookies(resp)
+    return resp, 302
+
+@app.route('/token/refresh', methods=['GET'])
+@jwt_refresh_token_required
+def refresh():
+    # Refreshing expired Access token
+    user_id = get_jwt_identity()
+    access_token = create_access_token(identity=str(user_id))
+    resp = make_response(redirect(app.config['BASE_URL'] + '/', 302))
+    set_access_cookies(resp, access_token)
+    return resp
+
+# TEST ROUTE 
+@app.route('/api', methods=["POST"])
+def api():
+   username = request.form['email']
+   password = request.form['password']
+
+   ## <-----------------  verifiy unsername password from data base, if username not found -------------------->
+   # flash('please register first', 'danger')
+   # return redirect(url_for('login'))
+
+   ## <-----------------  verifiy unsername password from data base, if password not found -------------------->
+   # flash('incorrect password', 'danger')
+   # return redirect(url_for('login'))
+   # else
+
+   return assign_access_refresh_tokens(username , app.config['BASE_URL'] + '/dashboard')
+
+
+@app.route('/get_time_table', methods=['GET'])
+# @cross_origin(origin='http://127.0.0.1:5000', headers=['Content- Type','Authorization'])
+@jwt_required
+def get_time_table():
+   username = get_jwt_identity()
+   date = request.args.get('date')
+   return jsonify({"user_id": 1, "email": "abc@gmail.com", "courses": [{"course_id": 1, "course_name": "Computer Science", "section": "CS0421", "institution": "NSIT", "role": "Student", "lectures": [{"lecture_id": 524351, "course_id": "CS100", "date_time": "04/20/2020, 10:30:00", "notes_available": 'true', "assignment_available": 'true', "submissions": 32},{"lecture_id": 124351, "course_id": "CS101", "date_time": "04/20/2020, 11:30:00", "notes_available": 'true', "assignment_available": 'false', "submissions": 0},{"lecture_id": 832345, "course_id": "CS102", "date_time": "04/20/2020, 12:30:00", "notes_available": 'false', "assignment_available": 'true', "submissions": 0}]}]})
+
+
+
+
+
+
+
+
+
+
+@app.route('/save-post',methods=['POST', 'GET'])
+def savepost():
+    if request.method=='POST':
+      print(request.form.get('assignment'))
+      return "Name : "+request.method
+    else:
+        return "error"
+
 
 @app.route('/')
 def index():
@@ -40,30 +147,11 @@ def table():
 def course():
    return render_template('course-content.html')
 
-# @app.route('/course-content', methods=["POST"])
-# def courseContent():
-#    print('got a request form frontend')   
-#    response = request.get_json()
-#    print(response)
-#    data = 'data'
-#    return redirect(url_for('login'))
-
 @app.route('/account')
+@jwt_required
 def account():
+   print(get_jwt_identity())
    return render_template('account.html')
-
-class RegisterFrom(Form):
-   name = StringField('Name', [validators.Length(min=1)])
-   email = StringField('Email', [validators.Length(min=6)])
-   password = PasswordField('Password', [validators.DataRequired(), validators.EqualTo('confirm', message='Passwords do not match')])
-   confirm = PasswordField('Confirm Password')
-   mobile_no = IntegerField('Mobile Number', [validators.Length(min=10)])
-   address = TextAreaField('Address', [validators.length(max=200)])
-   dob = DateField('Date of Birth',format='%d-%m-%Y')
-
-def move_forward():
-   #Moving forward code
-   print("Moving Forward...")
 
 @app.route('/register', methods = ['GET', 'POST'])
 def register():
@@ -132,14 +220,10 @@ def login():
    #       return render_template('login.html', error = error)
    return render_template('login.html')
 
-def dummy():
-   print('Click!')
 
 @app.route('/logout')
 def logout():
-   session.clear()
-   flash('Logged Out', 'success')
-   return redirect(url_for('login'))
+   return unset_jwt(), 302
    
 
 @app.route('/dashboard') 
@@ -161,38 +245,6 @@ def dashboard():
 
 
 
-# TEST
-@app.route('/api/')
-def main_interface():
-   print('got a request form frontend!')   
-   username = request.args['username']
-   password = request.args['password']
-   print(username, password)
-   return jsonify({"username" : username})
-   
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-@app.route('/get_time_table', methods=['GET', 'POST'])
-def fun1():
-   print('got this!')
-   response = request.get_json   
-   print(response)
-   return jsonify({"user_id": 1, "email": "abc@gmail.com", "courses": [{"course_id": 1, "couse_name": "Microbiology", "section": "Biotechnology", "institution": "NSIT", "role": "Professor", "lectures": [{"lecture_id": 1, "course_id": 1, "date_time": "04/20/2020, 10:30:00", "notes_available": 'true', "assignment_available": 'true', "submissions": 1}]}]})
 
 
 
@@ -220,7 +272,7 @@ def saveImage():
 
    
 if __name__ == '__main__':
-   app.secret_key='secret123'
+   app.config['SECRET_KEY']='secret123'
    with app.app_context():
       cur = mysql.connection.cursor()
       cur.execute("SELECT email, password FROM UserCredentials")

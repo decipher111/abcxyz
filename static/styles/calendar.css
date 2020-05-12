@@ -1,7 +1,8 @@
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; }
+    box-sizing: border-box;
+    }
   
   .text-center {
     text-align: center; }
@@ -59,7 +60,7 @@
     .calendar .left-side {
       width: 200px;
       /* background-color: rgb(66, 72, 245); */
-      background-color: rgb(69, 54, 102);
+      background-image: linear-gradient(to top right, rgb(132, 0, 255), rgb(255, 145, 0));
       float: left; }
     .calendar .current-day, .calendar .current-day-events {
       padding-top: 120px; }
@@ -134,7 +135,7 @@
         background: #1400c7; }
       .calendar .calendar-days li.active-day:after {
         color: white;
-        background: rgb(116, 59, 237);
+        background-image: linear-gradient(to bottom right, rgb(132, 0, 255), rgb(255, 0, 0));
       }
     .calendar .calendar-week {
       padding-left: 3px;
@@ -171,6 +172,6 @@
   
    .calendar{
      position: relative;
-     top: 70px;
+     top: 62px;
      right: 5px;
    } 
