@@ -6,6 +6,21 @@
   <div class="d-flex container-lg col-lg-6 timetable-padding">
   <div class="container-fluid timetable-padding">
 
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body mb-3 mt-4">
+        <h5>Assignment Uploaded</h5>
+      </div>
+      <div class="modal-footer">
+        <button id="paramsOkay" type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
         <div class="container-fluid mt-4">
             <ul class="list-inline mt-2 d-flex container-fluid">
               <li class="col-2 pt-3 list-inline-item dash-header">TIME</li>
@@ -22,7 +37,43 @@
               <ul class="list-inline mt-2 d-flex container-fluid">
                   <li class="col-2 pt-3 list-inline-item">10:00am</li>
                   <li class="col-2 pt-3 list-inline-item">BT0001</li>
-                  <li class="col-5 pt-3 list-inline-item">${subjectName}<sup><i class="fa fa-circle fa-smaller"></i></sup></li>
+                  <li class="col-5 pt-3 list-inline-item">${subjectName}<sup><i class="fa fa-circle fa-size-color"></i></sup></li>
+                  <li class="down-arrow col-1 list-inline-item icon-padding"><img src="{{url_for('static', filename='images/as4.png')}}" style="width:31px" height="31px"></li>
+                  <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="{{url_for('static', filename='images/n-1.png')}}" style="width:31px" height="31px"></li>
+              </ul>
+              <div class="line-break"></div>
+              <div class="action d-none">
+                <ul class="list-inline d-flex container">
+                  <li class="upload col-6 pt-2 list-inline-item">
+                    <button class="btn btn-radius btn-dashboard btn-assignment"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Assignment</button>
+                  </li>
+                    <li class="col-6 pt-2 list-inline-item">
+                      <form class="form" id="uploadAssignment">
+                          <input  type="file" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                          <!-- <input type="file" class="inputfile"> -->
+                          <label for="file-1" class="p-2 file-1"><i class="icon ml-1 fa fa-plus"></i><span class="mr-1 ml-1">Submit Assignment</span></label>
+                        <input class="btn d-none" type="submit" value="Upload">
+                    </form>
+                  </li>
+                </ul>
+              </div>
+              <div class="action2 d-none">
+                <ul class="list-inline d-flex container">
+                  <li class="upload col-12 pt-3 list-inline-item"><button class="btn btn-radius btn-dashboard btn-notes"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download Notes</button></li>
+                </ul>
+              </div>
+              <div class="progress progress-upload d-none">
+                <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container-fluid m-0">
+            <div class="row-border">
+              <ul class="list-inline mt-2 d-flex container-fluid">
+                  <li class="col-2 pt-3 list-inline-item">10:00am</li>
+                  <li class="col-2 pt-3 list-inline-item">BT0001</li>
+                  <li class="col-5 pt-3 list-inline-item">${subjectName}<sup><i class="fa fa-circle fa-size-color"></i></sup></li>
                   <li class="down-arrow col-1 list-inline-item icon-padding"><img src="{{url_for('static', filename='images/as4.png')}}" style="width:31px" height="31px"></li>
                   <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="{{url_for('static', filename='images/n-1.png')}}" style="width:31px" height="31px"></li>
               </ul>
@@ -31,13 +82,13 @@
                 <ul class="list-inline d-flex container">
                   <li class="upload col-6 pt-2 list-inline-item">
                     <button class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Assignment</button>
+                    <div class="days-ago">uploaded n days ago</div>
                   </li>
                     <li class="col-6 pt-2 list-inline-item">
                       <form class="form" id="uploadAssignment">
                           <input  type="file" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
-                          <label for="file-1" class="p-2"><i class="icon ml-1 fa fa-plus"></i><span class="mr-1 ml-1">Submit Assignment</span></label>
-                          <i class="ml-1 fa fa-times d-none" style="color: rgb(43, 43, 43);"></i>
-                        <input class="btn-dashboard btn d-none" type="submit" value="Upload">
+                          <label for="file-1" class="p-2 file-1"><i class="icon ml-1 fa fa-plus"></i><span class="mr-1 ml-1">Submit Assignment</span></label>
+                        <input class="btn d-none" type="submit" value="Upload">
                     </form>
                   </li>
                 </ul>

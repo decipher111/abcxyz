@@ -9,7 +9,6 @@ body {
   font-size: 0.95rem;
   font-weight: 900;
   line-height: 1.5;
-  /* background-color: rgb(241, 241, 241); */
   background-color: rgb(255, 255, 255);
   color: rgb(87, 87, 87);
 }
@@ -26,14 +25,6 @@ body {
     padding-left: 100px;
   }
 }
-
-
-
-/* .nav-inputs{
-    font-size: 10pt;
-    height: 33px;
-    
-} */
 
 .btn-radius2{
   border-radius: 500px;
@@ -64,12 +55,13 @@ li{
 
 
 .row-border{
+  position: relative;
   height: 70px;
   background-color: rgb(255, 255, 255);
   border: solid;
   border-width: thin;
   border-color: rgb(221, 221, 221);
-  border-radius: 3px;
+  border-radius: 6px;
   transition-duration: 0.1s;
 }
 
@@ -152,26 +144,29 @@ li{
 }
 
 .inputfile {
-	width: 0.1px;
-	height: 0.1px;
+	width: 190px;
+	height: 40px;
 	opacity: 0;
 	overflow: hidden;
-	position: absolute;
-	z-index: -1;
+  position: absolute;
+	/* z-index: -1; */
 }
 
 .inputfile + label {
-  background-color: rgb(0, 0, 0);
-  border: none;
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  width: 180px;
+  border: solid rgb(153, 153, 153) thin;
+  color: rgb(0, 0, 0);
   border-radius: 55px;
 }
 
 .inputfile:focus + label,
 .inputfile + label:hover {
-  background-color: rgb(0, 0, 0);
-  color: rgb(255, 255, 255);
+  background-color: rgb(245, 245, 245);
+  border: solid rgb(153, 153, 153) thin;
+  color: rgb(0, 0, 0);
 }
+
 
 .inputfile + label {
 	cursor: pointer; 
@@ -185,6 +180,11 @@ li{
   height: 5px;
   width: 100%;
   margin: 0 auto;
+}
+
+.progress{
+  position: absolute;
+  top: 134px;
 }
 
 @media all and (min-width: 720px){
@@ -205,7 +205,7 @@ button:disabled {
 }
 
 input:disabled {
-  cursor: move;
+  cursor: auto;
 
 }
 
@@ -223,9 +223,9 @@ input:disabled {
   padding-top: 12px;
 }
 
-.fa-smaller{
-  font-size: 7px;
-  color: rgb(255, 0, 0);
+.fa-size-color{
+  font-size: 9px;
+  color: rgb(105, 105, 105);
 }
 
 button:disabled {
@@ -248,13 +248,18 @@ button:disabled:hover {
 }
 
 .btn-dashboard{
-  background-color: rgb(0, 0, 0);
-  border: none;
-  color: rgb(255, 255, 255);
+  background-color: rgb(255, 255, 255);
+  border: solid rgb(153, 153, 153) thin;
+  color: rgb(36, 36, 36);
 }
 
 .btn-dashboard:hover{
-  background-color: rgb(0, 0, 0);
-  border: none;
-  color: rgb(255, 255, 255);
+  background-color: rgb(243, 243, 243);
+  border: solid rgb(153, 153, 153) thin;
+  color: rgb(36, 36, 36);
+}
+
+.days-ago{
+  font-size: 0.7rem;
+  color: rgb(155, 155, 155);
 }

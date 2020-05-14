@@ -95,7 +95,7 @@
     border-radius: 0px;
     outline: none;
     color: white;
-}
+  }
 
 input[type="email"]:focus{
   background: rgba(0, 0, 0, 0);
