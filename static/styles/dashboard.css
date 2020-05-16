@@ -155,16 +155,16 @@ li{
 .inputfile + label {
   background-color: rgb(255, 255, 255);
   width: 180px;
+  cursor: auto;
   border: solid rgb(153, 153, 153) thin;
   color: rgb(0, 0, 0);
-  border-radius: 55px;
+  border-radius: 5px;
 }
 
-.inputfile:focus + label,
-.inputfile + label:hover {
+.inputfile:hover + label:hover,
+.inputfile:hover + label:hover {
   background-color: rgb(245, 245, 245);
-  border: solid rgb(153, 153, 153) thin;
-  color: rgb(0, 0, 0);
+  cursor: pointer;
 }
 
 
@@ -177,14 +177,14 @@ li{
 }
 
 .progress-upload{
-  height: 5px;
+  height: 1px;
   width: 100%;
   margin: 0 auto;
 }
 
 .progress{
   position: absolute;
-  top: 134px;
+  top: 138px;
 }
 
 @media all and (min-width: 720px){
@@ -230,19 +230,19 @@ input:disabled {
 
 button:disabled {
   cursor: auto;
-  background-color: rgb(207, 207, 207);
+  background-color: rgb(231, 231, 231);
   color: rgb(65, 65, 65);
 }
 
 button:disabled:hover {
   cursor: auto;
   color: rgb(71, 71, 71);
-  background-color: rgb(207, 207, 207);
+  background-color: rgb(231, 231, 231);
 }
 
 .inputfile:disabled + label,
 .inputfile + label:disabled {
-  background-color: rgb(216, 216, 216);
+  background-color: rgb(231, 231, 231);
   color: rgb(100, 100, 100);
   cursor: auto;
 }
