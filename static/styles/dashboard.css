@@ -26,6 +26,13 @@ body {
   }
 }
 
+.test{
+  position: relative;
+  top: 50px;
+}
+
+
+
 .btn-radius2{
   border-radius: 500px;
 }
@@ -58,11 +65,24 @@ li{
   position: relative;
   height: 70px;
   background-color: rgb(255, 255, 255);
-  border: solid;
-  border-width: thin;
-  border-color: rgb(221, 221, 221);
-  border-radius: 6px;
+  border: solid rgb(221, 221, 221) thin;
+  border-bottom-width: 0.3px;
   transition-duration: 0.1s;
+}
+
+.first-last-lecture{
+  border-radius: 6px;
+}
+
+.first-lecture{
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+}
+
+.last-lecture{
+  border-bottom: solid rgb(221, 221, 221) thin;
+  border-bottom-right-radius: 6px;
+  border-bottom-left-radius: 6px;
 }
 
 .row-border-expanded1{
@@ -149,42 +169,38 @@ li{
 	opacity: 0;
 	overflow: hidden;
   position: absolute;
-	/* z-index: -1; */
 }
 
 .inputfile + label {
   background-color: rgb(255, 255, 255);
   width: 180px;
-  cursor: auto;
   border: solid rgb(153, 153, 153) thin;
   color: rgb(0, 0, 0);
   border-radius: 5px;
 }
 
-.inputfile:hover + label:hover,
-.inputfile:hover + label:hover {
-  background-color: rgb(245, 245, 245);
-  cursor: pointer;
+
+
+.inputfile:hover + label {
+  background: rgb(5, 124, 235);
+  color: white;
+  transition-duration: 0.2s;
 }
 
-
-.inputfile + label {
-	cursor: pointer; 
-}
-
-.inputfile + label * {
+/* .inputfile + label * {
 	pointer-events: none;
-}
+} */
 
 .progress-upload{
-  height: 1px;
+  height: 3px;
   width: 100%;
   margin: 0 auto;
+  background-color: white;
 }
 
 .progress{
   position: absolute;
-  top: 138px;
+  top: 136px;
 }
 
 @media all and (min-width: 720px){
@@ -224,14 +240,18 @@ input:disabled {
 }
 
 .fa-size-color{
-  font-size: 9px;
-  color: rgb(105, 105, 105);
+  position: absolute;
+  bottom: 25px;
+  left: 22px;
+  font-size: 7px;
+  color: rgb(255, 0, 128);
 }
 
 button:disabled {
   cursor: auto;
   background-color: rgb(231, 231, 231);
-  color: rgb(65, 65, 65);
+  border: none;
+  color: rgb(95, 95, 95);
 }
 
 button:disabled:hover {
@@ -242,24 +262,37 @@ button:disabled:hover {
 
 .inputfile:disabled + label,
 .inputfile + label:disabled {
-  background-color: rgb(231, 231, 231);
-  color: rgb(100, 100, 100);
+  background-color: rgb(236, 236, 236);
+  border: none;
+  color: rgb(141, 141, 141);
   cursor: auto;
 }
 
 .btn-dashboard{
+  border-radius: 5px;
+  width: 190px;
+	height: 40px;
   background-color: rgb(255, 255, 255);
   border: solid rgb(153, 153, 153) thin;
   color: rgb(36, 36, 36);
 }
 
 .btn-dashboard:hover{
-  background-color: rgb(243, 243, 243);
-  border: solid rgb(153, 153, 153) thin;
-  color: rgb(36, 36, 36);
+  background-color: rgb(5, 124, 235);
+  color: white;
 }
 
 .days-ago{
+  font-style: italic;
   font-size: 0.7rem;
   color: rgb(155, 155, 155);
 }
+
+.btn:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none; 
+}
+
+
+

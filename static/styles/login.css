@@ -32,11 +32,11 @@
     font-weight: lighter;
   }
   
-  *:focus {
-    border-color: inherit; -webkit-box-shadow: none; box-shadow: none; 
-}
 
-.form-control:focus { border-color: inherit; -webkit-box-shadow: none; box-shadow: none; }
+.form-control:focus {
+  border-color: inherit;
+  -webkit-box-shadow: none;
+  box-shadow: none; }
 
   .btn-login:hover{
     color: rgb(255, 250, 196);
