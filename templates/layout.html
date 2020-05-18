@@ -13,11 +13,9 @@
 
     
 </head>
-<body class="text-center login-bg">
-    <div class="">
+<body class="text-center login-bg ">
         {% include 'includes/_messages.html' %}        
         {% block body %}{% endblock %}
-    </div>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="{{url_for('static', filename='js/login.js')}}"></script>
