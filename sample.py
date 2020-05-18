@@ -116,6 +116,7 @@ def api():
 def get_time_table():
    username = get_jwt_identity()
    date = request.args.get('date')
+   print(date)
    return jsonify({"user_id": 1, "email": "abc@gmail.com", "courses": [{"course_id": 1, "course_name": "Computer Science", "section": "CS0421", "institution": "NSIT", "role": "Student", "lectures": [{"lecture_id": 524351, "course_id": "CS100", "date_time": "04/20/2020, 10:30:00", "notes_available": 'true', "assignment_available": 'true', "submissions": 32},{"lecture_id": 124351, "course_id": "CS101", "date_time": "04/20/2020, 11:30:00", "notes_available": 'false', "assignment_available": 'false', "submissions": 0},{"lecture_id": 832345, "course_id": "CS102", "date_time": "04/20/2020, 12:30:00", "notes_available": 'false', "assignment_available": 'true', "submissions": 0}]}]})
 
 

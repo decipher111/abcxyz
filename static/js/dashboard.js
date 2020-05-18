@@ -147,7 +147,7 @@ function setUpTimeTable(data){
                         return `<input disabled type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />`
                     }
                   })()}
-                      <label for="file-1" class="p-2"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Submit</span></label>
+                      <label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Submit</span></label>
                     <input class="btn d-none" type="submit" value="Upload">
                 </form>
               </li>
@@ -223,15 +223,15 @@ function uploadAssignment(){
     })
 }
 
-function updateUI(thisLecture){
-    var $modal = $('#myModal');
-    $modal.modal('show')
-    $modal.on('click', '#paramsOkay', function(e) {
-        $modal.modal("hide");
-        $modal.on("hidden.bs.modal", function() {
-            thisLecture.find('.progress').addClass('d-none')
-        });
-    });
+function updateUI(thisLecture,lecture_id){
+    $.ajax({
+        method: 'GET',
+        url: "http://127.0.0.1:5000/upload_notes",
+        data: {lecture_id: lecture_id}
+      }).done(function(){
+        thisLecture.find('.progress').addClass('d-none')
+        thisLecture.find('.label-assignment').addClass('assignment-submitted')
+      })
 
 }
 
@@ -260,15 +260,15 @@ function assignmentBackend(element,callback){
         {
             if (xhr.readyState == 4 && xhr.status == 200)
             {
-                callback(thisLecture);
+                callback(thisLecture,lecture_id);
             }
         }; 
         xhr.setRequestHeader("Content-Type", content_type)
         var fd = new FormData()
-        fd.append('fileName', JSON.stringify(x.files[0].name));
-        fd.append('fileData', x.files[0]);
-        console.log(fd.get('fileName'))
-        console.log(fd.get('fileData'))
+        // fd.append('fileName', JSON.stringify(x.files[0].name));
+        // fd.append('fileData', x.files[0]);
+        // console.log(fd.get('fileName'))
+        // console.log(fd.get('fileData'))
         xhr.send(fd)
 
       })

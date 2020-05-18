@@ -294,5 +294,11 @@ button:disabled:hover {
   box-shadow: none; 
 }
 
+.assignment-submitted{
+  border: none !important;
+  background-color: rgb(21, 153, 21) !important;
+  color: white !important;
+}
+
 
 
