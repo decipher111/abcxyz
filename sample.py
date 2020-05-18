@@ -121,7 +121,7 @@ def get_time_table():
 
 
    
-@app.route('/return-files', methods=["POST"])
+@app.route('/return-files', methods=["GET"])
 def return_files_tut():
    print(request.data)
    return send_file('/Users/raghav/Desktop/sample.pdf', attachment_filename='sample.pdf')
@@ -133,6 +133,35 @@ def get_upload_assignment_url():
     print(request.args.get('lecture_id'))
     return 'signedurl'
 
+@app.route('/upload_assignment')
+def upload_notes():
+   print(request.args.get('lecture_id'))
+   print('assignment uploaded by user')
+   return ''
+
+@app.route('/get_download_assignment_url')
+def get_download_assignment_url():
+   print(request.args.get('lecture_id'))
+   return "signed url"
+
+
+@app.route('/download_assignment')
+def download_assignment():
+   print(request.args.get('lecture_id'))
+   print('assignment downloaed by user')
+   return ""
+
+@app.route('/get_download_notes_url')
+def get_download_notes_url():
+   print(request.args.get('lecture_id'))
+   return "signed url"
+
+
+@app.route('/download_notes')
+def download_notes():
+   print(request.args.get('lecture_id'))
+   print('notes downloaed by user')
+   return ""
 
 
 
@@ -231,6 +260,9 @@ def login():
    #       error = 'Email not found'
    #       return render_template('login.html', error = error)
    return render_template('login.html')
+
+
+
 
 
 @app.route('/logout')

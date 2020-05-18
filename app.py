@@ -375,7 +375,6 @@ def upload_notes():
         return
     user_id = data['user_id']
     lecture_id = data['lecture_id']
-
     added_on = datetime.datetime.now()
     _upload_notes(
         user_id=user_id,

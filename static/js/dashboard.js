@@ -226,7 +226,7 @@ function uploadAssignment(){
 function updateUI(thisLecture,lecture_id){
     $.ajax({
         method: 'GET',
-        url: "http://127.0.0.1:5000/upload_notes",
+        url: "http://127.0.0.1:5000/upload_assignment",
         data: {lecture_id: lecture_id}
       }).done(function(){
         thisLecture.find('.progress').addClass('d-none')
@@ -295,28 +295,50 @@ function assignmentDownloadListener(){
         var lecture = $(this).parent().parent().parent().parent();
         var lecture_id = $(this).attr('lecture_id');
 
-        fetch('http://127.0.0.1:5000/return-files', {
-            method: "POST",
-            body: JSON.stringify({'lecture-id': lecture_id})
-            })
-            .then(function(resp){
-                if (resp.status == '200'){
-                    return resp.blob()
-                }
-            })
-            .then(blob => {
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            // the filename you want
-            a.download = 'abc.pdf';
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            })
-            .catch(() => alert('Assignment not downloaded'));
+
+
+        $.ajax({
+            method: 'GET',
+            url: "http://127.0.0.1:5000/get_download_assignment_url",
+            data: {lecture_id: lecture_id}
+          }).done(function(signed_url) {
+            fetch('http://127.0.0.1:5000/return-files', {
+                method: "GET",
+                })
+                .then(function(resp){
+                    if (resp.status == '200'){
+                        return resp.blob()
+                    }
+                })
+                .then(function(blob){
+                    var status=false;
+                    $.ajax({
+                        method: 'GET',
+                        async: false,
+                        url: "http://127.0.0.1:5000/download_assignment",
+                        data: {lecture_id: lecture_id}
+                      }).done(function(){
+                          status=true
+                      })
+                      if(status==true)
+                      return blob
+                })
+                .then(blob => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.style.display = 'none';
+                a.href = url;
+                // the filename you want
+                a.download = 'abc.pdf';
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                console.log('here')
+                updateNotification(lecture);
+                })
+                .catch(() => alert('Assignment not downloaded'));
         })
+          })
     
 }
 
@@ -324,14 +346,33 @@ function notesDownloadListener(){
     $('.btn-notes').click(function(){
         var lecture = $(this).parent().parent().parent().parent();
         var lecture_id = $(this).attr('lecture_id');
-        fetch('http://127.0.0.1:5000/return-files', {
-            method: "POST",
-            body: JSON.stringify({'lecture-id': lecture_id})
+
+
+        $.ajax({
+            method: 'GET',
+            url: "http://127.0.0.1:5000/get_download_notes_url",
+            data: {lecture_id: lecture_id}
+          }).done(function(signed_url) {
+            fetch('http://127.0.0.1:5000/return-files', {
+            method: "GET",
             })
             .then(function(resp){
                 if (resp.status == '200'){
                     return resp.blob()
                 }
+            })
+            .then(function(blob){
+                var status = false;
+                $.ajax({
+                    method: 'GET',
+                    async: false,
+                    url: "http://127.0.0.1:5000/download_notes",
+                    data: {lecture_id: lecture_id}
+                }).done(function(){
+                    status=true
+                })
+                if(status==true)
+                return blob
             })
             .then(blob => {
             const url = window.URL.createObjectURL(blob);
@@ -347,6 +388,11 @@ function notesDownloadListener(){
             })
             .catch(() => alert('Notes not downloaded'));
         })
+          })
+
+
+
+
 }
 
 function notificationListener(){
@@ -362,6 +408,9 @@ function notificationListener(){
     })
 }
 
+function updateNotification(thisLecture){
+    //update frontend
+}
 
 
 }
