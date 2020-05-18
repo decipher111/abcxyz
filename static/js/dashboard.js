@@ -108,18 +108,24 @@ function setUpTimeTable(data){
               </li>
               <li class="down-arrow col-1 list-inline-item icon-padding"><img src="static/images/as4.png" style="width:31px" height="31px">
               ${(() => {
-                if (data.courses[0].lectures[i].assignment_available==='true') {
-                    return `<sup class="notification notification-assignment"><i class="fa fa-circle fa-size-color"></i></sup>`
-                }else {
+                if (data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='true') {
+                    return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-submitted-dot"></i></sup>`
+                }else if(data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='false') {
+                    return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-available-dot"></i></sup>`
+                }
+                else {
                     return ``
                 }
               })()}
               </li>
               <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="static/images/n-1.png" style="width:31px" height="31px">
               ${(() => {
-                if (data.courses[0].lectures[i].notes_available==='true') {
-                    return `<sup class="notification notification-notes"><i class="fa fa-circle fa-size-color"></i></sup>`
-                }else {
+                if (data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='true') {
+                    return `<sup class="notification notification-notes"><i class="fa fa-circle notes-available-dot"></i></sup>`
+                }else if(data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='false'){
+                    return `<sup class="notification notification-notes"><i class="fa fa-circle notes-seen-dot"></i></sup>`
+                }
+                else {
                     return ``
                 }
               })()}
@@ -219,11 +225,11 @@ function toggle(){
 function uploadAssignment(){
     $('.form').submit(function(e){
         e.preventDefault()
-        assignmentBackend($(this),updateUI)
+        assignmentBackend($(this),updateBackendAndUI)
     })
 }
 
-function updateUI(thisLecture,lecture_id){
+function updateBackendAndUI(thisLecture,lecture_id){
     $.ajax({
         method: 'GET',
         url: "http://127.0.0.1:5000/upload_assignment",
@@ -231,6 +237,8 @@ function updateUI(thisLecture,lecture_id){
       }).done(function(){
         thisLecture.find('.progress').addClass('d-none')
         thisLecture.find('.label-assignment').addClass('assignment-submitted')
+        thisLecture.find('.assignment-available-dot').addClass('assignment-submitted-dot')
+        thisLecture.find('.assignment-available-dot').removeClass('assignment-available-dot')
       })
 
 }
@@ -265,7 +273,7 @@ function assignmentBackend(element,callback){
         }; 
         xhr.setRequestHeader("Content-Type", content_type)
         var fd = new FormData()
-        // fd.append('fileName', JSON.stringify(x.files[0].name));
+        fd.append('fileName', JSON.stringify(x.files[0].name));
         // fd.append('fileData', x.files[0]);
         // console.log(fd.get('fileName'))
         // console.log(fd.get('fileData'))
@@ -333,7 +341,6 @@ function assignmentDownloadListener(){
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
-                console.log('here')
                 updateNotification(lecture);
                 })
                 .catch(() => alert('Assignment not downloaded'));
@@ -384,7 +391,7 @@ function notesDownloadListener(){
             document.body.appendChild(a);
             a.click();
             window.URL.revokeObjectURL(url);
-            updateNotification(lecture);
+            updateNotesDot(lecture);
             })
             .catch(() => alert('Notes not downloaded'));
         })
@@ -408,8 +415,10 @@ function notificationListener(){
     })
 }
 
-function updateNotification(thisLecture){
-    //update frontend
+function updateNotesDot(thisLecture){
+    console.log(thisLecture.find('.notes-available-dot'))
+    thisLecture.find('.notes-available-dot').addClass('notes-seen-dot')
+    thisLecture.find('.notes-available-dot').removeClass('notes-available-dot')
 }
 
 

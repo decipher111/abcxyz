@@ -182,6 +182,7 @@ li{
 
 
 .inputfile:hover + label {
+  border: none;
   background: rgb(5, 124, 235);
   color: white;
   transition-duration: 0.2s;
@@ -244,7 +245,7 @@ input:disabled {
   bottom: 25px;
   left: 22px;
   font-size: 7px;
-  color: rgb(255, 0, 128);
+  color: rgb(255, 102, 0);
 }
 
 button:disabled {
@@ -278,6 +279,7 @@ button:disabled:hover {
 }
 
 .btn-dashboard:hover{
+  border: none;
   background-color: rgb(5, 124, 235);
   color: white;
 }
@@ -300,5 +302,34 @@ button:disabled:hover {
   color: white !important;
 }
 
+.assignment-available-dot{
+  position: absolute;
+  bottom: 25px;
+  left: 22px;
+  font-size: 7px;
+  color: rgb(255, 102, 0);
+}
 
+.assignment-submitted-dot{
+  position: absolute;
+  bottom: 25px;
+  left: 22px;
+  font-size: 7px;
+  color: rgb(21, 153, 21);
+}
 
+.notes-available-dot{
+  position: absolute;
+  bottom: 25px;
+  left: 22px;
+  font-size: 7px;
+  color: rgb(255, 102, 0);
+}
+
+.notes-seen-dot{
+  position: absolute;
+  bottom: 25px;
+  left: 22px;
+  font-size: 7px;
+  color: rgb(21, 153, 21);
+}
