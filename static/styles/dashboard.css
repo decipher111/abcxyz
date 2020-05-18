@@ -196,7 +196,7 @@ li{
   height: 3px;
   width: 100%;
   margin: 0 auto;
-  background-color: white;
+  background-color: transparent;
 }
 
 .progress{

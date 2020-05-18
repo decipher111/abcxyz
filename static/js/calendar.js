@@ -13,7 +13,7 @@ class DASHBOARD {
             currentDay: this.getFirstElementInsideIdByClassName('calendar-left-side-day'),
             currentWeekDay: this.getFirstElementInsideIdByClassName('calendar-left-side-day-of-week'),
             prevYear: this.getFirstElementInsideIdByClassName('calendar-change-year-slider-prev'),
-            nextYear: this.getFirstElementInsideIdByClassName('calendar-change-year-slider-next')
+            nextYear: this.getFirstElementInsideIdByClassName('calendar-change-year-slider-next'),
         };
 
         this.date = +new Date();
@@ -21,6 +21,9 @@ class DASHBOARD {
         this.init();
 
     }
+
+
+
 
     // App methods
     init() {
@@ -98,6 +101,7 @@ class DASHBOARD {
         this.elements.days.innerHTML = daysTemplate;
     }
 
+
     drawMonths() {
         let availableMonths = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
         let monthTemplate = "";
@@ -142,6 +146,18 @@ class DASHBOARD {
             this.drawAll()
         });
 
+        // this.elements.btn.addEventListener('click', e => {
+        //     $.ajax({
+        //         method: 'GET',
+        //         url: "http://127.0.0.1:5000/calendar-notif",
+        //         data: {lecture_id: 'lecture_id'}
+        //       }).done(function(data){
+        //         console.log(data)
+        //       })
+        //     console.log('here')
+        //     this.drawDays()
+        // });
+
 
         $('#viewSub').click(function(){
             var date = calendar.getDate
@@ -158,7 +174,6 @@ class DASHBOARD {
             let strDate = `${Number(month) + 1}/${day}/${year}`;
             this.updateTime(strDate);
             this.drawAll()
-            // this.renderTimeTable(strDate)
             renderTimeTable(strDate);
         });
 

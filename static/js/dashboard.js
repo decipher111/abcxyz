@@ -137,10 +137,10 @@ function setUpTimeTable(data){
               <li class="upload col-6 pt-2 list-inline-item">
               ${(() => {
                 if (data.courses[0].lectures[i].assignment_available=='true') {
-                    return `<button lecture_id=${lecture_id} class="btn-dashboard btn btn-assignment"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download</button>
+                    return `<button lecture_id=${lecture_id} class="btn-dashboard btn btn-assignment"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button>
                     <div class="days-ago">Uploaded n days ago</div>`
                 } else {
-                    return `<button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download</button>`
+                    return `<button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button>`
                 }
               })()}
               </li>
@@ -158,21 +158,21 @@ function setUpTimeTable(data){
                 </form>
               </li>
             </ul>
+            <div class="progress progress-upload d-none">
+                <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+            </div>
           </div>
           <div class="action2 d-none">
             <ul class="list-inline d-flex container">
             ${(() => {
                 if (data.courses[0].lectures[i].notes_available=='true') {
-                    return `<li class="upload col-12 pt-2 list-inline-item"><button lecture_id=${lecture_id} class="btn-dashboard btn btn-notes"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download</button>
+                    return `<li class="upload col-12 pt-2 list-inline-item"><button lecture_id=${lecture_id} class="btn-dashboard btn btn-notes"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button>
                     <div class="days-ago">Uploaded n days ago</div></li>`
                 } else {
-                    return `<li class="upload col-12 pt-2 list-inline-item"><button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download</button></li>`
+                    return `<li class="upload col-12 pt-2 list-inline-item"><button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button></li>`
                 }
               })()}
             </ul>
-          </div>
-          <div class="progress progress-upload d-none">
-            <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
           </div>
         </div>
       </div>`)

@@ -211,13 +211,14 @@ def download_notes():
    return ""
 
 
-
-
-
 @app.route('/save-post',methods=['POST'])
 def savepost():
    print(request.form.get('fileName'))
    return ""
+
+@app.route('/calendar-notif',methods=['GET'])
+def notif():
+   return "some random data"
 
 
 @app.route('/')
