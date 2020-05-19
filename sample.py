@@ -181,9 +181,20 @@ def get_upload_assignment_url():
     return 'signedurl'
 
 @app.route('/upload_assignment')
-def upload_notes():
+def upload_assignment():
    print(request.args.get('lecture_id'))
    print('assignment uploaded by user')
+   return ''
+
+@app.route('/get_upload_notes_url')
+def get_upload_notes_url():
+    print(request.args.get('lecture_id'))
+    return 'signedurl'
+
+@app.route('/upload_notes')
+def upload_notes():
+   print(request.args.get('lecture_id'))
+   print('notes uploaded by prof')
    return ''
 
 @app.route('/get_download_assignment_url')

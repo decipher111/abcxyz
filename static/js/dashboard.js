@@ -11,7 +11,7 @@ function setUpFrontend(){
     assignmentDownloadListener()
     notesDownloadListener()
     inputTagFileName()
-    uploadAssignment()
+    uploadListener()
     notificationListener()
     // datetoggle()
 }
@@ -20,7 +20,6 @@ function inputTagFileName(){
     $('.inputfile' ).on('change', function(e){
         // console.log($(this).val()) //returns fakepath
         // console.log($(this)[0].files[0]) //returns file
-        // uploadAssignmentTest($(this))
 
         var $input	 = $(this),
                 $label	 = $input.next( 'label' ),
@@ -75,12 +74,119 @@ function renderTimeTable(date) {
             data: { date: date }
           }).done(function(data) {
                setUpTimeTable(data);
-          }).done(function(){
+          }).done(function(data){
                 setUpFrontend()
           });
 }
 
 function setUpTimeTable(data){
+    if(data.courses[0].role == 'Student'){
+        renderStudent(data)
+    }
+    else if(data.courses[0].role == 'Professor'){
+        renderProf(data)
+    }
+
+}
+
+function renderProf(data){
+    for(var i = 0; i < data.courses[0].lectures.length; i++) {
+        var subjectName = data.courses[0].course_name
+        var lecture_id = data.courses[0].lectures[i].lecture_id
+        var course_id = data.courses[0].lectures[i].course_id
+        if(subjectName.length>33){
+            subjectName = subjectName.slice(0,32) + '...'
+        }
+        $('.test').append(
+        `  <div class="container-fluid m-0">
+        ${(() => {
+            if (i==0 && i==data.courses[0].lectures.length-1) {
+                return `<div class="row-border first-last-lecture" lecture_id=${lecture_id}>`
+            }else if (i==0){
+                return `<div class="row-border first-lecture" lecture_id=${lecture_id}>`
+            }
+            else if(i==data.courses[0].lectures.length-1){
+                return `<div class="row-border last-lecture" lecture_id=${lecture_id}>`
+            }
+            else {
+                return `<div class="row-border" lecture_id=${lecture_id}>`
+            }
+          })()}
+          <ul class="list-inline mt-2 d-flex container-fluid">
+              <li class="col-2 pt-3 list-inline-item">10:00am</li>
+              <li class="col-2 pt-3 list-inline-item">${course_id}</li>
+              <li class="col-5 pt-3 list-inline-item">${subjectName}
+              </li>
+              <li class="down-arrow col-1 list-inline-item icon-padding"><img src="static/images/as4.png" style="width:31px" height="31px">
+              ${(() => {
+                if (data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='true') {
+                    return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-submitted-dot"></i></sup>`
+                }else if(data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='false') {
+                    return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-available-dot"></i></sup>`
+                }
+                else {
+                    return ``
+                }
+              })()}
+              </li>
+              <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="static/images/n-1.png" style="width:31px" height="31px">
+              ${(() => {
+                if (data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='true') {
+                    return `<sup class="notification notification-notes"><i class="fa fa-circle notes-available-dot"></i></sup>`
+                }else if(data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='false'){
+                    return `<sup class="notification notification-notes"><i class="fa fa-circle notes-seen-dot"></i></sup>`
+                }
+                else {
+                    return ``
+                }
+              })()}
+              </li>
+          </ul>
+          <div class="line-break"></div>
+          <div class="action d-none">
+            <ul class="list-inline d-flex container">
+                <li class="col-6 pt-2 list-inline-item">
+                <form class="form" id="uploadAssignment" enctype="multipart/form-data">
+                    <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                    <label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
+                    <input class="btn d-none" type="submit" value="Upload">
+                </form>
+              </li>
+              <li class="upload col-6 pt-2 list-inline-item">
+              ${(() => {
+                if (data.courses[0].lectures[i].assignment_available=='true') {
+                    return `<button lecture_id=${lecture_id} class="btn-dashboard btn btn-submissions"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>
+                    <div class="days-ago">${data.courses[0].lectures[i].submissions} submissions</div>`
+                } else {
+                    return `<button disabled lecture_id=${lecture_id} class="btn-dashboard btn-submissions btn"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>`
+                }
+              })()}
+              </li>
+            </ul>
+            <div class="progress progress-upload d-none">
+                <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="action2 d-none">
+            <ul class="list-inline d-flex container">
+            <li class="col-12 pt-2 list-inline-item">
+                <form class="form" id="uploadNotes" enctype="multipart/form-data">
+                <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="notes" id="file-2" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                <label for="file-1" class="p-2 label-notes"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
+                <input class="btn d-none" type="submit" value="Upload">
+            </form>
+            </li>
+            </ul>
+            <div class="progress2 progress-upload2 d-none">
+                <div class="progress-bar2" role="progressbar" style="width: 0%;"></div>
+            </div>
+          </div>
+        </div>
+      </div>`)
+    }   
+}
+
+function renderStudent(data){
     for(var i = 0; i < data.courses[0].lectures.length; i++) {
         var subjectName = data.courses[0].course_name
         var lecture_id = data.courses[0].lectures[i].lecture_id
@@ -224,12 +330,70 @@ function toggle(){
     })
 }
 
-function uploadAssignment(){
+function uploadListener(){
     $('.form').submit(function(e){
         e.preventDefault()
-        assignmentBackend($(this),updateBackendAndUI)
+        if($(this).attr('id')=='uploadNotes'){
+            notesBackend($(this),updateBackendAndUI2)
+        }
+        if($(this).attr('id')=='uploadAssignment'){
+            assignmentBackend($(this),updateBackendAndUI)
+        }
     })
 }
+
+function notesBackend(element,callback){
+    var x = element.children('input[type=file]')[0];
+    content_type = x.files[0].type
+    // console.log(x.files[0]) //returns BLOB
+    var thisLecture = element.parent().parent().parent().parent()
+    lecture_id = thisLecture[0].getAttribute('lecture_id')
+
+    $.ajax({
+        method: 'GET',
+        url: "http://127.0.0.1:5000/get_upload_notes_url",
+        data: {lecture_id: lecture_id, content_type : content_type }
+      }).done(function(signed_url) {
+        const xhr = new XMLHttpRequest();
+        // xhr.open("PUT", signed_url, true)
+        xhr.open("POST", "save-post")
+        xhr.upload.addEventListener("progress", (e)=>{
+            const percent = (e.loaded/e.total)*100;
+            thisLecture.find('.progress2').removeClass('d-none')
+            thisLecture.find('.progress-bar2').css('width', `${percent}%`)
+        })
+        xhr.onreadystatechange = function()
+        {
+            if (xhr.readyState == 4 && xhr.status == 200)
+            {
+                callback(thisLecture,lecture_id);
+            }
+        }; 
+        xhr.setRequestHeader("Content-Type", content_type)
+        var fd = new FormData()
+        fd.append('fileName', JSON.stringify(x.files[0].name));
+        // fd.append('fileData', x.files[0]);
+        // console.log(fd.get('fileName'))
+        // console.log(fd.get('fileData'))
+        xhr.send(fd)
+
+      })
+
+}
+
+function updateBackendAndUI2(thisLecture,lecture_id){
+    $.ajax({
+        method: 'GET',
+        url: "http://127.0.0.1:5000/upload_notes",
+        data: {lecture_id: lecture_id}
+      }).done(function(){
+        thisLecture.find('.progress2').addClass('d-none')
+        thisLecture.find('.label-notes').addClass('notes-submitted')
+        // thisLecture.find('.assignment-available-dot').addClass('assignment-submitted-dot')
+        // thisLecture.find('.assignment-available-dot').removeClass('assignment-available-dot')
+      })
+}
+
 
 function updateBackendAndUI(thisLecture,lecture_id){
     $.ajax({
@@ -248,8 +412,7 @@ function updateBackendAndUI(thisLecture,lecture_id){
 function assignmentBackend(element,callback){
     var x = element.children('input[type=file]')[0];
     content_type = x.files[0].type
-    console.log(content_type)
-    // console.log(x.files[0].type) //returns BLOB
+    // console.log(x.files[0]) //returns BLOB
     var thisLecture = element.parent().parent().parent().parent()
     lecture_id = thisLecture[0].getAttribute('lecture_id')
 
@@ -276,7 +439,7 @@ function assignmentBackend(element,callback){
         xhr.setRequestHeader("Content-Type", content_type)
         var fd = new FormData()
         fd.append('fileName', JSON.stringify(x.files[0].name));
-        // fd.append('fileData', x.files[0]);
+        fd.append('fileData', x.files[0]);
         // console.log(fd.get('fileName'))
         // console.log(fd.get('fileData'))
         xhr.send(fd)

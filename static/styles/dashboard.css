@@ -204,6 +204,20 @@ li{
   top: 136px;
 }
 
+.progress-upload2{
+  height: 3px;
+  width: 100%;
+  margin: 0 auto;
+  background-color: transparent;
+  z-index: 2;
+}
+
+.progress2{
+  position: absolute;
+  top: 136px;
+  z-index: 2;
+}
+
 @media all and (min-width: 720px){
   .timetable-padding{
     padding-right: 10px;
@@ -297,6 +311,12 @@ button:disabled:hover {
 }
 
 .assignment-submitted{
+  border: none !important;
+  background-color: rgb(21, 153, 21) !important;
+  color: white !important;
+}
+
+.notes-submitted{
   border: none !important;
   background-color: rgb(21, 153, 21) !important;
   color: white !important;
