@@ -338,3 +338,11 @@ button:disabled:hover {
   margin-right: 0 !important;
   padding: 0 !important;
 }
+
+#date-prev:hover{
+  cursor: pointer;
+}
+
+#date-next:hover{
+  cursor: pointer;
+}
