@@ -2,6 +2,7 @@ if (window.location.pathname == '/dashboard') {
 
 // setUpFrontend();
 initdashboard();
+datetoggle()
 
 
 function setUpFrontend(){
@@ -12,6 +13,7 @@ function setUpFrontend(){
     inputTagFileName()
     uploadAssignment()
     notificationListener()
+    // datetoggle()
 }
 
 function inputTagFileName(){
@@ -59,14 +61,14 @@ function enableToolTips(){
 }
 
 function initdashboard(){
-    var d = new Date()
-    var date = Number(d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear()
-    renderTimeTable(date);
+    var newDate = new Date()
+    var today = Number(newDate.getMonth()+1) + '/' + newDate.getDate() + '/' + newDate.getFullYear()
+    updateLeftDate(formatDate(today))
+    renderTimeTable(today);
 }
   
 function renderTimeTable(date) {
     $('.test').html('')
-
         $.ajax({
             method: 'GET',
             url: "http://127.0.0.1:5000/get_time_table",
@@ -421,5 +423,34 @@ function updateNotesDot(thisLecture){
     thisLecture.find('.notes-available-dot').removeClass('notes-available-dot')
 }
 
+function datetoggle(){
+
+    $('#date-next').click(function(){
+        let calendar = getCalendar();
+        updateTime(calendar.nDay);
+        let strDate = `${Number(calendar.nDay.getMonth()) + 1 }/${calendar.nDay.getDate()}/${calendar.nDay.getFullYear()}`;
+        drawAll(strDate)
+        updateLeftDate(formatDate(strDate))
+    })
+
+    $('#date-prev').click(function(){
+        let calendar = getCalendar();
+        updateTime(calendar.pDay);
+        let strDate = `${Number(calendar.pDay.getMonth()) + 1}/${calendar.pDay.getDate()}/${calendar.pDay.getFullYear()}`;
+        drawAll(strDate)
+        updateLeftDate(formatDate(strDate))
+    })
+}
+
+function formatDate(strDate){
+    var dateArr = strDate.split('/')
+    let monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var strView = `${(dateArr[1])} ${monthArr[dateArr[0]-1]} ${dateArr[2]}`
+    return strView;
+}
+
+function updateLeftDate(formattedDate){
+    $('#date-view').html(formattedDate)
+}
 
 }

@@ -1,4 +1,4 @@
- @font-face {
+@font-face {
   font-family: system-font;
   src: url(../fonts/IBMPlexSans-Regular.ttf);
 }
@@ -28,7 +28,7 @@ body {
 
 .test{
   position: relative;
-  top: 50px;
+  top: 0px;
 }
 
 
@@ -332,4 +332,9 @@ button:disabled:hover {
   left: 22px;
   font-size: 7px;
   color: rgb(21, 153, 21);
+}
+
+.date-changer{
+  margin-right: 0 !important;
+  padding: 0 !important;
 }

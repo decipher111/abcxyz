@@ -4,12 +4,6 @@ src: url(../fonts/BalooPaaji2-Regular.ttf);
 }
 
 
-.login-div-right{
-/* margin: 80px;
-margin-top: 140px;
-margin-bottom: 0; */
-}
-
 .row{
   height: 100vh;
   overflow: auto;
