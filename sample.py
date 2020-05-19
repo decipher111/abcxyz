@@ -115,6 +115,7 @@ def api():
 @jwt_required
 def get_time_table():
    username = get_jwt_identity()
+   print(username)
    date = request.args.get('date')
    print(date)
    return jsonify({
@@ -126,7 +127,7 @@ def get_time_table():
          "course_name":"Computer Science",
          "section":"CS0421",
          "institution":"NSIT",
-         "role":"Student",
+         "role":"Professor",
          "lectures":[
             {
                "lecture_id":524351,
@@ -220,6 +221,12 @@ def download_notes():
    print(request.args.get('lecture_id'))
    print('notes downloaed by user')
    return ""
+
+@app.route('/submissions', methods = ['GET'])
+def setcookie():
+   resp = make_response(redirect(url_for('table')))
+   resp.set_cookie('someCookie', 'cookieData')
+   return resp
 
 
 @app.route('/save-post',methods=['POST'])
@@ -327,7 +334,6 @@ def logout():
    
 
 @app.route('/dashboard') 
-# @is_logged_in      ##FIX THISSSSS AFTERRR
 def dashboard():
    return render_template('dashboard.html')
 
