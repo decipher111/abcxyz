@@ -13,7 +13,7 @@ from flask_jwt_extended import (JWTManager, jwt_required,
                                 set_access_cookies, set_refresh_cookies, 
                                 unset_jwt_cookies,unset_access_cookies)
 from flask_cors import CORS, cross_origin
-from werkzeug.datastructures import ImmutableMultiDict
+import json
 
 
 app = Flask(__name__)
@@ -66,12 +66,12 @@ def unset_jwt():
 @jwt.unauthorized_loader
 def unauthorized_callback(callback):
     # No auth header
-    return redirect(app.config['BASE_URL'] + '/login', 302)
+    return redirect(app.config['BASE_URL'] + '/', 302)
 
 @jwt.invalid_token_loader
 def invalid_token_callback(callback):
     # Invalid Fresh/Non-Fresh Access token in auth header
-    resp = make_response(redirect(app.config['BASE_URL'] + '/login'))
+    resp = make_response(redirect(app.config['BASE_URL'] + '/'))
     unset_jwt_cookies(resp)
     return resp, 302
 
@@ -107,7 +107,7 @@ def api():
    # return redirect(url_for('login'))
    # else
 
-   return assign_access_refresh_tokens(username , app.config['BASE_URL'] + '/dashboard')
+   return assign_access_refresh_tokens(username , app.config['BASE_URL'])
 
 
 @app.route('/get_time_table', methods=['GET'])
@@ -127,7 +127,7 @@ def get_time_table():
          "course_name":"Computer Science",
          "section":"CS0421",
          "institution":"NSIT",
-         "role":"Professor",
+         "role":"Student",
          "lectures":[
             {
                "lecture_id":524351,
@@ -173,7 +173,6 @@ def get_time_table():
 def return_files_tut():
    print(request.data)
    return send_file('/Users/raghav/Desktop/sample.pdf', attachment_filename='sample.pdf')
-
 
 
 @app.route('/get_upload_assignment_url')
@@ -224,28 +223,52 @@ def download_notes():
 
 @app.route('/submissions', methods = ['GET'])
 def setcookie():
-   resp = make_response(redirect(url_for('table')))
-   resp.set_cookie('someCookie', 'cookieData')
+   resp = make_response('/table')
+   submissions =  {"user_id":1,"email":"abc@gmail.com", "name": "Raghav Khanna", "section" : "MPAE1", "roll_no" : "2017UMP3507", "time" : "3 hrs ago"}
+   value = json.dumps(submissions)
+   print(value)
+   resp.set_cookie('someCookie', json.dumps(submissions), 10) #max_age in seconds
    return resp
 
 
 @app.route('/save-post',methods=['POST'])
 def savepost():
-   print(request.form.get('fileName'))
-   return ""
+   return '200'
 
 @app.route('/calendar-notif',methods=['GET'])
 def notif():
    return "some random data"
 
 
+@app.route('/logout')
+def logout():
+   return unset_jwt(), 302
+
+
 @app.route('/')
+@jwt_optional
 def index():
-   return redirect(url_for('login'))
+   if(get_jwt_identity() != None):
+      return render_template('dashboard.html')   
+   return render_template('login.html')
+
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+#    return render_template('login.html')
+   
+
+# @app.route('/dashboard') 
+# def dashboard():
+#    return render_template('dashboard.html')
+
 
 @app.route('/table')
 def table():
+   if(request.cookies.get('someCookie') == None):
+      return redirect(app.config['BASE_URL'] + '/')
    return render_template('table.html')
+
 
 @app.route('/course-content')
 def course():
@@ -263,108 +286,6 @@ def register():
       print('now here')
       flash('You are now registered, confirm with you email', 'success')
    return redirect(url_for('login'))
-
-   
-#    form = RegisterFrom(request.form)
-#    if request.method == 'POST':
-#       email = form.email.data
-#       password = sha256_crypt.encrypt(str(form.password.data))
-
-#       cur = mysql.connection.cursor()
-#       print()
-#       if user_roles[email] is None:
-#          flash('This username is not registered with us. Please get in touch '
-#          'with us or college authorities for more information.', 'danger')
-#          return render_template('_signin.html')
-
-#       if email in user_creds:
-#          flash('This username is already registered with us. Please sign-in.', 'danger')
-#          return render_template('_signin.html')
-
-#       cur.execute("INSERT INTO UserCredentials(email, password) VALUES(%s, %s)", (email, password))
-#       mysql.connection.commit()
-#       cur.close()
-
-#       user_creds[email] = password
-#       flash('You are now registered and can log in', 'success')
-#       return redirect(url_for('index'))
-#    elif request.method == 'GET' and form.validate():
-#       if user_creds[form.email.data] is sha256_crypt.encrypt(str(form.password.data)):
-#          return redirect(url_for('index'))
-#       flash('Username or Password is incorrect. Register, if not a user yet.')
-#       return render_template('_signin.html')
-#    return render_template('register.html', form=form)
-
-   # User login
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-   # if request.method == 'POST':
-   #    email = request.form['email']
-   #    user_password = request.form['password']
-
-   #    cur = mysql.connection.cursor()
-
-   #    result = cur.execute("SELECT * FROM UserCredentials WHERE email = %s", [email])
-
-   #    if result > 0:
-   #       data = cur.fetchone() #returns tuple?
-   #       password = data['password']
-         
-   #       if sha256_crypt.verify(user_password, password):
-   #          session['logged_in'] = True
-   #          session['email'] = email
-            
-   #          return redirect(url_for('dashboard'))
-   #       else:
-   #          error = 'Invalid Login'
-   #          return render_template('login.html', error = error)
-   #       cur.close()
-   #    else: 
-   #       error = 'Email not found'
-   #       return render_template('login.html', error = error)
-   return render_template('login.html')
-
-
-
-
-
-@app.route('/logout')
-def logout():
-   return unset_jwt(), 302
-   
-
-@app.route('/dashboard') 
-def dashboard():
-   return render_template('dashboard.html')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

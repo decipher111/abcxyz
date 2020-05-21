@@ -366,3 +366,7 @@ button:disabled:hover {
 #date-next:hover{
   cursor: pointer;
 }
+
+#submissionTable{
+  text-align: center;
+}
