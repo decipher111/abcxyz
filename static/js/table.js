@@ -4,22 +4,24 @@ if (window.location.pathname == '/table') {
 
         var cookieval = getCookie('someCookie')
         if(cookieval != null){
+            console.log(cookieval)
             var encodedSubmissions = decode_flask_cookie(cookieval)
             var submissions = JSON.parse(encodedSubmissions)
-            console.log(submissions.email)
+            for(var i = 0; i < submissions.submissions.length; i++){            
             $('#submissionTable').append(
                     `
                     <tbody>
                     <tr>
-                      <td>${submissions.name}</td>
-                      <td>${submissions.section}</td>
-                      <td>${submissions.roll_no}</td>
-                      <td>${submissions.time}</td>
+                      <td>${submissions.submissions[i].name}</td>
+                      <td>${submissions.submissions[i].section}</td>
+                      <td>${submissions.submissions[i].roll_no}</td>
+                      <td>${submissions.submissions[i].time}</td>
                       <td><i class="fa fa-download fa-2x"></i></td>
                     </tr>
                   </tbody>
                   `
                 )
+            }
         }
 
             else console.log('noCookie')

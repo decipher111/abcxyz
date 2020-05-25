@@ -1,27 +1,36 @@
 if(window.location.pathname == '/'){
 $(document).ready(function() {
+var MAX_LENGTH = 35;
 
 //initializing dashboard
 initdashboard();
 
+dynamicEventListeners()
+
 //Static Event Listener
 datetoggle()
-    
 
+function initdashboard(){
+    var newDate = new Date()
+    var today = Number(newDate.getMonth()+1) + '/' + newDate.getDate() + '/' + newDate.getFullYear()
+    updateLeftDate(formatDate(today))
+    renderTimeTable(today);
+}
 
-function setUpFrontend(){
+function dynamicEventListeners(){
     toggle()
     enableToolTips()
     assignmentDownloadListener()
     notesDownloadListener()
     submitFormOnStateChange()
     uploadListener()
-    notificationListener()
     submissionListener()
+    commentListener();
 }
 
 function toggle(){
     $('.down-arrow').click(function(){
+        $('.test').find('.row-border-expanded11').removeClass("row-border-expanded11");
         $('.test').find('.row-border-expanded2').removeClass("row-border-expanded2");
         $('.test').find('.action2').addClass('d-none')
         if($(this).parent().parent().hasClass('row-border-expanded2')){
@@ -43,6 +52,7 @@ function toggle(){
     })
     
     $('.down-arrow2').click(function(){
+        $('.test').find('.row-border-expanded11').removeClass("row-border-expanded11");
         $('.test').find('.row-border-expanded1').removeClass("row-border-expanded1");
         $('.test').find('.action').addClass('d-none')
         if($(this).parent().parent().hasClass('row-border-expanded1')){
@@ -80,10 +90,10 @@ function submitFormOnStateChange(){
                 else if( e.target.value )
                     fileName = e.target.value.split( '\\' ).pop();
                 
-                if(fileName.length>30 && window.matchMedia("(min-width: 720px)").matches===true){
+                if(fileName.length>23 && window.matchMedia("(min-width: 720px)").matches===true){
                     fileName = fileName.slice(0,18) + '...'
                 }
-                else if(fileName.length>30 && window.matchMedia("(max-width: 720px)").matches===true){
+                else if(fileName.length>23 && window.matchMedia("(max-width: 720px)").matches===true){
                     fileName = fileName.slice(0,18) + '...'
                 }
 
@@ -107,18 +117,212 @@ function enableToolTips(){
     })
 }
 
-function initdashboard(){
-    var newDate = new Date()
-    var today = Number(newDate.getMonth()+1) + '/' + newDate.getDate() + '/' + newDate.getFullYear()
-    updateLeftDate(formatDate(today))
-    renderTimeTable(today);
+//Date Toggler
+function datetoggle(){
+
+    $('#date-next').click(function(){
+        let calendar = getCalendar();
+        updateTime(calendar.nDay);
+        let strDate = `${Number(calendar.nDay.getMonth()) + 1 }/${calendar.nDay.getDate()}/${calendar.nDay.getFullYear()}`;
+        drawAll(strDate)
+        updateLeftDate(formatDate(strDate))
+    })
+
+    $('#date-prev').click(function(){
+        let calendar = getCalendar();
+        updateTime(calendar.pDay);
+        let strDate = `${Number(calendar.pDay.getMonth()) + 1}/${calendar.pDay.getDate()}/${calendar.pDay.getFullYear()}`;
+        drawAll(strDate)
+        updateLeftDate(formatDate(strDate))
+    })
 }
-  
+
+// Toggle Helper Functions
+function formatDate(strDate){
+    var dateArr = strDate.split('/')
+    let monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    var strView = `${(dateArr[1])} ${monthArr[dateArr[0]-1]} ${dateArr[2]}`
+    return strView;
+}
+
+function updateLeftDate(formattedDate){
+    $('#date-view').html(formattedDate)
+}
+
+function getCourseName(course) {
+    if (course == null || course.course_name == null) {
+        return "";
+    }
+    if (course.course_name.length > MAX_LENGTH) {
+        return course.course_name.slice(0, MAX_LENGTH - 3) + '...';
+    }
+    return course.course_name;
+}
+
+function getLectureID(lecture) {
+    if (lecture == null || lecture.lecture_id == null) {
+        return "";
+    }
+    return lecture.lecture_id;
+}
+
+function hasAssignment(lecture) {
+    if (lecture == null || lecture.assignment.available == null) {
+        return false;
+    }
+    return lecture.assignment.available
+}
+
+function assignmentTimeAgo(lecture) {
+    if (lecture == null || lecture.assignment.time_ago == null) {
+        return false;
+    }
+    return lecture.assignment.time_ago
+}
+
+function assignmentName(lecture) {
+    if (lecture == null || lecture.assignment.file_name == null) {
+        return false;
+    }
+    if(lecture.assignment.file_name.length > 18){
+        return lecture.assignment.file_name.slice(0,14) + '...'
+    }
+    return lecture.assignment.file_name
+}
+
+function notesName(lecture) {
+    if (lecture == null || lecture.notes.file_name == null) {
+        return false;
+    }
+    if(lecture.notes.file_name.length > 18){
+        return lecture.notes.file_name.slice(0,14) + '...'
+    }
+    return lecture.notes.file_name
+}
+
+function hasAssignmentNotification(lecture) {
+    if (lecture == null || lecture.assignment.to_be_seen == null) {
+        return false;
+    }
+    return lecture.assignment.to_be_seen
+}
+
+function hasNotes(lecture) {
+    if (lecture == null || lecture.notes.available == null) {
+        return false;
+    }
+    return lecture.notes.available
+}
+
+function hasNotesNotification(lecture) {
+    if (lecture == null || lecture.notes.to_be_seen == null) {
+        return false;
+    }
+    return lecture.notes.to_be_seen
+}
+
+function notesTimeAgo(lecture) {
+    if (lecture == null || lecture.notes.time_ago == null) {
+        return false;
+    }
+    return lecture.notes.time_ago
+}
+
+function getLectureTime(lecture) {
+    if (lecture == null || lecture.date_time == null) {
+        return "";
+    }
+    hours = new Date(lecture.date_time).getHours()
+    minutes = new Date(lecture.date_time).getMinutes()
+    period = ' AM'
+    if (hours >= 12) {
+        hours -= 12
+        if(hours == 0){
+            hours = 12
+        }
+        period = ' PM'
+    }
+    if(minutes < 10){
+        return hours + ':' + '0' + minutes  + period 
+    }
+    else return hours + ':' + minutes + period 
+}
+
+function haveSubmitted(lecture){
+    if (lecture == null || lecture.submission.available == null) {
+        return false;
+    }
+    return lecture.submission.available
+}
+
+function submissionName(lecture){
+    if (lecture == null || lecture.submission.file_name == null) {
+        return false;
+    }
+    if(lecture.submission.file_name.length > 18){
+        return lecture.submission.file_name.slice(0,15) + '...'
+    }
+    else return lecture.submission.file_name
+}
+
+function submissionTime(lecture){
+    if (lecture == null || lecture.submission.time_ago == null) {
+        return false;
+    }
+    return lecture.submission.time_ago
+}
+
+function getSubmissions(lecture){
+    if (lecture == null || lecture.submission == null) {
+        return false;
+    }
+    return lecture.submission
+}
+
+class LectureStudent {
+    constructor(course_name, section, lecture) {
+        this.course_name = course_name
+        this.section = section
+        this.lecture_id = getLectureID(lecture)
+        this.has_assignment = hasAssignment(lecture)
+        this.has_assignment_notification = hasAssignmentNotification(lecture)
+        this.assignment_time_ago = assignmentTimeAgo(lecture)
+        this.assignment_name = assignmentName(lecture)
+        this.has_notes = hasNotes(lecture)
+        this.has_notes_notification = hasNotesNotification(lecture)
+        this.notes_time_ago = notesTimeAgo(lecture)
+        this.notes_name = notesName(lecture)
+        this.have_submitted = haveSubmitted(lecture)
+        this.submission_name = submissionName(lecture)
+        this.submission_time = submissionTime(lecture)
+        this.lecture_time = getLectureTime(lecture)
+        this.date_time = new Date(lecture.date_time)
+    }
+}
+
+class LectureProfessor {
+    constructor(course_name, section, lecture) {
+        this.course_name = course_name
+        this.section = section
+        this.lecture_id = getLectureID(lecture)
+        this.has_assignment = hasAssignment(lecture)
+        this.has_assignment_notification = hasAssignmentNotification(lecture)
+        this.assignment_name = assignmentName(lecture)
+        this.assignment_time_ago = assignmentTimeAgo(lecture)
+        this.has_notes = hasNotes(lecture)
+        this.has_notes_notification = hasNotesNotification(lecture)
+        this.notes_time_ago = notesTimeAgo(lecture)
+        this.notes_name = notesName(lecture)
+        this.submissions = getSubmissions(lecture)
+        this.lecture_time = getLectureTime(lecture)
+        this.date_time = new Date(lecture.date_time)
+    }
+}
+
 function renderTimeTable(date) {
-    $('.test').html('')
+    $('.test').html('Fetching Time Table...')
         $.ajax({
             method: 'GET',
-            async: false,
             url: "http://127.0.0.1:5000/get_time_table",
             data: { date: date }
           }).done(function(data) {
@@ -129,29 +333,35 @@ function renderTimeTable(date) {
                     renderProf(data)
                 }
           }).done(function(data){
-                setUpFrontend()
+                dynamicEventListeners()
           }).catch(function(){
               console.log('err')
           })
 }
 
 function renderProf(data){
-    for(var i = 0; i < data.courses[0].lectures.length; i++) {
-        var subjectName = data.courses[0].course_name
-        var lecture_id = data.courses[0].lectures[i].lecture_id
-        var section = data.courses[0].section
-        if(subjectName.length>33){
-            subjectName = subjectName.slice(0,32) + '...'
+    $('.test').html('')
+    var lectures = []
+    for (const course_index in data.courses) {
+        const course = data.courses[course_index]
+        const section = course.section.slice(0,9)
+        const course_name = getCourseName(course)
+        for(const lecture_index in course.lectures) {
+            lectures.push(new LectureProfessor(course_name, section, course.lectures[lecture_index]))
         }
+    }
+    lectures.sort(function(a, b) { return a.date_time.getTime() - b.date_time.getTime() })
+    for(var i = 0; i < lectures.length; i++) {
+        var lecture_id = getLectureID(lectures[i])
         $('.test').append(
         `  <div class="container-fluid m-0">
         ${(() => {
-            if (i==0 && i==data.courses[0].lectures.length-1) {
-                return `<div class="row-border first-last-lecture" lecture_id=${lecture_id}>`
+            if (i==0 && i == lectures.length-1) {
+                return `<div class="row-border first-lecture last-lecture" lecture_id=${lecture_id}>`
             }else if (i==0){
                 return `<div class="row-border first-lecture" lecture_id=${lecture_id}>`
             }
-            else if(i==data.courses[0].lectures.length-1){
+            else if(i==lectures.length-1){
                 return `<div class="row-border last-lecture" lecture_id=${lecture_id}>`
             }
             else {
@@ -159,28 +369,25 @@ function renderProf(data){
             }
           })()}
           <ul class="list-inline mt-2 d-flex container-fluid">
-              <li class="col-2 pt-3 list-inline-item">10:00am</li>
-              <li class="col-2 pt-3 list-inline-item">${section}</li>
-              <li class="col-5 pt-3 list-inline-item">${subjectName}
-              </li>
-              <li class="down-arrow col-1 list-inline-item icon-padding"><img src="static/images/as4.png" style="width:31px" height="31px">
+              <li class="col-2 pt-3 list-inline-item">${lectures[i].lecture_time}</li>
+              <li class="col-2 pt-3 list-inline-item">${lectures[i].section}</li>
+              <li class="col-5 pt-3 list-inline-item">${lectures[i].course_name}</li>
+              <li class="down-arrow col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Assignment"><img src="static/images/as4.png" style="width:31px" height="31px">
               ${(() => {
-                if (data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='true') {
-                    return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-submitted-dot"></i></sup>`
-                }else if(data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='false') {
+                if(lectures[i].has_assignment == 'True' && lectures[i].has_assignment_notification == 'True') {
                     return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-available-dot"></i></sup>`
                 }
-                else {
+                else if(lectures[i].has_assignment == 'True' && lectures[i].has_assignment_notification == 'False'){
+                    return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-submitted-dot"></i></sup>`
+                } else {
                     return ``
                 }
               })()}
               </li>
-              <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="static/images/n-1.png" style="width:31px" height="31px">
+              <li class="down-arrow2 col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Notes"><img src="static/images/n-1.png" style="width:31px" height="31px">
               ${(() => {
-                if (data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='true') {
-                    return `<sup class="notification notification-notes"><i class="fa fa-circle notes-available-dot"></i></sup>`
-                }else if(data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='false'){
-                    return `<sup class="notification notification-notes"><i class="fa fa-circle notes-seen-dot"></i></sup>`
+                if (lectures[i].has_notes == 'True') {
+                    return `<sup class="notification notification-notes"><i class="fa fa-circle notes-uploaded-dot"></i></sup>`
                 }
                 else {
                     return ``
@@ -193,18 +400,30 @@ function renderProf(data){
             <ul class="list-inline d-flex container">
                 <li class="col-6 pt-2 list-inline-item">
                 <form class="form" id="uploadAssignment" enctype="multipart/form-data">
-                    <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
-                    <label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
-                    <input class="btn d-none" type="submit" value="Upload">
+                    <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1"/>
+                    ${(() => {
+                        if (lectures[i].has_assignment == 'True' ) {
+                            return `<label for="file-1" class="p-2 label-assignment assignment-uploaded"><i class="icon ml-1 fa fa-plus d-none"></i><span class="ml-1 mr-1">${lectures[i].assignment_name}</span></label>
+                            <input class="btn d-none" type="submit" value="Assignment 2">
+                            <div class="days-ago">Uploaded ${lectures[i].assignment_time_ago} ago</div>`
+                        } else {
+                            return `<label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
+                            <input class="btn d-none" type="submit" value="Assignment 2">`
+                        }
+                      })()}
+
                 </form>
               </li>
               <li class="upload col-6 pt-2 list-inline-item">
               ${(() => {
-                if (data.courses[0].lectures[i].assignment_available=='true') {
-                    return `<button lecture_id=${lecture_id} class="btn-dashboard btn btn-submissions"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>
-                    <div class="days-ago">${data.courses[0].lectures[i].submissions} submissions</div>`
+                if (lectures[i].has_assignment == 'True' && lectures[i].submissions != false) {
+                    return `<button class="btn-dashboard btn btn-submissions"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>
+                    <div class="days-ago">${lectures[i].submissions} submissions</div>`
+                }else if(lectures[i].has_assignment == 'True' && lectures[i].submissions == false){
+                    return `<button class="btn-dashboard btn btn-submissions"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>
+                    <div class="days-ago">No submissions yet</div>`
                 } else {
-                    return `<button disabled lecture_id=${lecture_id} class="btn-dashboard btn-submissions btn"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>`
+                    return `<button disabled class="btn-dashboard btn-submissions btn"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>`
                 }
               })()}
               </li>
@@ -217,14 +436,22 @@ function renderProf(data){
             <ul class="list-inline d-flex container">
             <li class="col-12 pt-2 list-inline-item">
                 <form class="form" id="uploadNotes" enctype="multipart/form-data">
-                <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="notes" id="file-2" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
-                <label for="file-1" class="p-2 label-notes"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
-                <input class="btn d-none" type="submit" value="Upload">
+                <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="notes" id="file-2" class="inputfile inputfile-1"/>
+                ${(() => {
+                    if (lectures[i].has_notes == 'True' ) {
+                        return `<label for="file-1" class="p-2 label-notes notes-uploaded"></i><span class="ml-1 mr-1">${lectures[i].notes_name}</span></label>
+                        <div class="days-ago">Uploaded ${lectures[i].notes_time_ago} ago</div>`
+                    }
+                    else {
+                        return `<label for="file-1" class="p-2 label-notes"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>`
+                    }
+                  })()}
+                  <input class="btn d-none" type="submit" value="Upload">
             </form>
             </li>
             </ul>
-            <div class="progress2 progress-upload2 d-none">
-                <div class="progress-bar2" role="progressbar" style="width: 0%;"></div>
+            <div class="progress progress2 progress-upload progress-upload2 d-none">
+                <div class="progress-bar progress-bar2" role="progressbar" style="width: 0%;"></div>
             </div>
           </div>
         </div>
@@ -233,22 +460,29 @@ function renderProf(data){
 }
 
 function renderStudent(data){
-    for(var i = 0; i < data.courses[0].lectures.length; i++) {
-        var subjectName = data.courses[0].course_name
-        var lecture_id = data.courses[0].lectures[i].lecture_id
-        var course_id = data.courses[0].lectures[i].course_id
-        if(subjectName.length>33){
-            subjectName = subjectName.slice(0,32) + '...'
+    $('.test').html('')
+    var lectures = []
+    for (const course_index in data.courses) {
+        const course = data.courses[course_index]
+        const course_name = getCourseName(course)
+        const section = course.section.slice(0,9)
+        for(const lecture_index in course.lectures) {
+            lectures.push(new LectureStudent(course_name, section, course.lectures[lecture_index]))
         }
+    }
+    lectures.sort(function(a, b) { return a.date_time.getTime() - b.date_time.getTime() })
+
+    for (var i = 0; i < lectures.length; i++) {
+        var lecture_id = getLectureID(lectures[i])
         $('.test').append(
         `  <div class="container-fluid m-0">
         ${(() => {
-            if (i==0 && i==data.courses[0].lectures.length-1) {
-                return `<div class="row-border first-last-lecture" lecture_id=${lecture_id}>`
+            if (i==0 && i == lectures.length-1) {
+                return `<div class="row-border first-lecture last-lecture" lecture_id=${lecture_id}>`
             }else if (i==0){
                 return `<div class="row-border first-lecture" lecture_id=${lecture_id}>`
             }
-            else if(i==data.courses[0].lectures.length-1){
+            else if(i==lectures.length-1){
                 return `<div class="row-border last-lecture" lecture_id=${lecture_id}>`
             }
             else {
@@ -256,15 +490,14 @@ function renderStudent(data){
             }
           })()}
           <ul class="list-inline mt-2 d-flex container-fluid">
-              <li class="col-2 pt-3 list-inline-item">10:00am</li>
-              <li class="col-2 pt-3 list-inline-item">${course_id}</li>
-              <li class="col-5 pt-3 list-inline-item">${subjectName}
-              </li>
-              <li class="down-arrow col-1 list-inline-item icon-padding"><img src="static/images/as4.png" style="width:31px" height="31px">
+              <li class="col-2 pt-3 list-inline-item">${lectures[i].lecture_time}</li>
+              <li class="col-2 pt-3 list-inline-item">${lectures[i].section}</li>
+              <li class="col-5 pt-3 list-inline-item">${lectures[i].course_name}</li>
+              <li class="down-arrow col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Assignment"><img src="static/images/as4.png" style="width:31px" height="31px">
               ${(() => {
-                if (data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='true') {
+                if (lectures[i].has_assignment == 'True' && lectures[i].have_submitted == 'True') {
                     return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-submitted-dot"></i></sup>`
-                }else if(data.courses[0].lectures[i].assignment_available==='true' && data.courses[0].lectures[i].submitted==='false') {
+                }else if(lectures[i].has_assignment == 'True' && lectures[i].has_assignment_notification == 'True') {
                     return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-available-dot"></i></sup>`
                 }
                 else {
@@ -272,11 +505,11 @@ function renderStudent(data){
                 }
               })()}
               </li>
-              <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="static/images/n-1.png" style="width:31px" height="31px">
+              <li class="down-arrow2 col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Notes"><img src="static/images/n-1.png" style="width:31px" height="31px">
               ${(() => {
-                if (data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='true') {
+                if (lectures[i].has_notes == 'True' && lectures[i].has_notes_notification == 'True') {
                     return `<sup class="notification notification-notes"><i class="fa fa-circle notes-available-dot"></i></sup>`
-                }else if(data.courses[0].lectures[i].notes_available==='true' && data.courses[0].lectures[i].notes_to_be_seen==='false'){
+                }else if(lectures[i].has_notes == 'True'){
                     return `<sup class="notification notification-notes"><i class="fa fa-circle notes-seen-dot"></i></sup>`
                 }
                 else {
@@ -290,9 +523,9 @@ function renderStudent(data){
             <ul class="list-inline d-flex container">
               <li class="upload col-6 pt-2 list-inline-item">
               ${(() => {
-                if (data.courses[0].lectures[i].assignment_available=='true') {
-                    return `<button lecture_id=${lecture_id} class="btn-dashboard btn btn-assignment"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button>
-                    <div class="days-ago">Uploaded n days ago</div>`
+                if (lectures[i].has_assignment == 'True') {
+                    return `<button lecture_id=${lecture_id} class="btn-dashboard btn btn-assignment"><i class="icon mr-2 fa fa-download fa-lg"></i>${lectures[i].assignment_name}</button>
+                    <div class="days-ago">Uploaded ${lectures[i].assignment_time_ago} ago</div>`
                 } else {
                     return `<button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button>`
                 }
@@ -301,17 +534,18 @@ function renderStudent(data){
                 <li class="col-6 pt-2 list-inline-item">
                   <form class="form" id="submitAssignment" enctype="multipart/form-data">
                   ${(() => {
-                    if (data.courses[0].lectures[i].submitted=='true') {
-                        return `<input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
-                        <label for="file-1" class="p-2 assignment-submitted label-assignment"><span class="ml-1 mr-1">Insert Name</span></label>
+                    if (lectures[i].has_assignment == 'True' && lectures[i].have_submitted == 'True') {
+                        return `<input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1"/>
+                        <label for="file-1" class="p-2 assignment-submitted label-assignment"><span class="ml-1 mr-1">${lectures[i].submission_name}</span></label>
+                        <div class="days-ago">Uploaded ${lectures[i].submission_time} ago</div>
                         `
                     } 
-                    else if (data.courses[0].lectures[i].assignment_available=='true') {
-                        return `<input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                    else if (lectures[i].has_assignment == 'True') {
+                        return `<input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1"/>
                         <label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Submit</span></label>
                         `
                     } else {
-                        return `<input disabled type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                        return `<input disabled type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1"/>
                         <label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Submit</span></label>
                         `
                     }
@@ -327,9 +561,9 @@ function renderStudent(data){
           <div class="action2 d-none">
             <ul class="list-inline d-flex container">
             ${(() => {
-                if (data.courses[0].lectures[i].notes_available=='true') {
-                    return `<li class="upload col-12 pt-2 list-inline-item"><button lecture_id=${lecture_id} class="btn-dashboard btn btn-notes"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button>
-                    <div class="days-ago">Uploaded n days ago</div></li>`
+                if (lectures[i].has_notes == 'True') {
+                    return `<li class="upload col-12 pt-2 list-inline-item"><button lecture_id=${lecture_id} class="btn-dashboard btn btn-notes"><i class="icon mr-2 fa fa-download fa-lg"></i>${lectures[i].notes_name}</button>
+                    <div class="days-ago">Uploaded ${lectures[i].notes_time_ago} ago</div></li>`
                 } else {
                     return `<li class="upload col-12 pt-2 list-inline-item"><button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button></li>`
                 }
@@ -347,13 +581,13 @@ function uploadListener(){
         e.preventDefault()
     
         if($(this).attr('id')=='uploadNotes'){
-            getSignedURLNotesUpload($(this),updateBackendAndUIAssignmentUpload) //update teacher notif and backend on upload of notes
+            getSignedURLNotesUpload($(this),updateBackendAndUINotesUpload) //update teacher notif and backend on upload of notes
         }
         if($(this).attr('id')=='submitAssignment'){
             getSignedURLSubmission($(this),updateBackendAndUISubmission) //update student notif and backend on upload of assignment
         }
         if($(this).attr('id')=='uploadAssignment'){
-            getSignedURLAssignmentUpload($(this),updateBackendAndUINotesUpload) //update teacher notif and backend on upload of assignment
+            getSignedURLAssignmentUpload($(this),updateBackendAndUIAssignmentUpload) //update teacher notif and backend on upload of assignment
         }
     })
 }
@@ -452,59 +686,6 @@ function getSignedURLAssignmentUpload(element,callback){
 
 }
 
-function updateBackendAndUINotesUpload(thisLecture,lecture_id){
-    $.ajax({
-        method: 'GET',
-        url: "http://127.0.0.1:5000/upload_notes",
-        data: {lecture_id: lecture_id}
-      }).done(function(){
-        // thisLecture.find('.progress2').addClass('d-none')
-        // thisLecture.find('.label-notes').addClass('notes-submitted')
-        // thisLecture.find('.assignment-available-dot').addClass('assignment-submitted-dot')
-        // thisLecture.find('.assignment-available-dot').removeClass('assignment-available-dot')
-      })
-}
-
-//Teacher Uploads Notes
-function getSignedURLNotesUpload(element,callback){
-    var x = element.children('input[type=file]')[0];
-    content_type = x.files[0].type
-    // console.log(x.files[0]) //returns BLOB
-    var thisLecture = element.parent().parent().parent().parent()
-    lecture_id = thisLecture[0].getAttribute('lecture_id')
-
-    $.ajax({
-        method: 'GET',
-        url: "http://127.0.0.1:5000/get_upload_notes_url",
-        data: {lecture_id: lecture_id, content_type : content_type }
-      }).done(function(signed_url) {
-        const xhr = new XMLHttpRequest();
-        // xhr.open("PUT", signed_url, true)
-        xhr.open("POST", "save-post")
-        xhr.upload.addEventListener("progress", (e)=>{
-            const percent = (e.loaded/e.total)*100;
-            thisLecture.find('.progress2').removeClass('d-none')
-            thisLecture.find('.progress-bar2').css('width', `${percent}%`)
-        })
-        xhr.onreadystatechange = function()
-        {
-            if (xhr.readyState == 4 && xhr.status == 200)
-            {
-                callback(thisLecture,lecture_id);
-            }
-        }; 
-        xhr.setRequestHeader("Content-Type", content_type)
-        var fd = new FormData()
-        // fd.append('fileName', JSON.stringify(x.files[0].name));
-        // fd.append('fileData', x.files[0]);
-        // console.log(fd.get('fileName'))
-        // console.log(fd.get('fileData'))
-        xhr.send(fd)
-
-      })
-
-}
-
 function updateBackendAndUIAssignmentUpload(thisLecture,lecture_id){
     $.ajax({
         method: 'GET',
@@ -519,11 +700,65 @@ function updateBackendAndUIAssignmentUpload(thisLecture,lecture_id){
 
 }
 
+//Teacher Uploads Notes
+function getSignedURLNotesUpload(element,callback){
+    var x = element.children('input[type=file]')[0];
+    content_type = x.files[0].type
+    // console.log(x.files[0]) //returns BLOB
+    var thisLecture = element.parent().parent().parent().parent()
+    var lecture_id = thisLecture[0].getAttribute('lecture_id')
+
+    $.ajax({
+        method: 'GET',
+        url: "http://127.0.0.1:5000/get_upload_notes_url",
+        data: {lecture_id: lecture_id, content_type : content_type }
+      }).done(function(signed_url) {
+        const xhr = new XMLHttpRequest();
+        // xhr.open("PUT", signed_url, true)
+        xhr.open("POST", "save-post")
+        xhr.upload.addEventListener("progress", (e)=>{
+            const percent = (e.loaded/e.total)*100;
+            console.log(percent)
+            thisLecture.find('.progress2').removeClass('d-none')
+            thisLecture.find('.progress-bar2').css('width', `${percent}%`)
+        })
+        xhr.onreadystatechange = function()
+        {
+            if (xhr.readyState == 4 && xhr.status == 200)
+            {
+                callback(thisLecture,lecture_id);
+            }
+        }; 
+        xhr.setRequestHeader("Content-Type", content_type)
+        var fd = new FormData()
+        // fd.append('fileName', JSON.stringify(x.files[0].name));
+        fd.append('fileData', x.files[0]);
+        // console.log(fd.get('fileName'))
+        // console.log(fd.get('fileData'))
+        xhr.send(fd)
+
+      })
+
+}
+
+function updateBackendAndUINotesUpload(thisLecture,lecture_id){
+    $.ajax({
+        method: 'GET',
+        url: "http://127.0.0.1:5000/upload_notes",
+        data: {lecture_id: lecture_id}
+      }).done(function(){
+        // thisLecture.find('.progress2').addClass('d-none')
+        thisLecture.find('.label-notes').addClass('notes-submitted')
+        // thisLecture.find('.assignment-available-dot').addClass('assignment-submitted-dot')
+        // thisLecture.find('.assignment-available-dot').removeClass('assignment-available-dot')
+      })
+}
+
 //Student download Assignment(No UI Update)
 function assignmentDownloadListener(){
     $('.btn-assignment').click(function(){
         var lecture = $(this).parent().parent().parent().parent();
-        var lecture_id = $(this).attr('lecture_id');
+        var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id');
 
 
 
@@ -563,7 +798,7 @@ function assignmentDownloadListener(){
                 document.body.appendChild(a);
                 a.click();
                 window.URL.revokeObjectURL(url);
-                // greenToYellow() ?
+                updateAssignmentDot(lecture)
                 })
                 .catch(() => alert('Assignment not downloaded'));
         })
@@ -571,12 +806,17 @@ function assignmentDownloadListener(){
     
 }
 
+function updateAssignmentDot(thisLecture){
+    if(thisLecture != null){
+        thisLecture.find('.assignment-available-dot').remove()
+    }
+}
+
 //Student download Notes(Dot Orange to None)
 function notesDownloadListener(){
     $('.btn-notes').click(function(){
         var lecture = $(this).parent().parent().parent().parent();
-        var lecture_id = $(this).attr('lecture_id');
-
+        var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id')
 
         $.ajax({
             method: 'GET',
@@ -631,38 +871,6 @@ function updateNotesDot(thisLecture){
     thisLecture.find('.notes-available-dot').removeClass('notes-available-dot')
 }
 
-//Date Toggler
-function datetoggle(){
-
-    $('#date-next').click(function(){
-        let calendar = getCalendar();
-        updateTime(calendar.nDay);
-        let strDate = `${Number(calendar.nDay.getMonth()) + 1 }/${calendar.nDay.getDate()}/${calendar.nDay.getFullYear()}`;
-        drawAll(strDate)
-        updateLeftDate(formatDate(strDate))
-    })
-
-    $('#date-prev').click(function(){
-        let calendar = getCalendar();
-        updateTime(calendar.pDay);
-        let strDate = `${Number(calendar.pDay.getMonth()) + 1}/${calendar.pDay.getDate()}/${calendar.pDay.getFullYear()}`;
-        drawAll(strDate)
-        updateLeftDate(formatDate(strDate))
-    })
-}
-
-// Toggle Helper Functions
-function formatDate(strDate){
-    var dateArr = strDate.split('/')
-    let monthArr = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    var strView = `${(dateArr[1])} ${monthArr[dateArr[0]-1]} ${dateArr[2]}`
-    return strView;
-}
-
-function updateLeftDate(formattedDate){
-    $('#date-view').html(formattedDate)
-}
-
 //View Submissions
 function submissionListener(){
     $('.btn-submissions').click(function() {
@@ -677,6 +885,13 @@ function submissionListener(){
                 window.location.href = url;
           })
 
+    })
+}
+
+function commentListener(){
+    $('.view-comments').click(function(){
+        // $('.row-border').not($(this).parent().parent()).hide(); 
+        console.log($(this).parent().parent().toggleClass('row-border-expanded11'))
     })
 }
 
@@ -706,10 +921,10 @@ var date = +new Date();
 var maxDays = 37;
 
 
-init();
+initCalendar();
 
 // App methods
-function init() {
+function initCalendar() {
     eventsTrigger();
     drawAll();
 }
@@ -782,7 +997,11 @@ function drawDays() {
 
     let daysTemplate = "";
     days.forEach(day => {
-        daysTemplate += `<li class="${day.currentMonth ? '' : 'another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="dot"></div></li>`
+
+        if(day.dayNumber == 14){
+            daysTemplate += `<li class="${day.currentMonth ? '' : 'another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="dot"></div></li>`
+        }
+        else daysTemplate += `<li class="${day.currentMonth ? '' : 'another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"></li>`
     });
 
     elements.days.innerHTML = daysTemplate;

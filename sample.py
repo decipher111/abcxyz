@@ -118,54 +118,7 @@ def get_time_table():
    print(username)
    date = request.args.get('date')
    print(date)
-   return jsonify({
-   "user_id":1,
-   "email":"abc@gmail.com",
-   "courses":[
-      {
-         "course_id":1,
-         "course_name":"Computer Science",
-         "section":"CS0421",
-         "institution":"NSIT",
-         "role":"Student",
-         "lectures":[
-            {
-               "lecture_id":524351,
-               "course_id":"CS100",
-               "date_time":"04/20/2020, 10:30:00",
-               "notes_available":"true",
-               "assignment_available":"true",
-               "submissions":32,
-               "assignment_to_be_seen":'false',
-               "notes_to_be_seen":'true',
-               "submitted":'true'
-            },
-            {
-               "lecture_id":124351,
-               "course_id":"CS101",
-               "date_time":"04/20/2020, 11:30:00",
-               "notes_available":"false",
-               "assignment_available":"false",
-               "submissions":0,
-               "assignment_to_be_seen":'false',
-               "notes_to_be_seen":'false',
-               "submitted":'false'
-            },
-            {
-               "lecture_id":832345,
-               "course_id":"CS102",
-               "date_time":"04/20/2020, 12:30:00",
-               "notes_available":"false",
-               "assignment_available":"true",
-               "submissions":0,
-               "assignment_to_be_seen":'true',
-               "notes_to_be_seen":'false',
-               "submitted":'false'
-            }
-         ]
-      }
-   ]
-})
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'True', "file_name":"assignment_2.pdf","time_ago":"6 hours"}, 'lecture_id': 2, 'submission': None, 'assignment': {'available': 'True', 'file_name': 'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'False'}}], 'course_name': 'Computer Architecture', 'section': 'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Professor', 'institution': 'NSIT'}], 'user_id': 2, 'email': 'professor_2@gmail.com'})
 
 
    
@@ -182,6 +135,17 @@ def get_upload_assignment_url():
 
 @app.route('/upload_assignment')
 def upload_assignment():
+   print(request.args.get('lecture_id'))
+   print('assignment uploaded by user')
+   return ''
+
+@app.route('/get_upload_submission_url')
+def get_upload_submission_url():
+    print(request.args.get('lecture_id'))
+    return 'signedurl'
+
+@app.route('/upload_submission')
+def upload_submission():
    print(request.args.get('lecture_id'))
    print('assignment uploaded by user')
    return ''
@@ -224,7 +188,7 @@ def download_notes():
 @app.route('/submissions', methods = ['GET'])
 def setcookie():
    resp = make_response('/table')
-   submissions =  {"user_id":1,"email":"abc@gmail.com", "name": "Raghav Khanna", "section" : "MPAE1", "roll_no" : "2017UMP3507", "time" : "3 hrs ago"}
+   submissions =  { 'submissions' : [{"user_id":1,"email":"abc@gmail.com", "name": "Raghav Khanna", "section" : "MPAE1", "roll_no" : "2017UMP3507", "time" : "3 hrs ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Pranay Kohli", "section" : "MPAE1", "roll_no" : "2017UMP3528", "time" : "15 min ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Akshay", "section" : "MPAE1", "roll_no" : "2017UMP3501", "time" : "1 day ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Arjun Sharma", "section" : "MPAE1", "roll_no" : "2017UMP3502", "time" : "4 hr ago"}]}
    value = json.dumps(submissions)
    print(value)
    resp.set_cookie('someCookie', json.dumps(submissions), 10) #max_age in seconds
