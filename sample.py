@@ -118,14 +118,14 @@ def get_time_table():
    print(username)
    date = request.args.get('date')
    print(date)
-   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'True', "file_name":"assignment_2.pdf","time_ago":"6 hours"}, 'lecture_id': 2, 'submission': None, 'assignment': {'available': 'True', 'file_name': 'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'False'}}], 'course_name': 'Computer Architecture', 'section': 'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Professor', 'institution': 'NSIT'}], 'user_id': 2, 'email': 'professor_2@gmail.com'})
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'False'}, 'assignment': {'available': 'True', 'file_name':'assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'True'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
 
 
    
 @app.route('/return-files', methods=["GET"])
 def return_files_tut():
    print(request.data)
-   return send_file('/Users/raghav/Desktop/sample.pdf', attachment_filename='sample.pdf')
+   return send_file('/Users/raghav/Desktop/abc.png', attachment_filename='abc.png')
 
 
 @app.route('/get_upload_assignment_url')
@@ -137,7 +137,7 @@ def get_upload_assignment_url():
 def upload_assignment():
    print(request.args.get('lecture_id'))
    print('assignment uploaded by user')
-   return ''
+   return {'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'True', "file_name":"notes.pdf","time_ago":"6 hours"}, 'lecture_id': 2, 'submission': None, 'assignment': {'available': 'True', 'file_name': 'sample.pdf', 'time_ago': '6 hours', 'to_be_seen': 'False'}}], 'course_name': 'Computer Architecture', 'section': 'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Professor', 'institution': 'NSIT'}], 'user_id': 2, 'email': 'professor_2@gmail.com'}
 
 @app.route('/get_upload_submission_url')
 def get_upload_submission_url():
@@ -148,7 +148,7 @@ def get_upload_submission_url():
 def upload_submission():
    print(request.args.get('lecture_id'))
    print('assignment uploaded by user')
-   return ''
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'True', 'file_name':'sample.pdf', 'time_ago': '9 hours'} , 'assignment': {'available': 'True', 'file_name':'assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'True'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/25/2020', '01/01/2021'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
 
 @app.route('/get_upload_notes_url')
 def get_upload_notes_url():
@@ -159,7 +159,7 @@ def get_upload_notes_url():
 def upload_notes():
    print(request.args.get('lecture_id'))
    print('notes uploaded by prof')
-   return ''
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'True', "file_name":"sample.pdf","time_ago":"6 hours"}, 'lecture_id': 2, 'submission': None, 'assignment': {'available': 'False', 'file_name': 'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'False'}}], 'course_name': 'Computer Architecture', 'section': 'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Professor', 'institution': 'NSIT'}], 'user_id': 2, 'email': 'professor_2@gmail.com'})
 
 @app.route('/get_download_assignment_url')
 def get_download_assignment_url():
@@ -171,7 +171,7 @@ def get_download_assignment_url():
 def download_assignment():
    print(request.args.get('lecture_id'))
    print('assignment downloaed by user')
-   return ""
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'True', 'file_name':'sample.pdf', 'time_ago': '9 hours'} , 'assignment': {'available': 'True', 'file_name':'assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'False'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/25/2020', '01/01/2021'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
 
 @app.route('/get_download_notes_url')
 def get_download_notes_url():
@@ -183,17 +183,21 @@ def get_download_notes_url():
 def download_notes():
    print(request.args.get('lecture_id'))
    print('notes downloaed by user')
-   return ""
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'False'}, 'lecture_id': 1, 'submission': {'available': 'True', 'file_name':'sample.pdf', 'time_ago': '9 hours'} , 'assignment': {'available': 'True', 'file_name':'assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'False'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/25/2020', '01/01/2021'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
 
-@app.route('/submissions', methods = ['GET'])
+@app.route('/view_submissions', methods = ['GET'])
 def setcookie():
    resp = make_response('/table')
    submissions =  { 'submissions' : [{"user_id":1,"email":"abc@gmail.com", "name": "Raghav Khanna", "section" : "MPAE1", "roll_no" : "2017UMP3507", "time" : "3 hrs ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Pranay Kohli", "section" : "MPAE1", "roll_no" : "2017UMP3528", "time" : "15 min ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Akshay", "section" : "MPAE1", "roll_no" : "2017UMP3501", "time" : "1 day ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Arjun Sharma", "section" : "MPAE1", "roll_no" : "2017UMP3502", "time" : "4 hr ago"}]}
    value = json.dumps(submissions)
    print(value)
-   resp.set_cookie('someCookie', json.dumps(submissions), 10) #max_age in seconds
+   resp.set_cookie('someCookie', json.dumps(submissions), 10000000000) #max_age in seconds
    return resp
 
+@app.route('/table/get_download_submission_url')
+def get_download_submissin_url():
+   print(request.args.get('user_id'))
+   return "signed url"
 
 @app.route('/save-post',methods=['POST'])
 def savepost():

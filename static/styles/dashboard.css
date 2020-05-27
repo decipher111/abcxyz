@@ -388,10 +388,6 @@ button:disabled:hover {
   cursor: pointer;
 }
 
-#submissionTable{
-  text-align: center;
-}
-
 .assignment-uploaded{
   border: transparent !important;
   background-color: rgb(21, 153, 21) !important;
@@ -410,4 +406,48 @@ button:disabled:hover {
 
 label {
   margin-bottom: 0.1rem;
+}
+
+.pace {
+  -webkit-pointer-events: none;
+  pointer-events: none;
+
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  user-select: none;
+}
+
+.pace-inactive {
+  display: none;
+}
+
+.pace .pace-progress {
+  background: rgb(0, 119, 255);
+  position: fixed;
+  z-index: 2000;
+  top: 0;
+  right: 100%;
+  width: 100%;
+  height: 3px;
+}
+
+.tooltip-inner {
+  max-width: 236px !important;
+  height: 35px;
+  font-size: 15px;
+  padding: 5px;
+  padding-right: 8px;
+  padding-left: 8px;
+  background: rgb(247, 247, 247);
+  color: rgb(0, 0, 0);
+  border: 1px solid #4e4e4e;
+  text-align: center;
+}
+
+.toggler-icon {
+  color: rgb(141, 141, 141);
+}
+
+.toggler-li:hover > .toggler-icon {
+  color: rgb(68, 68, 68);
 }

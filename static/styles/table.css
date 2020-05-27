@@ -1,0 +1,8 @@
+#submissionTable{
+    text-align: center;
+}
+
+.download-submission:hover{
+    color: rgb(0, 102, 255);
+    cursor: pointer;
+}
