@@ -11,6 +11,7 @@ dynamicEventListeners()
 //Static Event Listener
 datetoggle()
 
+
 function initdashboard(){
     var newDate = new Date()
     var today = Number(newDate.getMonth()+1) + '/' + newDate.getDate() + '/' + newDate.getFullYear()
@@ -78,7 +79,6 @@ function toggle(){
 function submitFormOnStateChange(){
     $('.inputfile' ).on('change', function(e){
         // console.log($(this).val()) //returns fakepath
-        // console.log($(this)[0].files[0]) //returns file
         if(e.target.value.split( '\\' ).pop().length < 100){
             var $input	 = $(this), $label	 = $input.next( 'label' ), labelVal = $label.html();
             var fileName = '';
@@ -100,9 +100,8 @@ function submitFormOnStateChange(){
                 $label.find( 'span' ).html( fileName );
             else
                 $label.html( labelVal );
-            if(fileName!=''){
-                $(this).parent().find("[type=submit]").trigger( "click" );
-            }
+
+            $(this).parent().find("[type=submit]").trigger( "click" );
         }
         else {
             alert('File name should be less than 100 characters')
@@ -323,10 +322,14 @@ class LectureProfessor {
 }
 
 function renderTimeTable(date) {
-    $('.test').html('<div class="mt-5 text-center"><h6>Fetching Time Table...</h6></div>')
+    $('.test').html(`<div class="loader"><img src="static/images/loader2.gif"></div>`)
+
         $.ajax({
             method: 'GET',
             url: window.location.href + '/get_time_table',
+            beforeSend : function(){
+                $('.loader').show()
+            },
             data: { date: date }
           }).done(function(data) {
               if(data != null && data != undefined){
@@ -374,7 +377,7 @@ function calendarNotifsInArray(data){
 }
 
 function renderProf(data){
-    $('.test').html('')
+    $('.loader').hide()
     var lectures = []
     for (const course_index in data.courses) {
         const course = data.courses[course_index]
@@ -411,7 +414,7 @@ function renderProf(data){
                   <li class="col-2 pt-3 list-inline-item">${lectures[i].lecture_time}</li>
                   <li class="col-2 pt-3 list-inline-item">${lectures[i].section}</li>
                   <li class="col-5 pt-3 list-inline-item">${lectures[i].course_name}</li>
-                  <li class="down-arrow col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Assignment"><img src="static/images/as4.png" style="width:31px" height="31px">
+                  <li class="down-arrow col-1 list-inline-item icon-padding" data-tooltip="Assignment"><img src="static/images/as4.png" style="width:31px" height="31px">
                   ${(() => {
                     if(lectures[i].has_assignment == 'True' && lectures[i].has_assignment_notification == 'True') {
                         return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-available-dot"></i></sup>`
@@ -423,7 +426,7 @@ function renderProf(data){
                     }
                   })()}
                   </li>
-                  <li class="down-arrow2 col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Notes"><img src="static/images/n-1.png" style="width:31px" height="31px">
+                  <li class="down-arrow2 col-1 list-inline-item icon-padding" data-tooltip="Notes"><img src="static/images/n-1.png" style="width:31px" height="31px">
                   ${(() => {
                     if (lectures[i].has_notes == 'True') {
                         return `<sup class="notification notification-notes"><i class="fa fa-circle notes-uploaded-dot"></i></sup>`
@@ -500,7 +503,7 @@ function renderProf(data){
 }
 
 function renderStudent(data){
-    $('.test').html('')
+    $('.loader').hide()
     var lectures = []
     for (const course_index in data.courses) {
         const course = data.courses[course_index]
@@ -537,7 +540,7 @@ function renderStudent(data){
                   <li class="col-2 pt-3 list-inline-item">${lectures[i].lecture_time}</li>
                   <li class="col-2 pt-3 list-inline-item">${lectures[i].section}</li>
                   <li class="col-5 pt-3 list-inline-item">${lectures[i].course_name}</li>
-                  <li class="down-arrow col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Assignment"><img src="static/images/as4.png" style="width:31px" height="31px">
+                  <li class="down-arrow col-1 list-inline-item icon-padding" data-tooltip="Assignment"><img src="static/images/as8.png" style="width:25px" height="33px">
                   ${(() => {
                     if (lectures[i].has_assignment == 'True' && lectures[i].have_submitted == 'True') {
                         return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-submitted-dot"></i></sup>`
@@ -549,7 +552,7 @@ function renderStudent(data){
                     }
                   })()}
                   </li>
-                  <li class="down-arrow2 col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Notes"><img src="static/images/n-1.png" style="width:31px" height="31px">
+                  <li class="down-arrow2 col-1 list-inline-item icon-padding" data-tooltip="Notes""><img src="static/images/n-1.png" style="width:30px" height="33px">
                   ${(() => {
                     if (lectures[i].has_notes == 'True' && lectures[i].has_notes_notification == 'True') {
                         return `<sup class="notification notification-notes"><i class="fa fa-circle notes-available-dot"></i></sup>`
