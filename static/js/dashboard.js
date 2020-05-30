@@ -414,7 +414,7 @@ function renderProf(data){
                   <li class="col-2 pt-3 list-inline-item">${lectures[i].lecture_time}</li>
                   <li class="col-2 pt-3 list-inline-item">${lectures[i].section}</li>
                   <li class="col-5 pt-3 list-inline-item">${lectures[i].course_name}</li>
-                  <li class="down-arrow col-1 list-inline-item icon-padding" data-tooltip="Assignment"><img src="static/images/as4.png" style="width:31px" height="31px">
+                  <li class="down-arrow col-1 list-inline-item icon-padding" data-tooltip="Assignment"><img src="static/images/as8.png" style="width:25px" height="33px">
                   ${(() => {
                     if(lectures[i].has_assignment == 'True' && lectures[i].has_assignment_notification == 'True') {
                         return `<sup class="notification notification-assignment"><i class="fa fa-circle assignment-available-dot"></i></sup>`
@@ -840,7 +840,7 @@ function updateBackendAndUINotesUpload(thisLecture,lecture_id,file_name, respons
                 if(course.lectures[lecture_index].lecture_id == lecture_id){
                     if(course.lectures[lecture_index].notes.available == 'True' && course.lectures[lecture_index].notes.file_name == file_name){
                         response.status = true
-                        thisLecture.find('.label-notes').addClass('notes-submitted')
+                        thisLecture.find('.label-notes').addClass('notes-uploaded')
                         thisLecture.find('.notification-notes').removeClass('d-none')
                         thisLecture.find('.progress2').addClass('d-none')
                         thisLecture.find('.days-ago-notes').addClass('d-none')
@@ -992,16 +992,15 @@ function submissionListener(){
 
         $.ajax({
             method: 'GET',
-            url: window.location.href + "/view_submissions",
+            url: window.location.href + `/redirect_submissions`,
             data: { lecture_id: lecture_id }
           }).done(function(url) {
-
-                window.location.href = url;
+            console.log(url)
+                window.location.href = `${url}?lecture_id=${lecture_id}`;
           })
 
     })
 }
-
 
 
 function commentListener(){

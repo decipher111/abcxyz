@@ -1,12 +1,12 @@
 @font-face {
   font-family: system-font;
-  src: url(../fonts/BalooPaaji2-Regular.ttf);
+  src: url(../fonts/IBMPlexSans-Regular.ttf);
 }
 
 body {
   margin: 0;
   font-family: system-font;
-  font-size: 1.0rem;
+  font-size: 0.9rem;
   font-weight: 900;
   line-height: 1.5;
   background-color: rgb(255, 255, 255);
@@ -319,60 +319,61 @@ button:disabled:hover {
 
 .assignment-submitted{
   border: transparent !important;
-  background-color: rgb(21, 153, 21) !important;
+  background-color: rgb(5, 124, 235) !important;
   color: white !important;
 }
 
 .notes-uploaded{
   border: transparent !important;
-  background-color: rgb(21, 153, 21) !important;
+  background-color: rgb(5, 124, 235) !important;
   color: white !important;
 }
 
-.notes-submitted{
+.assignment-uploaded{
   border: transparent !important;
-  background-color: rgb(21, 153, 21) !important;
+  background-color: rgb(5, 124, 235) !important;
   color: white !important;
 }
+
 
 .assignment-available-dot{
   position: absolute;
   bottom: 13px;
-  left: 3px;
-  font-size: 9px;
-  color: rgb(255, 102, 0);
+  left: 0px;
+  font-size: 12px;
+  color: rgb(255, 225, 0);
 }
 
 .assignment-submitted-dot{
   position: absolute;
   bottom: 13px;
-  left: 3px;
-  font-size: 9px;
-  color: rgb(21, 153, 21);
+  left: 0px;
+  font-size: 12px;
+  color: rgb(17, 145, 0);
 }
 
 .notes-uploaded-dot{
   position: absolute;
   bottom: 13px;
-  left: 0px;
-  font-size: 9px;
-  color: rgb(21, 153, 21);
+  right: 0px;
+  font-size: 12px;
+  color: rgb(17, 145, 0);
 }
 
 .notes-available-dot{
   position: absolute;
   bottom: 13px;
-  left: 0px;
-  font-size: 9px;
-  color: rgb(255, 102, 0);
+  right: 0px;
+  font-size: 12px;
+  color: rgb(255, 225, 0);
 }
 
 .notes-seen-dot{
   position: absolute;
   bottom: 13px;
-  left: 0px;
-  font-size: 9px;
-  color: rgb(21, 153, 21);
+  right: 0px;
+  font-size: 12px;
+  color: rgb(74, 192, 247);
 }
 
 .date-changer{
@@ -386,12 +387,6 @@ button:disabled:hover {
 
 #date-next:hover{
   cursor: pointer;
-}
-
-.assignment-uploaded{
-  border: transparent !important;
-  background-color: rgb(21, 153, 21) !important;
-  color: white !important;
 }
 
 .align-center{
@@ -451,17 +446,17 @@ label {
 
 [data-tooltip]::after{
   position: absolute; 
-  width: 100px;
+  width: 70px;
   right: 0;
   bottom: 95%;
   text-align: center;
   box-sizing: border-box;
-  color: black;
+  color: rgb(167, 167, 167);
   background-color: rgb(255, 255, 255);
-  border: solid black 1px;
+  border: solid rgb(189, 189, 189) 1px;
   padding: 3px;
   border-radius: 3px;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
   font-style: bold;
   visibility: hidden;
   opacity: 0;

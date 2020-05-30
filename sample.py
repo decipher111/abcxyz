@@ -118,7 +118,7 @@ def get_time_table():
    print(username)
    date = request.args.get('date')
    print(date)
-   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'False'}, 'assignment': {'available': 'True', 'file_name':'assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'True'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'True', "file_name":"assignment_2.pdf","time_ago":"6 hours"}, 'lecture_id': 2, 'submission': None, 'assignment': {'available': 'True', 'file_name': 'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'False'}}], 'course_name': 'Computer Architecture', 'section': 'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Professor', 'institution': 'NSIT'}], 'user_id': 2, 'email': 'professor_2@gmail.com'})
 
 
    
@@ -194,7 +194,18 @@ def setcookie():
    resp.set_cookie('someCookie', json.dumps(submissions), 10000000000) #max_age in seconds
    return resp
 
-@app.route('/table/get_download_submission_url')
+@app.route('/redirect_submissions', methods = ['GET'])
+def redirect_submissions():
+   print(request.args.get('lecture_id'))
+   return 'table'
+
+@app.route('/get_submissions', methods = ['GET'])
+@jwt_required
+def get_submissions():
+   print(request.args.get('lecture_id'))
+   return jsonify({'submissions' : [{"user_id":1,"email":"abc@gmail.com", "name": "Raghav Khanna", "section" : "MPAE1", "roll_no" : "2017UMP3507", "time" : "3 hrs ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Pranay Kohli", "section" : "MPAE1", "roll_no" : "2017UMP3528", "time" : "15 min ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Akshay", "section" : "MPAE1", "roll_no" : "2017UMP3501", "time" : "1 day ago"}, {"user_id":1,"email":"abc@gmail.com", "name": "Arjun Sharma", "section" : "MPAE1", "roll_no" : "2017UMP3502", "time" : "4 hr ago"}]})
+
+@app.route('/get_download_submission_url')
 def get_download_submissin_url():
    print(request.args.get('user_id'))
    return "signed url"
