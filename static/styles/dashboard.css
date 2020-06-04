@@ -20,7 +20,7 @@ body {
 
 @media all and (min-width: 720px){
   .navbar{
-    padding: 20px;
+    /* padding: 20px; */
     padding-right: 100px;
     padding-left: 100px;
   }
@@ -340,7 +340,7 @@ button:disabled:hover {
   position: absolute;
   bottom: 13px;
   left: 0px;
-  font-size: 12px;
+  font-size: 10px;
   color: rgb(255, 225, 0);
 }
 
@@ -348,7 +348,7 @@ button:disabled:hover {
   position: absolute;
   bottom: 13px;
   left: 0px;
-  font-size: 12px;
+  font-size: 10px;
   color: rgb(17, 145, 0);
 }
 
@@ -356,7 +356,7 @@ button:disabled:hover {
   position: absolute;
   bottom: 13px;
   right: 0px;
-  font-size: 12px;
+  font-size: 10px;
   color: rgb(17, 145, 0);
 }
 
@@ -372,7 +372,7 @@ button:disabled:hover {
   position: absolute;
   bottom: 13px;
   right: 0px;
-  font-size: 12px;
+  font-size: 10px;
   color: rgb(74, 192, 247);
 }
 
@@ -426,19 +426,6 @@ label {
   height: 3px;
 }
 
-/* .tooltip-inner {
-  max-width: 236px !important;
-  height: 35px;
-  font-size: 15px;
-  padding: 5px;
-  padding-right: 8px;
-  padding-left: 8px;
-  background: rgb(247, 247, 247);
-  color: rgb(0, 0, 0);
-  border: 1px solid #4e4e4e;
-  text-align: center;
-} */
-
 [data-tooltip]{
   position: relative;
   cursor: default;
@@ -451,9 +438,9 @@ label {
   bottom: 95%;
   text-align: center;
   box-sizing: border-box;
-  color: rgb(167, 167, 167);
+  color: rgb(83, 83, 83);
   background-color: rgb(255, 255, 255);
-  border: solid rgb(189, 189, 189) 1px;
+  border: solid rgb(88, 88, 88) 1px;
   padding: 3px;
   border-radius: 3px;
   font-size: 0.7rem;

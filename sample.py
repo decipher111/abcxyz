@@ -118,14 +118,14 @@ def get_time_table():
    print(username)
    date = request.args.get('date')
    print(date)
-   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'True', "file_name":"assignment_2.pdf","time_ago":"6 hours"}, 'lecture_id': 2, 'submission': None, 'assignment': {'available': 'True', 'file_name': 'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'False'}}], 'course_name': 'Computer Architecture', 'section': 'Computer Science', 'calendar_notifications': ['05/24/2020'], 'role': 'Professor', 'institution': 'NSIT'}], 'user_id': 2, 'email': 'professor_2@gmail.com'})
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'False', 'file_name':'sample.pdf', 'time_ago': '9 hours'} , 'assignment': {'available': 'True', 'file_name':'assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'True'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/25/2020', '01/01/2021'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
 
 
    
 @app.route('/return-files', methods=["GET"])
 def return_files_tut():
    print(request.data)
-   return send_file('/Users/raghav/Desktop/abc.png', attachment_filename='abc.png')
+   return send_file('/Users/raghav/Desktop/sample.pdf', attachment_filename='sample.pdf')
 
 
 @app.route('/get_upload_assignment_url')

@@ -1,326 +1,403 @@
-var MAX_LENGTH = 35;
-
-if (window.location.pathname == '/dashboard') {
-    
-    jQuery.support.cors = true;
-
-
-enableToolTips();
-initdashboard();
-// console.log(window.matchMedia("(min-width: 720px)").matches===true)
-//remove these fx after testing
-toggle();
-// uploadAssignment();
-inputTagFileName();
-
-
-
-function inputTagFileName(){
-    $('.inputfile' ).each( function()
-        {
-            var $input	 = $(this),
-                $label	 = $input.next( 'label' ),
-                labelVal = $label.html();
-
-            $input.on( 'change', function( e ){
-                var fileName = '';
-                $(this).parent().children('label').children('.icon').addClass('d-none')
-                $(this).parent().children('.fa-times').removeClass('d-none')
-
-                if( this.files && this.files.length > 1 )
-                    fileName = ( this.getAttribute( 'data-multiple-caption') || '' ).replace( '{count}', this.files.length );
-                else if( e.target.value )
-                    fileName = e.target.value.split( '\\' ).pop();
-                
-                if(window.matchMedia("(min-width: 720px)").matches=='true'){
-                    console.log('this')
-                }
-                
-                if(fileName.length>30 && window.matchMedia("(min-width: 720px)").matches===true){
-                    fileName = fileName.slice(0,26) + '...'
-                }
-                else if(fileName.length>30 && window.matchMedia("(max-width: 720px)").matches===true){
-                    fileName = fileName.slice(0,12) + '...'
-                }
-
-                if( fileName )
-                    $label.find( 'span' ).html( fileName );
-                else
-                    $label.html( labelVal );
-                if(fileName!=''){
-                    // $(this).parent().submit()
-                    $(this).parent().find("[type=submit]").trigger( "click" );
-                    console.log('submit')
-                }
-            });
-
-
-            // Firefox bug fix
-            $input
-            .on( 'focus', function(){ $input.addClass( 'has-focus' ); })
-            .on( 'blur', function(){ $input.removeClass( 'has-focus' ); });
-        }
-    );
-}
-
-function enableToolTips(){
-    $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
-        $('[data-toggle="tooltip"]').click(function(){
-            $('[data-toggle="tooltip"]').tooltip('hide')
-        })
-    })
-}
-
-function initdashboard(){
-    var d = new Date()
-    var date = Number(d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear()
-    renderTimeTable(date);
-}
-
-function getCourseName(course) {
-    if (course == null || course.course_name == null) {
-        return "";
-    }
-    if (course.course_name.length > MAX_LENGTH) {
-        return course.course_name.slice(0, MAX_LENGTH - 3) + '...';
-    }
-    return course.course_name;
-} 
-
-function getCourseID(course) {
-    if (course == null || course.course_id == null) {
-        return "";
-    }
-    return course.course_id
-}
-
-function getLectureID(lecture) {
-    if (lecture == null || lecture.lecture_id == null) {
-        return "";
-    }
-    return lecture.lecture_id;
-}
-
-function hasAssignment(lecture) {
-    if (lecture == null || lecture.assignment_available == null) {
-        return false;
-    }
-    return lecture.assignment_available
-}
-
-function hasAssignmentNotification(lecture) {
-    if (lecture == null || lecture.assignment_to_be_seen == null) {
-        return false;
-    }
-    return lecture.assignment_to_be_seen
-}
-
-function hasNotes(lecture) {
-    if (lecture == null || lecture.notes_available == null) {
-        return false;
-    }
-    return lecture.notes_available
-}
-
-function hasNotesNotification(lecture) {
-    if (lecture == null || lecture.notes_to_be_seen == null) {
-        return false;
-    }
-    return lecture.notes_to_be_seen
-}
-
-function getLectureTime(lecture) {
-    if (lecture == null || lecture.date_time == null) {
-        return "";
-    }
-    hours = new Date(lecture.date_time).getHours()
-    minutes = new Date(lecture.date_time).getMinutes()
-    period = ' AM'
-    if (hours >= 12) {
-        hours -= 12
-        period = ' PM'
-    }
-    return hours + ':' + minutes + period 
-}
-
-class Lecture {
-    constructor(course_name, lecture) {
-        this.course_name = course_name,
-        this.lecture_id = getLectureID(lecture)
-        this.has_assignment = hasAssignment(lecture)
-        this.has_assignment_notification = hasAssignmentNotification(lecture)
-        this.has_notes = hasNotes(lecture)
-        this.has_notes_notification = hasNotesNotification(lecture)
-        this.lecture_time = getLectureTime(lecture)
-        this.date_time = new Date(lecture.date_time)
-    }
-}
-
-function renderTimeTable(date) {
-    $('.test').html('')
-        $.ajax({
-            method: 'GET',
-            url: window.location.href +  "/get_time_table",
-            data: { date: date }
-          }).done(function(data) {
-                var lectures = []
-                for (const course_index in data.courses) {
-                    const course = data.courses[course_index]
-                    const course_name = getCourseName(course)
-                    for(const lecture_index in course.lectures) {
-                        lectures.push(new Lecture(course_name, course.lectures[lecture_index]))
-                    }
-                }
-                lectures.sort(function(a, b) { return a.date_time.getTime() - b.date_time.getTime() })
-
-                for (var i = 0; i < lectures.length; i++) {
-                        $('.test').append(
-                        `  <div class="container-fluid m-0">
-                        <div class="row-border">
-                        <ul class="list-inline mt-2 d-flex container-fluid">
-                            <li class="col-2 pt-3 list-inline-item">${lectures[i].lecture_time}</li>
-                            <li class="col-2 pt-3 list-inline-item">${lectures[i].course_id}</li>
-                            <li class="col-5 pt-3 list-inline-item">${lectures[i].course_name}<sup><i class="fa fa-circle fa-smaller"></i></sup></li>
-                            <li class="down-arrow col-1 list-inline-item icon-padding"><img src="static/images/as4.png" style="width:31px" height="31px"></li>
-                            <li class="down-arrow2 col-1 list-inline-item icon-padding"><img src="static/images/n-1.png" style="width:31px" height="31px"></li>
-                      </ul>
-                      <div class="line-break"></div>
-                      <div class="action d-none">
-                        <ul class="list-inline d-flex container">
-                          <li class="upload col-6 pt-2 list-inline-item">
-                          ${(() => {
-                            if (lectures[i].has_assignment) {
-                                return `<button lecture_id=${lecture_id} class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Assignment</button>`
-                            } else {
-                                return `<button disabled lecture_id=${lecture_id} class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Assignment</button>`
-                            }
-                          })()}
-                          </li>
-                            <li class="col-6 pt-2 list-inline-item">
-                              <form class="form" id="uploadAssignment">
-                              ${(() => {
-                                if (has_assignment) {
-                                    return `<input type="file" name="assignment" id="file-1" class="inputfile inputfile-1"/>`
-                                } else {
-                                    return `<input disabled type="file" name="assignment" id="file-1" class="inputfile inputfile-1"/>`
-                                }
-                              })()}
-                                  <label for="file-1" class="p-2"><i class="icon ml-1 fa fa-plus"></i><span class="ml-2">Submit Assignment</span></label>
-                                  <i class="ml-1 fa fa-times d-none" style="color: rgb(43, 43, 43);"></i>
-                                <input class="btn-dashboard btn d-none" type="submit" value="Upload">
-                            </form>
-                          </li>
-                        </ul>
-                      </div>
-                      <div class="action2 d-none">
-                        <ul class="list-inline d-flex container">
-                        ${(() => {
-                            if (has_notes) {
-                                return `<li class="upload col-12 pt-3 list-inline-item"><button lecture_id=${lecture_id} class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download Notes</button></li>`
-                            } else {
-                                return `<li class="upload col-12 pt-3 list-inline-item"><button disabled lecture_id=${lecture_id} class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download Notes</button></li>`
-                            }
-                          })()}
-                          <li class="upload col-12 pt-3 list-inline-item"><button disabledd lecture_id=${lecture_id} class="btn-radius btn-dashboard btn"><i class="icon mr-2 fa fa-cloud-download fa-lg"></i>Download Notes</button></li>
-                        </ul>
-                      </div>
-                      <div class="progress progress-upload d-none">
-                        <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
-                      </div>
-                    </div>
-                  </div>`)
-            }
-          }).done(function(){
-                toggle();
-                downloadEventListeners()
-                inputTagFileName();
-                uploadAssignment();
-          });
-}
-
-function toggle(){
-    $('.down-arrow').click(function(){
-        $('.test').find('.row-border-expanded2').removeClass("row-border-expanded2");
-        $('.test').find('.action2').addClass('d-none')
-        if($(this).parent().parent().hasClass('row-border-expanded2')){
-            $(this).parent().parent().toggleClass('row-border-expanded2')
-            $('.test').find('.action2').addClass('d-none')
-        }
-        var x = false;
-        if($(this).parent().parent().hasClass('row-border-expanded1') == true){
-            x = true;
-        }
-        $('.test').find('.row-border-expanded1').removeClass("row-border-expanded1");
-        $('.test').find('.action').addClass('d-none')
-        if(x == true){
-            $(this).parent().parent().toggleClass('row-border-expanded1')
-        }
-        $(this).parent().parent().toggleClass('row-border-expanded1')
-        $('.test').find('.row-border-expanded1').children('.action').toggleClass('d-none')
-    
-    })
-    
-    $('.down-arrow2').click(function(){
-        $('.test').find('.row-border-expanded1').removeClass("row-border-expanded1");
-        $('.test').find('.action').addClass('d-none')
-        if($(this).parent().parent().hasClass('row-border-expanded1')){
-            $(this).parent().parent().toggleClass('row-border-expanded1')
-            $('.test').find('.action').addClass('d-none')
-        }
-        var x = false;
-        if($(this).parent().parent().hasClass('row-border-expanded2') == true){
-            x = true;
-        }
-        $('.test').find('.row-border-expanded2').removeClass("row-border-expanded2");
-        $('.test').find('.action2').addClass('d-none')
-        if(x == true){
-            $(this).parent().parent().toggleClass('row-border-expanded2')
-        }
-        $(this).parent().parent().toggleClass('row-border-expanded2')
-        $('.test').find('.row-border-expanded2').children('.action2').toggleClass('d-none')
-    })
-}
-
-function uploadAssignment(){
-    $('#uploadAssignment').submit(function(e){
+//Upload Listeners
+function uploadListener(){
+    $('.form').submit(function(e){
         e.preventDefault()
-        console.log('inside fx')
+        var url, progress;
+
+        getSignedURL($(this), updateBackend, url, progress)
+    
+        if($(this).attr('id')=='uploadNotes'){
+            url = 'get_upload_notes_url'
+            progress = '2'
+        }
+        if($(this).attr('id')=='submitAssignment'){
+            url = 'get_upload_submission_url'
+            progress = ''
+        }
+        if($(this).attr('id')=='uploadAssignment'){
+            url = 'get_upload_assignment_url'
+            progress = ''
+        }
+
+        getSignedURL($(this), updateBackend, url, progress)
+
+    })
+}
+
+//Student Submits Assignment
+function getSignedURL(element,callback, url, progress){
+    var x = element.children('input[type=file]')[0];
+    content_type = x.files[0].type
+    var file_name = x.files[0].name
+    var thisLecture = element.parent().parent().parent().parent()
+    lecture_id = thisLecture[0].getAttribute('lecture_id')
+    var response = {status :false}
+
+    $.ajax({
+        method: 'GET',
+        url: window.location.href + '/'+ url,
+        data: {lecture_id: lecture_id, content_type : content_type }
+      }).done(function(signed_url) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", "save-post")
+        xhr.open("PUT", signed_url, true)
         xhr.upload.addEventListener("progress", (e)=>{
             const percent = (e.loaded/e.total)*100;
-            $(this).parent().parent().parent().parent().find('.progress').removeClass('d-none')
-            $(this).parent().parent().parent().parent().find('.progress-bar').css('width', `${percent}%`)
-            $(this).find('.progress-bar').css('width', `${percent}%`)
+            thisLecture.find(`.progress${progress}`).removeClass('d-none')
+            thisLecture.find(`.progress-bar${progress}`).css('width', `${percent}%`)
         })
-        xhr.setRequestHeader("Content-Type", "multipart/form-data")
-        var fd = new FormData($(this)[0])
-        // console.log(fd.get('assignment'))
+        xhr.onreadystatechange = function()
+        {
+            if (xhr.readyState == 4 && xhr.status == 200)
+            {
+                callback(thisLecture,lecture_id, response);
+                if(response.status == false){
+                    alert('File Not Uploaded')
+                }
+            }
+        }; 
+        xhr.setRequestHeader("Content-Type", content_type)
+        var fd = new FormData()
+        // fd.append('fileName', JSON.stringify(x.files[0].name));
+        // fd.append('fileData', x.files[0]);
+        // console.log(fd.get('fileName'))
+        // console.log(fd.get('fileData'))
         xhr.send(fd)
-    })
+      })
 }
 
-function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie != '') {
-        var cookies = document.cookie.split(';');
-        for (var i = 0; i < cookies.length; i++) {
-            var cookie = jQuery.trim(cookies[i]);
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
+function updateBackend(thisLecture,lecture_id, response){
+    $.ajax({
+        method: 'GET',
+        async : false,
+        url: window.location.href +  "/upload_submission",
+        data: {lecture_id: lecture_id}
+      }).done(function(data){
+        updateUI(data, thisLecture, response)
+      })
+
+}
+
+function updateUI(data, thisLecture, response){
+    for (const course_index in data.courses) {
+        const course = data.courses[course_index]
+        for(const lecture_index in course.lectures) {
+            if(course.lectures[lecture_index].submission.available == 'True'){
+                response.status = true
+                thisLecture.find('.progress').addClass('d-none')
+                thisLecture.find('.label-assignment').addClass('assignment-submitted')
+                thisLecture.find('.notification-assignment').removeClass('d-none')
+                thisLecture.find('.notification-assignment').next().addClass('assignment-submitted-dot')
+                thisLecture.find('.assignment-available-dot').addClass('assignment-submitted-dot')
+                thisLecture.find('.assignment-available-dot').removeClass('assignment-available-dot')
+            }
+            if(course.lectures[lecture_index].assignment.available == 'True'){
+                response.status = true
+                thisLecture.find('.progress').addClass('d-none')
+                thisLecture.find('.label-assignment').addClass('assignment-submitted')
+                thisLecture.find('.btn-submissions').removeAttr('disabled')
+                console.log(thisLecture.find('.days-ago-assignment'))
+                thisLecture.find('.days-ago-assignment').addClass('d-none')
+                thisLecture.find('.notification-assignment').removeClass('d-none')
+                thisLecture.find('.notification-assignment').next().addClass('assignment-submitted-dot')
+            }
+            if(course.lectures[lecture_index].notes.available == 'True'){
+                response.status = true
+                thisLecture.find('.label-notes').addClass('notes-uploaded')
+                thisLecture.find('.notification-notes').removeClass('d-none')
+                thisLecture.find('.progress2').addClass('d-none')
+                console.log(thisLecture.find('.days-ago-notes'))
+                thisLecture.find('.days-ago-notes').addClass('d-none')
             }
         }
     }
-    return cookieValue;
 }
 
-function downloadEventListeners(){
-    $('.btn-dashboard').click(function(){
-        console.log($(this).attr('lecture_id'))
+// Teacher Uploads Assignment
+function getSignedURLAssignmentUpload(element,callback){
+    var x = element.children('input[type=file]')[0];
+    content_type = x.files[0].type
+    var file_name = x.files[0].name
+    // console.log(x.files[0]) //returns BLOB
+    var thisLecture = element.parent().parent().parent().parent()
+    lecture_id = thisLecture[0].getAttribute('lecture_id')
+    var response = {status :false}
+
+    $.ajax({
+        method: 'GET',
+        url: window.location.href + "/get_upload_assignment_url",
+        data: {lecture_id: lecture_id, content_type : content_type }
+      }).done(function(signed_url) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", signed_url, true)
+        // xhr.open("POST", "save-post")
+        xhr.upload.addEventListener("progress", (e)=>{
+            const percent = (e.loaded/e.total)*100;
+            thisLecture.find('.progress').removeClass('d-none')
+            thisLecture.find('.progress-bar').css('width', `${percent}%`)
+        })
+        xhr.onreadystatechange = function()
+        {
+            if (xhr.readyState == 4 && xhr.status == 200)
+            {
+                callback(thisLecture,lecture_id, file_name, response);
+                if(response.status == false){
+                    alert('File Not Uploaded')
+                }
+            }
+        }; 
+        xhr.setRequestHeader("Content-Type", content_type)
+        var fd = new FormData()
+        fd.append('fileName', JSON.stringify(x.files[0].name));
+        // fd.append('fileData', x.files[0]);
+        // console.log(fd.get('fileData'))
+        xhr.send(fd)
+
+      })
+
+}
+
+function updateBackendAndUIAssignmentUpload(thisLecture, lecture_id, file_name, response){
+    $.ajax({
+        method: 'GET',
+        url: window.location.href + "/upload_assignment",
+        async: false,
+        data: {lecture_id: lecture_id}
+      }).done(function(data){
+        for (const course_index in data.courses) {
+            const course = data.courses[course_index]
+            for(const lecture_index in course.lectures) {
+                if(course.lectures[lecture_index].lecture_id == lecture_id){
+                    if(course.lectures[lecture_index].assignment.available == 'True' && course.lectures[lecture_index].assignment.file_name == file_name){
+                        response.status = true
+                        thisLecture.find('.progress').addClass('d-none')
+                        thisLecture.find('.label-assignment').addClass('assignment-submitted')
+                        thisLecture.find('.btn-submissions').removeAttr('disabled')
+                        thisLecture.find('.days-ago-assignment').addClass('d-none')
+                        thisLecture.find('.notification-assignment').removeClass('d-none')
+                        thisLecture.find('.notification-assignment').next().addClass('assignment-submitted-dot')
+                    }
+                }
+            }
+        }
+      })
+
+}
+
+//Teacher Uploads Notes
+function getSignedURLNotesUpload(element,callback){
+    var x = element.children('input[type=file]')[0];
+    content_type = x.files[0].type
+    var file_name = x.files[0].name
+    // console.log(x.files[0]) //returns BLOB
+    var thisLecture = element.parent().parent().parent().parent()
+    var lecture_id = thisLecture[0].getAttribute('lecture_id')
+    var response = {status :false}
+    $.ajax({
+        method: 'GET',
+        url: window.location.href + "/get_upload_notes_url",
+        data: {lecture_id: lecture_id, content_type : content_type }
+      }).done(function(signed_url) {
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", signed_url, true)
+        // xhr.open("POST", "save-post")
+        xhr.upload.addEventListener("progress", (e)=>{
+            const percent = (e.loaded/e.total)*100;
+            thisLecture.find('.progress2').removeClass('d-none')
+            thisLecture.find('.progress-bar2').css('width', `${percent}%`)
+        })
+        xhr.onreadystatechange = function()
+        {
+            if (xhr.readyState == 4 && xhr.status == 200)
+            {
+                callback(thisLecture,lecture_id, file_name, response);
+                if(response.status == false){
+                    alert('File Not Uploaded')
+                }
+            }
+        }; 
+        xhr.setRequestHeader("Content-Type", content_type)
+        var fd = new FormData()
+        // fd.append('fileName', JSON.stringify(x.files[0].name));
+        // fd.append('fileData', x.files[0]);
+        // console.log(fd.get('fileName'))
+        // console.log(fd.get('fileData'))
+        xhr.send(fd)
+
+      })
+
+}
+
+function updateBackendAndUINotesUpload(thisLecture,lecture_id,file_name, response){
+    $.ajax({
+        method: 'GET',
+        async:false,
+        url: window.location.href + "/upload_notes",
+        data: {lecture_id: lecture_id}
+      }).done(function(data){
+        for (const course_index in data.courses) {
+            const course = data.courses[course_index]
+            for(const lecture_index in course.lectures) {
+                if(course.lectures[lecture_index].lecture_id == lecture_id){
+                    if(course.lectures[lecture_index].notes.available == 'True' && course.lectures[lecture_index].notes.file_name == file_name){
+                        response.status = true
+                        thisLecture.find('.label-notes').addClass('notes-uploaded')
+                        thisLecture.find('.notification-notes').removeClass('d-none')
+                        thisLecture.find('.progress2').addClass('d-none')
+                        thisLecture.find('.days-ago-notes').addClass('d-none')
+                    }
+                }
+            }
+        }
+      })
+}
+
+//Student download Assignment
+function assignmentDownloadListener(){
+    $('.btn-assignment').click(function(){
+        var lecture = $(this).parent().parent().parent().parent();
+        var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id');
+
+        $.ajax({
+            method: 'GET',
+            url: window.location.href + "/get_download_assignment_url",
+            data: {lecture_id: lecture_id}
+          }).done(function(signed_url) {
+            fetch(window.location.href + '/' + signed_url, {
+                method: "GET",
+                })
+                .then(function(resp){
+                    if (resp.status == '200'){
+                        return resp.blob()
+                    }
+                })
+                .then(function(blob){
+                    let response = {
+                        status : false
+                    }
+                    $.ajax({
+                        method: 'GET',
+                        async: false,
+                        url: window.location.href + "/download_assignment",
+                        data: {lecture_id: lecture_id}
+                      }).done(function(data){
+                          backendCheckAssignmentDownload(lecture, data, response, lecture_id)
+                      })
+                      if(response.status==true)
+                      return blob
+                })
+                .then(blob => {
+                    createDownloadBLOB(blob)
+                })
+                .catch(() => alert('Could not fetch assignment'));
+        })
+          })
+    
+}
+
+function backendCheckAssignmentDownload(lecture, data, response, lecture_id){
+    for (const course_index in data.courses) {
+        const course = data.courses[course_index]
+        for(const lecture_index in course.lectures) {
+            if(course.lectures[lecture_index].lecture_id == lecture_id){
+                response.status = true
+                if(course.lectures[lecture_index].assignment.to_be_seen == 'False'){
+                    if(lecture.find('.notification-assignment').children(":first-child").hasClass('assignment-submitted-dot') == false){
+                        lecture.find('.notification-assignment').addClass('d-none')
+                    }
+                }
+            }
+        }
+    }
+}
+
+function createDownloadBLOB(blob){
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.style.display = 'none';
+    a.href = url;
+    // the filename you want
+    a.download = 'abc.pdf';
+    document.body.appendChild(a);
+    a.click();
+    window.URL.revokeObjectURL(url);
+}
+
+//Student download Notes
+function notesDownloadListener(){
+    $('.btn-notes').click(function(){
+        var lecture = $(this).parent().parent().parent().parent();
+        var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id')
+
+        $.ajax({
+            method: 'GET',
+            url: window.location.href + "/get_download_notes_url",
+            data: {lecture_id: lecture_id}
+          }).done(function(signed_url) {
+            fetch(window.location.href + '/' + signed_url, {
+            method: "GET",
+            })
+            .then(function(resp){
+                if (resp.status == '200'){
+                    return resp.blob()
+                }
+            })
+            .then(function(blob){
+                var response = {
+                    status : false
+                }
+                $.ajax({
+                    method: 'GET',
+                    async: false,
+                    url: window.location.href + "/download_notes",
+                    data: {lecture_id: lecture_id}
+                }).done(function(data){
+                    backendCheckNotesDownload(lecture, data, response, lecture_id)
+                })
+                if(response.status==true){
+                    return blob
+                }
+            })
+            .then(blob => {
+            createDownloadBLOB(blob)
+            })
+            .catch(() => alert('Could not fetch notes'));
+        })
+          })
+
+
+
+
+}
+
+//UI Upadte on Notes Download
+function backendCheckNotesDownload(lecture, data, response, lecture_id){
+    for (const course_index in data.courses) {
+        const course = data.courses[course_index]
+        for(const lecture_index in course.lectures) {
+            if(course.lectures[lecture_index].lecture_id == lecture_id){
+                response.status = true
+                if(course.lectures[lecture_index].notes.to_be_seen == 'False'){
+                    lecture.find('.notes-available-dot').addClass('notes-seen-dot')
+                    lecture.find('.notes-available-dot').removeClass('notes-available-dot')
+                }
+            }
+        }
+    }
+}
+
+//View Submissions
+function submissionListener(){
+    $('.btn-submissions').click(function() {
+        lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id')
+
+        $.ajax({
+            method: 'GET',
+            url: window.location.href + `/redirect_submissions`,
+            data: { lecture_id: lecture_id }
+          }).done(function(url) {
+            console.log(url)
+                window.location.href = `${url}?lecture_id=${lecture_id}`;
+          })
+
     })
-}
-
 }

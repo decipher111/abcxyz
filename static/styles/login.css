@@ -119,14 +119,35 @@ input[type="password"]:focus{
   color: white;
 }
 
+input:-webkit-autofill::first-line {
+  font-family: chalkboard;
+  font-size: 16px
+}
+
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
 input:-webkit-autofill:active  {
+  font-family: chalkboard;
+  -webkit-animation: autofill 0s forwards;
+    animation: autofill 0s forwards;
   color: white;
-  -webkit-box-shadow: 0 0 0 30px rgb(48, 48, 48) inset !important;
-  -webkit-text-fill-color: white !important;
 }
+
+@keyframes autofill {
+  100% {
+      background: transparent;
+      color: inherit;
+  }
+}
+
+@-webkit-keyframes autofill {
+  100% {
+      background: transparent;
+      color: inherit;
+  }
+}
+
 
 .img-container {
   display: inline-block;

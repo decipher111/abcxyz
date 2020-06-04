@@ -22,8 +22,7 @@ function initdashboard(){
 function dynamicEventListeners(){
     toggle()
     enableToolTips()
-    assignmentDownloadListener()
-    notesDownloadListener()
+    downloadListener()
     submitFormOnStateChange()
     uploadListener()
     submissionListener()
@@ -322,14 +321,11 @@ class LectureProfessor {
 }
 
 function renderTimeTable(date) {
-    $('.test').html(`<div class="loader"><img src="static/images/loader2.gif"></div>`)
+    $('.test').html('')
 
         $.ajax({
             method: 'GET',
             url: window.location.href + '/get_time_table',
-            beforeSend : function(){
-                $('.loader').show()
-            },
             data: { date: date }
           }).done(function(data) {
               if(data != null && data != undefined){
@@ -571,7 +567,7 @@ function renderStudent(data){
                   <li class="upload col-6 pt-2 list-inline-item">
                   ${(() => {
                     if (lectures[i].has_assignment == 'True') {
-                        return `<button lecture_id=${lecture_id} class="btn-dashboard btn btn-assignment"><i class="icon mr-2 fa fa-download fa-lg"></i>${lectures[i].assignment_name}</button>
+                        return `<button lecture_id=${lecture_id} class="btn-dashboard assignment btn btn-download"><i class="icon mr-2 fa fa-download fa-lg"></i>${lectures[i].assignment_name}</button>
                         <div class="days-ago">Uploaded ${lectures[i].assignment_time_ago} ago</div>`
                     } else {
                         return `<button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button>`
@@ -609,8 +605,8 @@ function renderStudent(data){
                 <ul class="list-inline d-flex container">
                 ${(() => {
                     if (lectures[i].has_notes == 'True') {
-                        return `<li class="upload col-12 pt-2 list-inline-item"><button lecture_id=${lecture_id} class="btn-dashboard btn btn-notes"><i class="icon mr-2 fa fa-download fa-lg"></i>${lectures[i].notes_name}</button>
-                        <div class="days-ago">Uploaded ${lectures[i].notes_time_ago} ago</div></li>`
+                        return `<li class="upload col-12 pt-2 list-inline-item"><button lecture_id=${lecture_id} class="btn-dashboard btn btn-download notes"><i class="icon mr-2 fa fa-download fa-lg"></i>${lectures[i].notes_name}</button>
+                        <div class="days-ago days-ago-submission">Uploaded ${lectures[i].notes_time_ago} ago</div></li>`
                     } else {
                         return `<li class="upload col-12 pt-2 list-inline-item"><button disabled lecture_id=${lecture_id} class="btn-dashboard btn"><i class="icon mr-2 fa fa-download fa-lg"></i>Download</button></li>`
                     }
@@ -627,41 +623,46 @@ function renderStudent(data){
 function uploadListener(){
     $('.form').submit(function(e){
         e.preventDefault()
+        var url, progress;
     
         if($(this).attr('id')=='uploadNotes'){
-            getSignedURLNotesUpload($(this),updateBackendAndUINotesUpload) //update teacher notif and backend on upload of notes
+            url = '/get_upload_notes_url'
+            progress = '2'
         }
         if($(this).attr('id')=='submitAssignment'){
-            getSignedURLSubmission($(this),updateBackendAndUISubmission) //update student notif and backend on upload of assignment
+            url = '/get_upload_submission_url'
+            progress = ''
         }
         if($(this).attr('id')=='uploadAssignment'){
-            getSignedURLAssignmentUpload($(this),updateBackendAndUIAssignmentUpload) //update teacher notif and backend on upload of assignment
+            url = '/get_upload_assignment_url'
+            progress = ''
         }
+
+        getSignedURL($(this), updateBackendUpload, url, progress)
+
     })
 }
 
 //Student Submits Assignment
-function getSignedURLSubmission(element,callback){
+function getSignedURL(element,callback, url, progress){
     var x = element.children('input[type=file]')[0];
     content_type = x.files[0].type
-    // console.log(x.files[0]) //returns BLOB
     var file_name = x.files[0].name
     var thisLecture = element.parent().parent().parent().parent()
     lecture_id = thisLecture[0].getAttribute('lecture_id')
     var response = {status :false}
-
     $.ajax({
         method: 'GET',
-        url: window.location.href + "/get_upload_submission_url",
+        url: window.location.href + url,
         data: {lecture_id: lecture_id, content_type : content_type }
       }).done(function(signed_url) {
         const xhr = new XMLHttpRequest();
-        xhr.open("PUT", signed_url, true)
-        // xhr.open("POST", "save-post")
+        xhr.open("POST", '/save-post', true)
+        // xhr.open("PUT", signed_url, true)
         xhr.upload.addEventListener("progress", (e)=>{
             const percent = (e.loaded/e.total)*100;
-            thisLecture.find('.progress').removeClass('d-none')
-            thisLecture.find('.progress-bar').css('width', `${percent}%`)
+            thisLecture.find(`.progress${progress}`).removeClass('d-none')
+            thisLecture.find(`.progress-bar${progress}`).css('width', `${percent}%`)
         })
         xhr.onreadystatechange = function()
         {
@@ -680,226 +681,120 @@ function getSignedURLSubmission(element,callback){
         // console.log(fd.get('fileName'))
         // console.log(fd.get('fileData'))
         xhr.send(fd)
-
       })
-
 }
 
-function updateBackendAndUISubmission(thisLecture,lecture_id, file_name, response){
+function updateBackendUpload(thisLecture,lecture_id, file_name, response){
     $.ajax({
         method: 'GET',
         async : false,
         url: window.location.href +  "/upload_submission",
         data: {lecture_id: lecture_id}
       }).done(function(data){
-          for (const course_index in data.courses) {
-            const course = data.courses[course_index]
-            for(const lecture_index in course.lectures) {
-                if(course.lectures[lecture_index].lecture_id == lecture_id){
-                    if(course.lectures[lecture_index].submission.available == 'True' && course.lectures[lecture_index].submission.file_name == file_name){
-                        response.status = true
-                        thisLecture.find('.progress').addClass('d-none')
-                        thisLecture.find('.label-assignment').addClass('assignment-submitted')
-                        thisLecture.find('.notification-assignment').removeClass('d-none')
-                        thisLecture.find('.notification-assignment').next().addClass('assignment-submitted-dot')
-                        thisLecture.find('.assignment-available-dot').addClass('assignment-submitted-dot')
-                        thisLecture.find('.assignment-available-dot').removeClass('assignment-available-dot')
-                    }
-                }
+        updateUIUpload(data, thisLecture, file_name, response)
+      })
+
+}
+
+function updateUIUpload(data, thisLecture, file_name, response){
+    for (const course_index in data.courses) {
+        const course = data.courses[course_index]
+        for(const lecture_index in course.lectures) {
+            if(course.lectures[lecture_index].submission.available == 'True'){
+                response.status = true
+                thisLecture.find('.progress').addClass('d-none')
+                thisLecture.find('.label-assignment').addClass('assignment-submitted')
+                thisLecture.find('.notification-assignment').removeClass('d-none')
+                thisLecture.find('.days-ago-submission').addClass('d-none')
+                thisLecture.find('.notification-assignment').next().addClass('assignment-submitted-dot')
+                thisLecture.find('.assignment-available-dot').addClass('assignment-submitted-dot')
+                thisLecture.find('.assignment-available-dot').removeClass('assignment-available-dot')
+            }
+            if(course.lectures[lecture_index].assignment.available == 'True'){
+                response.status = true
+                thisLecture.find('.progress').addClass('d-none')
+                thisLecture.find('.label-assignment').addClass('assignment-submitted')
+                thisLecture.find('.btn-submissions').removeAttr('disabled')
+                console.log(thisLecture.find('.days-ago-assignment'))
+                thisLecture.find('.days-ago-assignment').addClass('d-none')
+                thisLecture.find('.notification-assignment').removeClass('d-none')
+                thisLecture.find('.notification-assignment').next().addClass('assignment-submitted-dot')
+            }
+            if(course.lectures[lecture_index].notes.available == 'True'){
+                response.status = true
+                thisLecture.find('.label-notes').addClass('notes-uploaded')
+                thisLecture.find('.notification-notes').removeClass('d-none')
+                thisLecture.find('.progress2').addClass('d-none')
+                console.log(thisLecture.find('.days-ago-notes'))
+                thisLecture.find('.days-ago-notes').addClass('d-none')
             }
         }
-      })
-
+    }
 }
 
-// Teacher Uploads Assignment
-function getSignedURLAssignmentUpload(element,callback){
-    var x = element.children('input[type=file]')[0];
-    content_type = x.files[0].type
-    var file_name = x.files[0].name
-    // console.log(x.files[0]) //returns BLOB
-    var thisLecture = element.parent().parent().parent().parent()
-    lecture_id = thisLecture[0].getAttribute('lecture_id')
-    var response = {status :false}
-
-    $.ajax({
-        method: 'GET',
-        url: window.location.href + "/get_upload_assignment_url",
-        data: {lecture_id: lecture_id, content_type : content_type }
-      }).done(function(signed_url) {
-        const xhr = new XMLHttpRequest();
-        xhr.open("PUT", signed_url, true)
-        // xhr.open("POST", "save-post")
-        xhr.upload.addEventListener("progress", (e)=>{
-            const percent = (e.loaded/e.total)*100;
-            thisLecture.find('.progress').removeClass('d-none')
-            thisLecture.find('.progress-bar').css('width', `${percent}%`)
-        })
-        xhr.onreadystatechange = function()
-        {
-            if (xhr.readyState == 4 && xhr.status == 200)
-            {
-                callback(thisLecture,lecture_id, file_name, response);
-                if(response.status == false){
-                    alert('File Not Uploaded')
-                }
-            }
-        }; 
-        xhr.setRequestHeader("Content-Type", content_type)
-        var fd = new FormData()
-        fd.append('fileName', JSON.stringify(x.files[0].name));
-        // fd.append('fileData', x.files[0]);
-        // console.log(fd.get('fileData'))
-        xhr.send(fd)
-
-      })
-
-}
-
-function updateBackendAndUIAssignmentUpload(thisLecture, lecture_id, file_name, response){
-    $.ajax({
-        method: 'GET',
-        url: window.location.href + "/upload_assignment",
-        async: false,
-        data: {lecture_id: lecture_id}
-      }).done(function(data){
-        for (const course_index in data.courses) {
-            const course = data.courses[course_index]
-            for(const lecture_index in course.lectures) {
-                if(course.lectures[lecture_index].lecture_id == lecture_id){
-                    if(course.lectures[lecture_index].assignment.available == 'True' && course.lectures[lecture_index].assignment.file_name == file_name){
-                        response.status = true
-                        thisLecture.find('.progress').addClass('d-none')
-                        thisLecture.find('.label-assignment').addClass('assignment-submitted')
-                        thisLecture.find('.btn-submissions').removeAttr('disabled')
-                        thisLecture.find('.days-ago-assignment').addClass('d-none')
-                        thisLecture.find('.notification-assignment').removeClass('d-none')
-                        thisLecture.find('.notification-assignment').next().addClass('assignment-submitted-dot')
-                    }
-                }
-            }
-        }
-      })
-
-}
-
-//Teacher Uploads Notes
-function getSignedURLNotesUpload(element,callback){
-    var x = element.children('input[type=file]')[0];
-    content_type = x.files[0].type
-    var file_name = x.files[0].name
-    // console.log(x.files[0]) //returns BLOB
-    var thisLecture = element.parent().parent().parent().parent()
-    var lecture_id = thisLecture[0].getAttribute('lecture_id')
-    var response = {status :false}
-    $.ajax({
-        method: 'GET',
-        url: window.location.href + "/get_upload_notes_url",
-        data: {lecture_id: lecture_id, content_type : content_type }
-      }).done(function(signed_url) {
-        const xhr = new XMLHttpRequest();
-        xhr.open("PUT", signed_url, true)
-        // xhr.open("POST", "save-post")
-        xhr.upload.addEventListener("progress", (e)=>{
-            const percent = (e.loaded/e.total)*100;
-            thisLecture.find('.progress2').removeClass('d-none')
-            thisLecture.find('.progress-bar2').css('width', `${percent}%`)
-        })
-        xhr.onreadystatechange = function()
-        {
-            if (xhr.readyState == 4 && xhr.status == 200)
-            {
-                callback(thisLecture,lecture_id, file_name, response);
-                if(response.status == false){
-                    alert('File Not Uploaded')
-                }
-            }
-        }; 
-        xhr.setRequestHeader("Content-Type", content_type)
-        var fd = new FormData()
-        // fd.append('fileName', JSON.stringify(x.files[0].name));
-        // fd.append('fileData', x.files[0]);
-        // console.log(fd.get('fileName'))
-        // console.log(fd.get('fileData'))
-        xhr.send(fd)
-
-      })
-
-}
-
-function updateBackendAndUINotesUpload(thisLecture,lecture_id,file_name, response){
-    $.ajax({
-        method: 'GET',
-        async:false,
-        url: window.location.href + "/upload_notes",
-        data: {lecture_id: lecture_id}
-      }).done(function(data){
-        for (const course_index in data.courses) {
-            const course = data.courses[course_index]
-            for(const lecture_index in course.lectures) {
-                if(course.lectures[lecture_index].lecture_id == lecture_id){
-                    if(course.lectures[lecture_index].notes.available == 'True' && course.lectures[lecture_index].notes.file_name == file_name){
-                        response.status = true
-                        thisLecture.find('.label-notes').addClass('notes-uploaded')
-                        thisLecture.find('.notification-notes').removeClass('d-none')
-                        thisLecture.find('.progress2').addClass('d-none')
-                        thisLecture.find('.days-ago-notes').addClass('d-none')
-                    }
-                }
-            }
-        }
-      })
-}
-
-//Student download Assignment
-function assignmentDownloadListener(){
-    $('.btn-assignment').click(function(){
+//Download Listener
+function downloadListener(){
+    $('.btn-download').click(function(){
+        var url, url2;
         var lecture = $(this).parent().parent().parent().parent();
-        var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id');
+        var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id')
+
+        if($(this).hasClass('notes')){
+            url = '/get_download_notes_url'
+            url2 = '/download_notes'
+        } else if($(this).hasClass('assignment')){
+            url = '/get_download_assignment_url'
+            url2 = '/download_assignment'
+        }
+
+        console.log(url)
 
         $.ajax({
             method: 'GET',
-            url: window.location.href + "/get_download_assignment_url",
+            url: window.location.href + url,
             data: {lecture_id: lecture_id}
           }).done(function(signed_url) {
-            fetch(window.location.href + '/' + signed_url, {
-                method: "GET",
+            fetch(window.location.href + '/return-files', {
+            method: "GET",
+            })
+            .then(function(resp){
+                if (resp.status == '200'){
+                    return resp.blob()
+                }
+            })
+            .then(function(blob){
+                var response = {
+                    status : false
+                }
+                $.ajax({
+                    method: 'GET',
+                    async: false,
+                    url: window.location.href + url2,
+                    data: {lecture_id: lecture_id}
+                }).done(function(data){
+                    updateUIDownload(lecture, data, response, lecture_id)
                 })
-                .then(function(resp){
-                    if (resp.status == '200'){
-                        return resp.blob()
-                    }
-                })
-                .then(function(blob){
-                    let response = {
-                        status : false
-                    }
-                    $.ajax({
-                        method: 'GET',
-                        async: false,
-                        url: window.location.href + "/download_assignment",
-                        data: {lecture_id: lecture_id}
-                      }).done(function(data){
-                          backendCheckAssignmentDownload(lecture, data, response, lecture_id)
-                      })
-                      if(response.status==true)
-                      return blob
-                })
-                .then(blob => {
-                    createDownloadBLOB(blob)
-                })
-                .catch(() => alert('Could not fetch assignment'));
+                if(response.status==true){
+                    return blob
+                }
+            })
+            .then(blob => {
+            createDownloadBLOB(blob)
+            })
+            .catch(() => alert('Could not fetch notes'));
         })
           })
-    
 }
 
-function backendCheckAssignmentDownload(lecture, data, response, lecture_id){
+function updateUIDownload(lecture, data, response, lecture_id){
     for (const course_index in data.courses) {
         const course = data.courses[course_index]
         for(const lecture_index in course.lectures) {
             if(course.lectures[lecture_index].lecture_id == lecture_id){
                 response.status = true
+                if(course.lectures[lecture_index].notes.to_be_seen == 'False'){
+                    lecture.find('.notification-notes').addClass('d-none')
+                }
                 if(course.lectures[lecture_index].assignment.to_be_seen == 'False'){
                     if(lecture.find('.notification-assignment').children(":first-child").hasClass('assignment-submitted-dot') == false){
                         lecture.find('.notification-assignment').addClass('d-none')
@@ -922,69 +817,6 @@ function createDownloadBLOB(blob){
     window.URL.revokeObjectURL(url);
 }
 
-//Student download Notes
-function notesDownloadListener(){
-    $('.btn-notes').click(function(){
-        var lecture = $(this).parent().parent().parent().parent();
-        var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id')
-
-        $.ajax({
-            method: 'GET',
-            url: window.location.href + "/get_download_notes_url",
-            data: {lecture_id: lecture_id}
-          }).done(function(signed_url) {
-            fetch(window.location.href + '/' + signed_url, {
-            method: "GET",
-            })
-            .then(function(resp){
-                if (resp.status == '200'){
-                    return resp.blob()
-                }
-            })
-            .then(function(blob){
-                var response = {
-                    status : false
-                }
-                $.ajax({
-                    method: 'GET',
-                    async: false,
-                    url: window.location.href + "/download_notes",
-                    data: {lecture_id: lecture_id}
-                }).done(function(data){
-                    backendCheckNotesDownload(lecture, data, response, lecture_id)
-                })
-                if(response.status==true){
-                    return blob
-                }
-            })
-            .then(blob => {
-            createDownloadBLOB(blob)
-            })
-            .catch(() => alert('Could not fetch notes'));
-        })
-          })
-
-
-
-
-}
-
-//UI Upadte on Notes Download
-function backendCheckNotesDownload(lecture, data, response, lecture_id){
-    for (const course_index in data.courses) {
-        const course = data.courses[course_index]
-        for(const lecture_index in course.lectures) {
-            if(course.lectures[lecture_index].lecture_id == lecture_id){
-                response.status = true
-                if(course.lectures[lecture_index].notes.to_be_seen == 'False'){
-                    lecture.find('.notes-available-dot').addClass('notes-seen-dot')
-                    lecture.find('.notes-available-dot').removeClass('notes-available-dot')
-                }
-            }
-        }
-    }
-}
-
 //View Submissions
 function submissionListener(){
     $('.btn-submissions').click(function() {
@@ -1001,7 +833,6 @@ function submissionListener(){
 
     })
 }
-
 
 function commentListener(){
     $('.view-comments').click(function(){
