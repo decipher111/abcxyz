@@ -78,7 +78,7 @@ class Course(db.Model):
 
 
 class UserData(db.Model):
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.String(100), primary_key=True)
     email = db.Column(db.String(100), nullable=False, unique=True)
 
     def __init__(self, email):

@@ -4,7 +4,7 @@ var MAX_LENGTH = 35;
 var calendar_notifications_unique = [];
 
 //initializing dashboard
-initdashboard();
+// initdashboard();
 
 dynamicEventListeners()
 
@@ -31,6 +31,7 @@ function dynamicEventListeners(){
 
 function toggle(){
     $('.down-arrow').click(function(){
+        $('.comment-container').addClass('d-none')
         $('.test').find('.row-border-expanded11').removeClass("row-border-expanded11");
         $('.test').find('.row-border-expanded2').removeClass("row-border-expanded2");
         $('.test').find('.action2').addClass('d-none')
@@ -53,6 +54,7 @@ function toggle(){
     })
     
     $('.down-arrow2').click(function(){
+        $('.comment-container').addClass('d-none')
         $('.test').find('.row-border-expanded11').removeClass("row-border-expanded11");
         $('.test').find('.row-border-expanded1').removeClass("row-border-expanded1");
         $('.test').find('.action').addClass('d-none')
@@ -319,6 +321,8 @@ class LectureProfessor {
         this.date_time = new Date(lecture.date_time)
     }
 }
+
+var lec = new Map()
 
 function renderTimeTable(date) {
     $('.test').html('')
@@ -653,11 +657,11 @@ function getSignedURL(element,callback, url, progress){
     var response = {status :false}
     $.ajax({
         method: 'GET',
-        url: window.location.href + url,
+        url: window.location.href + '/get_upload_assignment_url',
         data: {lecture_id: lecture_id, content_type : content_type }
       }).done(function(signed_url) {
         const xhr = new XMLHttpRequest();
-        xhr.open("POST", '/save-post', true)
+        xhr.open("POST", '/save-post')
         // xhr.open("PUT", signed_url, true)
         xhr.upload.addEventListener("progress", (e)=>{
             const percent = (e.loaded/e.total)*100;
@@ -685,6 +689,8 @@ function getSignedURL(element,callback, url, progress){
 }
 
 function updateBackendUpload(thisLecture,lecture_id, file_name, response){
+    console.log('here')
+    thisLecture.find('.progress2').removeClass('d-none')
     $.ajax({
         method: 'GET',
         async : false,
@@ -693,10 +699,10 @@ function updateBackendUpload(thisLecture,lecture_id, file_name, response){
       }).done(function(data){
         updateUIUpload(data, thisLecture, file_name, response)
       })
-
 }
 
 function updateUIUpload(data, thisLecture, file_name, response){
+    console.log('now here')
     for (const course_index in data.courses) {
         const course = data.courses[course_index]
         for(const lecture_index in course.lectures) {
@@ -834,10 +840,65 @@ function submissionListener(){
     })
 }
 
+characterCounter()
+appendComment()
+
 function commentListener(){
     $('.view-comments').click(function(){
-        // $('.row-border').not($(this).parent().parent()).hide(); 
-        console.log($(this).parent().parent().toggleClass('row-border-expanded11'))
+        $(this).children(0).toggleClass('fa-rotate-180')
+        var comment_type
+        if($(this).hasClass('view-comment-assignment')){
+            comment_type = 'assignment'
+            $(this).parent().parent().toggleClass('row-border-expanded11')
+        }
+        else{
+            comment_type = 'notes'
+            $(this).parent().parent().toggleClass('row-border-expanded11')
+        }
+        $('.comment-container').toggleClass('d-none')
+        var comments_box = $(this).parent().next().next().children().eq(1)
+
+        $.ajax({
+            method: 'GET',
+            url: window.location.href + '/get_comments',
+            data: { date: date }
+          }).done(function(data) {
+              for(i=0; i<3; i++){
+                  comments_box.html('')
+                  comment = `<div class="comment-wrapper"><small>Raghav</small><div class="single-comment">Enter comment here</div></div>`
+                  comments_box.prepend(comment)
+              }
+          })
+    })
+}
+
+function characterCounter(){
+    $('.comment-input').on('keyup', function(){
+        var characters = $(this).val().split('');
+        $(this).next().html(`${characters.length}/140`);
+        if(characters.length>140){
+            $(this).next().next().attr("disabled","")
+        }
+        if(characters.length<=140){
+            $(this).next().next().removeAttr("disabled")
+        }
+    })
+}
+
+function appendComment(){
+    $('.comment-form').submit(function(e){
+        e.preventDefault()
+        var comment = $(this).children(0).children(0).val()
+        $(this).children(0).children(0).val('')
+        var comment_section = $(this)
+        
+        $.ajax({
+            method: 'GET',
+            url: window.location.href + '/add_comment',
+            data: { date: date }
+          }).done(function(data) {
+                comment_section.next().prepend(`<div class="comment-wrapper"><small>Raghav</small><div class="single-comment">${comment}</div></div>`)
+          })
     })
 }
 

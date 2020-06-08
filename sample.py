@@ -3,7 +3,9 @@ from flask_mysqldb import MySQL
 from wtforms import Form, StringField, TextAreaField, PasswordField, validators, DateField, IntegerField
 from passlib.hash import sha256_crypt
 from functools import wraps
+import pandas as pd
 import datetime
+from sqlalchemy import create_engine
 # from flask_restful import Api
 from flask_jwt_extended import (JWTManager, jwt_required, 
                                 jwt_refresh_token_required, 
@@ -14,6 +16,8 @@ from flask_jwt_extended import (JWTManager, jwt_required,
                                 unset_jwt_cookies,unset_access_cookies)
 from flask_cors import CORS, cross_origin
 import json
+import xlrd
+
 
 
 app = Flask(__name__)
@@ -38,16 +42,11 @@ mysql = MySQL(app)
 user_creds = {}
 user_roles = {}
 
-# def is_logged_in(f):
-#     @wraps(f)
-#     def wrap(*args, **kwargs):
-#         if 'logged_in' in session:
-#             return f(*args, **kwargs)
-#         else:
-#             flash('Unauthorized, Please login', 'danger')
-#             return redirect(url_for('login'))
-#     return wrap
 
+# df=pd.read_csv('cb.csv')
+# engine = create_engine('mysql://usr/local/mysql/data', echo=False)
+# df.to_sql('UserData', con=engine)
+# book = xlrd.open_workbook()
 
 def assign_access_refresh_tokens(user_id, url):
     access_token = create_access_token(identity=str(user_id))
@@ -209,6 +208,16 @@ def get_submissions():
 def get_download_submissin_url():
    print(request.args.get('user_id'))
    return "signed url"
+
+@app.route('/add_comment')
+def add_comment():
+   print(request.args.get('date'))
+   return 200
+
+# @app.route('/get_comments')
+# def get_comments():
+#    print(request.args.get('date'))
+#    return 200
 
 @app.route('/save-post',methods=['POST'])
 def savepost():

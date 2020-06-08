@@ -20,7 +20,112 @@
 
 
 <div class="test">
-  
+  <div class="container-fluid m-0">
+    <div class="row-border first-lecture" lecture_id=${lecture_id}>
+        <ul class="list-inline mt-2 d-flex container-fluid">
+          <li class="col-2 pt-3 list-inline-item">10:00am</li>
+          <li class="col-2 pt-3 list-inline-item">${section}</li>
+          <li class="col-5 pt-3 list-inline-item">${subjectName}</li>
+          <li class="down-arrow col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Assignment"><img src="static/images/as8.png" style="width:31px" height="31px"></li>
+          <li class="down-arrow2 col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Notes"><img src="static/images/n-1.png" style="width:31px" height="31px"></li>
+        </ul>
+        <div class="line-break"></div>
+          <div class="action d-none">
+            <ul class="mb-0 list-inline d-flex container">
+                <li class="col-6 pt-2 list-inline-item">
+                  <form class="form" id="uploadAssignment" enctype="multipart/form-data">
+                    <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1"/>
+                    <label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
+                    <input class="btn d-none" type="submit" value="Assignment 2">
+                  </form>
+                </li>
+                <li class="upload col-6 pt-2 list-inline-item">
+                  <button disabled lecture_id=${lecture_id} class="btn-dashboard btn-submissions btn"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>
+                </li>
+            </ul>
+            <div class="view-comments view-comment-assignment mt-3 ml-4 mr-2 pl-2 pr-2">View Comments<i class="fa fa-caret-down pl-2 pr-2" aria-hidden="true"></i></div>
+            <div class="progress progress-upload d-none">
+              <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="action2 d-none">
+            <ul class="mb-0 list-inline d-flex container">
+            <li class="col-12 pt-2 list-inline-item">
+                <form class="form" id="uploadNotes" enctype="multipart/form-data">
+                <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="notes" id="file-2" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                <label for="file-1" class="p-2 label-notes"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
+                <input class="btn d-none" type="submit" value="Upload">
+            </form>
+            </li>
+            </ul>
+            <div class="view-comments view-comment-notes mt-3 ml-4 mr-2 pl-2 pr-2">View Comments<i class="fa fa-caret-down pl-2 pr-2" aria-hidden="true"></i></div>
+            <div class="progress2 progress-upload2 d-none">
+                <div class="progress-bar2" role="progressbar" style="width: 0%;"></div>
+            </div>
+          </div>
+          <div class="comment-container d-none">
+            <form class="comment-form">
+              <div class="form-inline comment-input-center">
+                <input class="form-control form-control-sm comment-input" type="text" placeholder="Add a comment...">
+                <div class="character-count">0/140</div>
+                <button type="submit" class="btn submit-comment m-1"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+              </div>
+            </form>
+            <div id="" class="comments">
+              <!-- <div class="comment-wrapper"><small>Krit</small><div class="single-comment">Sir how do i solve  question 2b?</div></div>
+              <div class="comment-wrapper"><small>Professor</small><div class="single-comment">Just divide the equation by 4pi to get the answer</div></div>
+              <div class="comment-wrapper"><small>Raghav</small><div class="single-comment">This is another sample comment which is longer than one line gets wrapped around the box</div></div>
+              <div class="comment-wrapper"><small>Raghav</small><div class="single-comment">This is another sample comment</div></div>
+              <div class="comment-wrapper"><small>Raghav</small><div class="single-comment">This is another sample comment</div></div>
+              <div class="comment-wrapper"><small>Raghav</small><div class="single-comment">This is another sample comment</div></div> -->
+            </div>
+          </div>
+          
+          
+        </div>
+
+        <div class="row-border last-lecture" lecture_id=${lecture_id}>
+          <ul class="list-inline mt-2 d-flex container-fluid">
+            <li class="col-2 pt-3 list-inline-item">10:00am</li>
+            <li class="col-2 pt-3 list-inline-item">${section}</li>
+            <li class="col-5 pt-3 list-inline-item">${subjectName}</li>
+            <li class="down-arrow col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Assignment"><img src="static/images/as8.png" style="width:31px" height="31px"></li>
+            <li class="down-arrow2 col-1 list-inline-item icon-padding" data-toggle="tooltip" data-placement="top" title="Notes"><img src="static/images/n-1.png" style="width:31px" height="31px"></li>
+          </ul>
+          <div class="line-break"></div>
+            <div class="action d-none">
+              <ul class="mb-0 list-inline d-flex container">
+                  <li class="col-6 pt-2 list-inline-item">
+                    <form class="form" id="uploadAssignment" enctype="multipart/form-data">
+                      <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="assignment" id="file-1" class="inputfile inputfile-1"/>
+                      <label for="file-1" class="p-2 label-assignment"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
+                      <input class="btn d-none" type="submit" value="Assignment 2">
+                    </form>
+                  </li>
+                  <li class="upload col-6 pt-2 list-inline-item">
+                    <button disabled lecture_id=${lecture_id} class="btn-dashboard btn-submissions btn"><i class="icon mr-2 fa fa-eye fa-lg"></i>Submissions</button>
+                  </li>
+              </ul>
+              <div class="progress progress-upload d-none">
+                <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
+              </div>
+            </div>
+            <div class="action2 d-none">
+              <ul class="mb-0 list-inline d-flex container">
+              <li class="col-12 pt-2 list-inline-item">
+                  <form class="form" id="uploadNotes" enctype="multipart/form-data">
+                  <input type="file" accept="application/pdf,image/*,application/msword,.doc,.docx" name="notes" id="file-2" class="inputfile inputfile-1" data-multiple-caption="{count} files selected" multiple />
+                  <label for="file-1" class="p-2 label-notes"><i class="icon ml-1 fa fa-plus"></i><span class="ml-1 mr-1">Upload</span></label>
+                  <input class="btn d-none" type="submit" value="Upload">
+              </form>
+              </li>
+              </ul>
+              <div class="progress2 progress-upload2 d-none">
+                  <div class="progress-bar2" role="progressbar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+      </div>
 </div>
 
 
