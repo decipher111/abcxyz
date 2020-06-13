@@ -1,11 +1,12 @@
 * {
-  margin: 0;
+  /* margin: 0; */
   padding: 0;
   box-sizing: border-box;
   }
 
 .text-center {
-  text-align: center; }
+  text-align: center;
+  }
 
 .text-right {
   text-align: right; }
@@ -30,7 +31,8 @@
   position: absolute;
   bottom: 3px;
   right: 14px;
-  margin: auto; }
+  margin: auto;
+  }
 
   .calendar-day-list{
     position: relative;
@@ -44,12 +46,13 @@
   width: 670px;
   height: 430px;
   border-radius: 10px;
-  overflow: hidden; }
+  overflow: hidden;
+  }
   .calendar .calendar-left-side-day-of-week, .calendar .current-day-events ul, .calendar .calendar-change-year, .calendar .calendar-days li {
     position: relative;
     }
   .calendar .calendar-left-side-day, .calendar .calendar-left-side-day-of-week, .calendar .current-day-events {
-    color: white;
+    color: rgba(86, 56, 156, 0.8);
   }
   .calendar .calendar-left-side-day-of-week, .calendar .calendar-week {
     text-transform: uppercase; }
@@ -60,7 +63,7 @@
   .calendar .left-side {
     width: 200px;
     /* background-color: rgb(66, 72, 245); */
-    background-color: rgb(5, 124, 235);
+    background-color: #fafaf8;
     float: left; }
   .calendar .current-day, .calendar .current-day-events {
     padding-top: 120px; }
@@ -75,6 +78,7 @@
       left: 3px;
      }
   .calendar h1.calendar-left-side-day {
+    color: rgba(86, 56, 156, 0.8);
     font-size: 92px; }
   .calendar .right-side {
     width: 470px;

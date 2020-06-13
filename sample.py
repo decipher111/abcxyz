@@ -117,7 +117,7 @@ def get_time_table():
    print(username)
    date = request.args.get('date')
    print(date)
-   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'False', 'file_name':'sample.pdf', 'time_ago': '9 hours'} , 'assignment': {'available': 'True', 'file_name':'assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'True'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/25/2020', '01/01/2021'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'False', 'file_name':'sample.pdf', 'time_ago': '9 hours'} , 'assignment': {'available': 'True', 'file_name':'Assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'True'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/25/2020', '01/01/2021'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
 
 
    
@@ -211,13 +211,38 @@ def get_download_submissin_url():
 
 @app.route('/add_comment')
 def add_comment():
-   print(request.args.get('date'))
-   return 200
+   print(request.args.get('lecture_id'))
+   print(request.args.get('comment_text'))
+   print(request.args.get('comment_type'))
+   return {
+   "comment_id":"1234",
+   "username":"Raghav Khanna",
+   "comment_text":"Lorem Ipsum",
+   "timestamp":"12:04pm",
+   "is_professor":'true'
+}
 
-# @app.route('/get_comments')
-# def get_comments():
-#    print(request.args.get('date'))
-#    return 200
+@app.route('/get_comments')
+def get_comments():
+   return jsonify({
+   "comments":[
+      {
+         "comment_id":"1234",
+         "username":"Raghav",
+         "comment_text":"Control what information websites can use and what content they can show you",
+         "timestamp":"12:04pm",
+         "is_professor": 'true'
+      },
+      {
+         "comment_id":"1234",
+         "username":"Raghav",
+         "comment_text":"Lorem Ipsum",
+         "timestamp":"12:04pm",
+         "is_professor": 'false'
+      }
+   ]
+})
+
 
 @app.route('/save-post',methods=['POST'])
 def savepost():

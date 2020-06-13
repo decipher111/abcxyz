@@ -87,8 +87,8 @@ function submitFormOnStateChange(){
             else if( e.target.value )
                 fileName = e.target.value.split( '\\' ).pop();
                 
-            if(fileName.length > 16 && window.matchMedia("(min-width: 720px)").matches===true){
-                fileName = fileName.slice(0,11) + ' ...'
+            if(fileName.length > 18 && window.matchMedia("(min-width: 720px)").matches===true){
+                fileName = fileName.slice(0,15) + ' ...'
             }
             else if(fileName.length > 12 && window.matchMedia("(max-width: 720px)").matches===true){
                 fileName = fileName.slice(0,9) + ' ...'
@@ -949,11 +949,9 @@ function appendComment(){
                     comment_type: comment_type,
                     timestamp: timestamp
                 }
-              }).done(function(comment) {
-                  var commentHTML = getCommentHTML(comment)
-                  if(comment.is_first_comment == true){
-                    comment_section.next().html('')
-                  }
+              }).done(function(data) {
+                  console.log(data)
+                  var commentHTML = getCommentHTML(data)
                   comment_section.next().prepend(commentHTML)
               })
         }
@@ -961,15 +959,10 @@ function appendComment(){
 }
 
 function getCommentHTML(comment){
-    return `
-    <div class="comment-wrapper" comment_id="${comment.comment_id}">
-        <div class="single-comment ` + (comment.is_professor ? 'professor-comment' : '') + (comment.is_self ? 'self-comment' : '') + `">
-            <div class="comment-text">${comment.comment_text}</div>
-            <div "comment-name-timestamp">
-                <div class="comment-name">${comment.username} &middot;</div>
-                <div class="comment-timestamp">${comment.timestamp}</div>
-            </div>
-        </div>
+    return `<div class="comment-wrapper" comment_id="${comment.comment_id}">
+    <div class="single-comment ` + (comment.is_professor ? 'professor-comment' : '') + (comment.is_self ? 'self-comment' : '') + `">${comment.comment_text}
+    <small class="comment-name-timestamp">${comment.username} &middot; ${comment.timestamp}</small>
+    </div>
     </div>`
 }
 
