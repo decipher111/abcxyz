@@ -74,6 +74,7 @@ def invalid_token_callback(callback):
     unset_jwt_cookies(resp)
     return resp, 302
 
+
 @jwt.expired_token_loader
 def expired_token_callback(callback):
     # Expired auth header
@@ -117,9 +118,13 @@ def get_time_table():
    print(username)
    date = request.args.get('date')
    print(date)
-   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 11:30:00', 'notes': {'available': 'True', 'file_name':'notes_1.pdf', 'time_ago': '10 hours', 'to_be_seen': 'True'}, 'lecture_id': 1, 'submission': {'available': 'False', 'file_name':'sample.pdf', 'time_ago': '9 hours'} , 'assignment': {'available': 'True', 'file_name':'Assignment_1.pdf', 'time_ago': '8 hours', 'to_be_seen': 'True'}}], 'course_name':'Operating Systems', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/25/2020', '01/01/2021'], 'role': 'Student', 'institution':'NSIT'}, {'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Computer Architecture', 'section':'Computer Science', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Physics', 'section':'PY101', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
+   # return jsonify({"courses":[{"calendar_notifications":[],"course_name":"Operating Systems","institution":"NSIT","lectures":[{"assignment":{"available":"False"},"date_time":"06/17/2020, 17:00:00","lecture_id":65,"notes":{"available":"False"},"submission":{"total_submissions":0,"unviewed_submissions":0}}],"role":"Professor","section":"CS121"},{"calendar_notifications":[],"course_name":"Computer Architecture","institution":"NSIT","lectures":[{"assignment":{"available":"False"},"date_time":"06/17/2020, 16:00:00","lecture_id":67,"notes":{"available":"False"},"submission":{"total_submissions":0,"unviewed_submissions":0}}],"role":"Professor","section":"CS245"}],"email":"professor_1@gmail.com","user_id":1})
 
 
+@app.route('/get_tooltip_notification', methods=["GET"])
+def get_tooltip_notification():
+   return jsonify({"submissions_due": 4, "new_submissions":3, "new_assignments":0, "new_notes":1})
    
 @app.route('/return-files', methods=["GET"])
 def return_files_tut():
@@ -229,16 +234,18 @@ def get_comments():
       {
          "comment_id":"1234",
          "username":"Raghav",
-         "comment_text":"Control what information websites can use and what content they can show you",
+         "comment_text":"Lorem Ipsum",
          "timestamp":"12:04pm",
-         "is_professor": 'true'
+         "is_professor": 'true',
+         "is_self": 'true'
       },
       {
          "comment_id":"1234",
          "username":"Raghav",
          "comment_text":"Lorem Ipsum",
          "timestamp":"12:04pm",
-         "is_professor": 'false'
+         "is_professor": 'false',
+         "is_self": 'true',
       }
    ]
 })

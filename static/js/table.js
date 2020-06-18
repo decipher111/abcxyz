@@ -1,11 +1,9 @@
-if (window.location.pathname == '/table') {
+if (window.location.href.indexOf('table') != -1)  {
 
 var lecture_id = getParameterByName('lecture_id');
 
 $(document).ready(function() {
-
         initTable()
-
 });
 
 function initTable(){
@@ -40,7 +38,7 @@ function renderSubmissions(){
                             <td>${submissions.submissions[i].name}</td>
                             <td>${submissions.submissions[i].roll_no}</td>
                             <td>${submissions.submissions[i].time}</td>
-                            <td><i class="fa fa-download download-submission fa-2x" user_id=${submissions.submissions[i].user_id}></i></td>
+                            <td class="download-submission"><i class="fa fa-download fa-2x" user_id=${submissions.submissions[i].user_id}></i></td>
                         </tr>
                         </tbody>
                         `
@@ -49,34 +47,13 @@ function renderSubmissions(){
       })
 }
 
-function decode_flask_cookie(val) {
-    if (val.indexOf('\\') === -1) {
-        return val;  // not encoded
-    }
-    val = val.slice(1, -1).replace(/\\"/g, '"');
-    val = val.replace(/\\(\d{3})/g, function(match, octal) { 
-        return String.fromCharCode(parseInt(octal, 8));
-    });
-    return val.replace(/\\\\/g, '\\');
-}
-    
-function getCookie(name) {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${name}=`);
-    if (parts.length === 2) return parts.pop().split(';').shift();
-}
-
-function delete_cookie(name) {
-    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
-}
-
 function tableEventListeners(){
     $('.download-submission').click(function(){
         var user_id = $(this).attr('user_id')
         console.log(user_id)
         $.ajax({
             method: 'GET',
-            url: window.location.href + "//get_download_submission_url",
+            url: window.location.href + "get_download_submission_url",
             data: {user_id: user_id}
           }).done(function(signed_url) {
             console.log(signed_url)
@@ -107,8 +84,5 @@ function createDownloadBLOB(blob){
     a.click();
     window.URL.revokeObjectURL(url);
 }
-    
-
-
-    
+   
 }

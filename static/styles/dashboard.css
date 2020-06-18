@@ -2,6 +2,11 @@
   font-family: system-font;
   src: url(../fonts/IBMPlexSans-Regular.ttf);
   }
+
+  @font-face {
+    font-family: medium-font;
+    src: url(../fonts/IBMPlexSans-Medium.ttf);
+    }
   
   body {
   margin: 0;
@@ -17,9 +22,10 @@
   .main-box{
       max-width: 1440px;
       height: calc(100vh - 200px);
+      margin-top: 20px;
     }
     
-  .calendar-container{
+    .calendar-container{
       align-self: center;
   }
     
@@ -30,13 +36,16 @@
   }
   
 .navbar{
+  position: sticky;
+  top: 0;
+  z-index: 1000;
   background-color: rgb(255, 255, 255);
   border-bottom: solid rgb(228, 228, 228) thin;
 }
   
   @media all and (min-width: 720px){
   .navbar{
-    padding: 20px;
+    padding: 15px;
     padding-right: 75px;
     padding-left: 25px;
   }
@@ -45,6 +54,7 @@
   .test{
   position: relative;
   top: 0px;
+  margin-bottom: 50px;
   }
   
   
@@ -84,7 +94,6 @@
   border: solid rgb(221, 221, 221) thin;
   border-bottom-width: 0.3px;
   transition-duration: 0.2s;
-  border-bottom: none;
   }
   
   .first-last-lecture{
@@ -113,7 +122,7 @@
   }
   
   .row-border-expanded3{
-  height: auto;
+  height: 510px;
   transition-duration: 0.3s !important;
   }
 
@@ -127,7 +136,7 @@
   }
   
   .row-border-expanded3{
-      height: auto;
+    height: 510px;
     }
   }
   
@@ -212,7 +221,7 @@
   border: solid rgb(153, 153, 153) thin;
   color: rgb(0, 0, 0);
   border-radius: 5px;
-  margin:;
+  margin: 0;
   }
   
   
@@ -233,7 +242,8 @@
   
   .progress{
   position: absolute;
-  top: 136px;
+  /* top: 136px; */
+  bottom: 0px;
   }
   
   .progress-upload2{
@@ -316,7 +326,7 @@
   }
   
   .btn-dashboard{
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   border-radius: 5px;
   width: 190px;
   height: 40px;
@@ -327,8 +337,8 @@
 
 @media all and (max-width: 720px){
   .btn-dashboard{
-    font-size: 0.85rem;
-    width: 130px;
+    font-size: 0.75rem;
+    width: 135px;
     }
 }
   
@@ -383,12 +393,13 @@
   -webkit-text-stroke-width: 2px; 
   -webkit-text-stroke-color: #fff; 
   }
+
   
   .assignment-submitted-dot{
   position: absolute;
-  bottom: 9px;
-  left: -6px;
-  font-size: 14px;
+  bottom: 5px;
+  left: -11px;
+  font-size: 20px;
   color: rgb(26, 182, 26);
   -webkit-text-stroke-width: 2px; 
   -webkit-text-stroke-color: #fff; 
@@ -405,16 +416,34 @@
   }
   
   .notes-seen-dot{
-  position: absolute;
-  bottom: 9px;
-  left: -6px;
-  font-size: 14px;
-  color: rgb(26, 182, 26);
+    position: absolute;
+    bottom: 5px;
+    left: -11px;
+    font-size: 20px;
+    color: rgb(26, 182, 26);
+    -webkit-text-stroke-width: 2px; 
+    -webkit-text-stroke-color: #fff; 
   }
+
+  @media all and (max-width: 420px){
+    .assignment-available-dot,
+    .notes-available-dot,
+    .notes-seen-dot,
+    .assignment-submitted-dot{
+      position: absolute;
+      bottom: -30px;
+      left: -6px;
+      left: 15px;
+      }
+}
   
   .date-changer{
   margin-right: 0 !important;
   padding: 0 !important;
+  }
+
+  #date-view{
+  margin-top: 3px !important;
   }
   
   #date-prev:hover{
@@ -502,7 +531,7 @@
   
   
     #footer {
-      position:absolute;
+      position: fixed;
       bottom:0;
       width:100%;
       background-color: white;
@@ -565,31 +594,52 @@
    
    
    /* Tooltip container */
-   .custom-tooltip-2 {
-     position: relative;
-     display: inline-block;
+   .tooltiptext-2 {
+     z-index: 1000000 !important;
    }
+
+   .custom-tooltip-2:hover >  .tooltiptext-2{
+    opacity: 1;
+    transition: opacity  0.1s linear 0.5s;
+  }
    
    /* Tooltip text */
    .custom-tooltip-2 .tooltiptext-2 {
+     font-size: 0.9rem;
+     line-height: 30px;
      visibility: hidden;
-     width: 120px;
+     width: 160px;
      background-color: rgb(255, 255, 255);
-     /* border: solid rgb(151, 151, 151) 1px; */
      color: rgb(94, 94, 94);
      text-align: center;
      padding: 5px 0;
-     position: absolute;
-     z-index: 8;
-     top: 110%;
-     right: 50%;
      margin-left: -60px;
-     -webkit-box-shadow: 0 0px 0px 0px black;
+     /* -webkit-box-shadow: 0 0px 0px 0px black; */
      -moz-box-shadow: 0 0px 0px 0px black;
      box-shadow: 0 0px 5px 0px rgb(116, 116, 116);
+   }
+
+   .tip-normal{
+    position: absolute;
+     top: 120%;
+     left: 130%;
+   }
+
+   .tip-left{
+    position: absolute !important;
+    top: 120% !important;
+    right: 50% !important;
    }
    
    /* Show the tooltip text when you mouse over the tooltip container */
    .custom-tooltip-2:hover .tooltiptext-2 {
      visibility: visible;
+   }
+
+   .notification-title{
+     font-family: medium-font;
+   }
+
+   .notification-title, .notification-value{
+     display: inline-block;
    }
