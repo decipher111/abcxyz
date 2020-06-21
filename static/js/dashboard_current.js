@@ -972,22 +972,17 @@ function getCommentHTML(comment){
 }
 
 function characterCounter(){
-    $('.comment-input').on('keyup', function(){
-        var characters = $(this).val().split('');
-        $(this).parent().next().children(0).html(`${characters.length}/180`);
-        if(characters.length>180){
-            var attr = $(this).parent().next().next().children(0).attr("disabled")
-            if (attr === undefined || attr == false) {
-                $(this).parent().next().next().children(0).attr("disabled","")
-            }
-        }
-        if(characters.length<=180){
-            var attr = $(this).parent().next().next().children(0).attr("disabled")
-            if (attr !== undefined || attr !== false) {
-                $(this).parent().next().next().children(0).removeAttr("disabled")
-            }
-        }
-    })
+$('.comment-input').on('keyup', function(){
+var characters = $(this).val().split('');
+console.log(characters.length)
+$(this).parent().next().children(0).html(`${characters.length}/180`);
+if(characters.length>180){
+    $(this).parent().next().next().children(0).attr("disabled","")
+}
+if(characters.length ==1 || characters.length==180){
+    $(this).parent().next().next().children(0).removeAttr("disabled")
+}
+})
 }
 
 function calendarHoverListener(){
@@ -1139,6 +1134,8 @@ days.forEach(function(day,index){
         var dateNotification = formatNotificationDate(day)
 
         var notif_position = 'tip_normal'
+
+        console.log(index, left_counter)
         if(index == left_counter){
             left_counter = left_counter + 7
             notif_position = 'tip_left'

@@ -52,7 +52,7 @@
     position: relative;
     }
   .calendar .calendar-left-side-day, .calendar .calendar-left-side-day-of-week, .calendar .current-day-events {
-    color: rgba(86, 56, 156, 0.8);
+    color: rgb(106, 110, 255);
   }
   .calendar .calendar-left-side-day-of-week, .calendar .calendar-week {
     text-transform: uppercase; }
@@ -78,7 +78,7 @@
       left: 3px;
      }
   .calendar h1.calendar-left-side-day {
-    color: rgba(86, 56, 156, 0.8);
+    color: rgb(106, 110, 255);
     font-size: 92px; }
   .calendar .right-side {
     width: 470px;
@@ -187,6 +187,6 @@
     height: 5px;
     width: 5px;
     border-radius: 50%;
-    background-color: rgb(255, 102, 0);
+    background-color: rgb(106, 110, 255);
     z-index: 1;
   }

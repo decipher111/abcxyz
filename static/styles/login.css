@@ -1,182 +1,170 @@
 @font-face {
-font-family: chalkboard;
-src: url(../fonts/IBMPlexSans-Regular.ttf);
-}
-
-
-.row{
-  height: 100vh;
-  overflow: auto;
-}
-  
-.login-bg{
-background-image: url('../images/loginbg.jpg');
-background-size: cover;
-}
-
-@media all and (max-width: 640px){
-  .login-bg{
-    background-image: url('../images/loginbg.jpg');
-    background-size: initial;
-  }
-}
-  
-.btn-login{
-  background-color: transparent;
-  border: none;
-  color: white;
-  font-size: 1.5rem;
-  font-weight: lighter;
-  border-color: inherit !important;
-  -webkit-box-shadow: none !important;
-  box-shadow: none !important;
-}
-
-.btn-login:focus{
-  outline: none;
-  box-shadow: none;
-}
-  
-
-.form-control:focus {
-  border-color: inherit;
-  -webkit-box-shadow: none;
-  box-shadow: none; 
-}
-
-.btn-login:hover{
-  color: rgb(255, 250, 196);
-}
-  
-.navbar-brand{
-  margin: 0px;
-}
-  
-.form-bg{
   font-family: chalkboard;
-  font-size: 1rem;
-  border-radius: 10px;
-  color: white;
-}
+  src: url(../fonts/login-page-font-5.ttf);
+  }
   
-.copyright{
-  font-size: 0.65rem;
-}
   
-@media all and (min-width: 1080px){
-    .logo-tag{
-        width: 480px; height: 110px;
+  .row{
+    height: 100vh;
+    overflow: auto;
+  }
+    
+  .login-bg{
+  background-image: url('../images/loginbg.jpg');
+  background-size: cover;
+  }
+  
+  .logo-login {
+    margin-bottom:120px;
+  }
+  
+  @media all and (max-width: 640px){
+    .login-bg{
+      background-image: url('../images/loginbg.jpg');
+      background-size: initial;
     }
   }
-  
-@media all and (max-width: 720px){
-  .logo-tag{
-    width: 350px; height: 80px;
+    
+  .btn-login{
+    background-color: transparent;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: lighter;
+    border-color: inherit !important;
+    -webkit-box-shadow: none !important;
+    box-shadow: none !important;
   }
-}
   
-.form-divider{
-  color: white;
-  background-color: white;
-}
+  .btn-login:focus{
+    outline: none;
+    box-shadow: none;
+  }
+    
   
-
-.form-control{
-  font-family: chalkboard;
-  font-size: 1rem;
-}
-
-
-input[type="email"]{
-  background: rgba(0, 0, 0, 0);
-  border: none;
-  border-radius: 0px;
-  outline: none;
-  color: white;
-}
-
-input[type="email"]:focus{
-  background: rgba(0, 0, 0, 0);
-  border-radius: 0px;
-  outline: none;
-  color: white;
-}
-
-input[type="password"]{
-  background: rgba(0, 0, 0, 0);
-  border: none;
-  border-radius: 0px;
-  outline: none;
-  color: white;
-}
-
-input[type="password"]:focus{
-  background: rgba(0, 0, 0, 0);
-  border: none;
-  /* border: solid white 1px; */
-  border-radius: 0px;
-  outline: none;
-  color: white;
-}
-
-input:-webkit-autofill::first-line {
-  font-family: chalkboard;
-  font-size: 16px
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover, 
-input:-webkit-autofill:focus, 
-input:-webkit-autofill:active  {
-  font-family: chalkboard;
-  -webkit-animation: autofill 0s forwards;
-    animation: autofill 0s forwards;
-  color: white;
-}
-
-@keyframes autofill {
-  100% {
-      background: transparent;
-      color: inherit;
+  .form-control:focus {
+    border-color: inherit;
+    -webkit-box-shadow: none;
+    box-shadow: none; 
   }
-}
-
-@-webkit-keyframes autofill {
-  100% {
-      background: transparent;
-      color: inherit;
+  
+  .btn-login:hover{
+    color: rgb(255, 250, 196);
   }
-}
-
-
-.img-container {
-  display: inline-block;
-  position: relative;
-}
-
-.positioning{
-  position: absolute;
-  right: 10px;
-  top: 5px;
-  background-color: transparent;
-  color: white;
-  width: 280px;
-  /* padding: 4px;
-  font-size: 17px;
-  line-height: 18px; */
-}
-
-
-.img-container2 {
-  display: inline-block;
-  position: relative;
-}
-
-.positioning2{
-  position: absolute;
-  right: 10px;
-  top: 5px;
-  background-color: transparent;
-  color: white;
-  width: 280px;
-}
+    
+  .navbar-brand{
+    margin: 0px;
+  }
+    
+  .form-control{
+    font-family: chalkboard;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    color: #fafafa
+  }
+    
+  .copyright{
+    font-size: 0.65rem;
+  }
+    
+  @media all and (min-width: 1080px){
+      .logo-tag{
+          width: 480px; height: 110px;
+      }
+    }
+    
+  @media all and (max-width: 720px){
+    .logo-tag{
+      width: 350px; height: 80px;
+    }
+  }
+    
+  .form-divider{
+    color: white;
+    background-color: white;
+  }
+    
+  
+  .form-control{
+    font-family: chalkboard;
+    font-size: 1rem;
+  }
+  
+  
+  input[type="email"]{
+    background: rgba(0, 0, 0, 0);
+    border: none;
+    border-radius: 0px;
+    outline: none;
+    color: white;
+  }
+  
+  input[type="email"]:focus{
+    background: rgba(0, 0, 0, 0);
+    border-radius: 0px;
+    outline: none;
+    color: white;
+  }
+  
+  input[type="password"]{
+    background: rgba(0, 0, 0, 0);
+    border: none;
+    border-radius: 0px;
+    outline: none;
+    color: white;
+  }
+  
+  input[type="password"]:focus{
+    background: rgba(0, 0, 0, 0);
+    border: none;
+    /* border: solid white 1px; */
+    border-radius: 0px;
+    outline: none;
+    color: white;
+  }
+  
+  input:-webkit-autofill,
+  input:-webkit-autofill:hover, 
+  input:-webkit-autofill:focus, 
+  input:-webkit-autofill:active  {
+      transition: background-color 5000s ease-in-out 0s, color 5000s ease-in-out 0s;
+      transition-delay: background-color 5000s, color 5000s;
+      font-family: chalkboard;
+  }
+  
+  input:-webkit-autofill::first-line {
+  font-family: chalkboard;
+  font-size: 1rem
+  }
+  
+  .img-container {
+    display: inline-block;
+    position: relative;
+  }
+  
+  .positioning{
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    background-color: transparent;
+    color: white;
+    width: 280px;
+    /* padding: 4px;
+    font-size: 17px;
+    line-height: 18px; */
+  }
+  
+  
+  .img-container2 {
+    display: inline-block;
+    position: relative;
+  }
+  
+  .positioning2{
+    position: absolute;
+    right: 10px;
+    top: 5px;
+    background-color: transparent;
+    color: white;
+    width: 280px;
+  }

@@ -198,7 +198,7 @@ function timeAgo(entry) {
 if (entry.time_ago == null) {
 return '';
 }
-return 'Uploaded ' + entry.time_ago + ' ago'
+return 'uploaded ' + entry.time_ago + ' ago'
 }
 
 function getLectureTime(lecture) {
@@ -453,6 +453,9 @@ return getAssignmentGreenDotNoOrangeDot()
 if (lectures[i].assignment.notify || lectures[i].submission.unviewed_submissions > 0) {
 return getAssignmentNoGreenDotOrangeDot()
 }
+if (lectures[i].is_professor) {
+    return getAssignmentGreenDotNoOrangeDot()
+}
 }
 return getAssignmentNoGreenDotNoOrangeDot()
 })()}
@@ -561,9 +564,7 @@ if (x.files.length == 0) {
 return;
 }
 var content_type = x.files[0].type
-
 var file_name = x.files[0].name
-console.log(x.files[0]) //returns BLOB
 
 var thisLecture = element.parent().parent().parent().parent()
 if (thisLecture == undefined || thisLecture.length == 0) {
@@ -808,7 +809,7 @@ function downloadListener(document_type){
 $('.btn-' + document_type).click(function(){
 var lecture = $(this).parent().parent().parent().parent();
 var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id');
-
+let filename = null;
 $.ajax({
 method: 'GET',
 url: window.location.href + "get_download_url",
@@ -839,24 +840,27 @@ date: current_date
 }).done(function(data){
 lecture.find('.progress').addClass('d-none')
 updateUI(data)
+filename = data.file_name
 response.status = true
 })
 if(response.status==true)
 return blob
 }).then(blob => {
-createDownloadBLOB(blob)
+createDownloadBLOB(blob, filename)
 })
 .catch(() => alert('Could not fetch assignment'));
 })})
 }
 
-function createDownloadBLOB(blob){
+function createDownloadBLOB(blob, filename){
 const url = window.URL.createObjectURL(blob);
 const a = document.createElement('a');
 a.style.display = 'none';
 a.href = url;
 // the filename you want
-a.download = 'abc.pdf';
+if (filename != undefined) {
+a.download = filename;
+}
 document.body.appendChild(a);
 a.click();
 window.URL.revokeObjectURL(url);
@@ -866,7 +870,7 @@ window.URL.revokeObjectURL(url);
 function submissionListener(){
 $('.btn-submissions').click(function() {
 lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id')
-window.location.href = window.location.href + `/table?lecture_id=${lecture_id}`
+window.location.href = window.location.href + `table?lecture_id=${lecture_id}&date=${current_date}`
 })
 }
 
@@ -884,44 +888,44 @@ window.location.href = window.location.href + `/table?lecture_id=${lecture_id}`
 function getComments(){
 var comments_box;
 $('.view-comments').click(function(){
-    $(this).toggleClass('comments-closed')
-    if($(this).hasClass('view-comment-assignment')){
-        comment_type = 'assignment'
-        $(this).parent().parent().toggleClass('row-border-expanded3')
-        comments_box = $(this).parent().next().next().children().eq(1)
-    }
-    else{
-        comment_type = 'notes'
-        $(this).parent().parent().toggleClass('row-border-expanded3')
-        comments_box = $(this).parent().next().children().eq(1)
-    }
-    
-    
-    var lecture_id = $(this).parent().parent().attr('lecture_id')
-    
-    $(this).parent().parent().find('.comment-container').toggleClass('d-none')
-    comments_box.html('')
-    if($(this).hasClass('comments-closed') == false){
-        $.ajax({
-            method: 'GET',
-            url: window.location.href + 'get_comments',
-            data: {
-                lecture_id: lecture_id,
-                comment_type: comment_type,
-                date: current_date
-            }
-            }).done(function(data) {
-                if(data.comments.length == 0){
-                    comments_box.prepend(`<div id="no-comments-yet"><br><br><br><br><br>No comments yet</div>`)
-                } else {
-                    for(i=0; i<data.comments.length; i++){
-                        var comment = data.comments[i]
-                        commentHTML = getCommentHTML(comment)
-                        comments_box.prepend(commentHTML)
-                    }
-                }
-            })
-    }
+ $(this).toggleClass('comments-closed')
+ if($(this).hasClass('view-comment-assignment')){
+ comment_type = 'assignment'
+ $(this).parent().parent().toggleClass('row-border-expanded3')
+ comments_box = $(this).parent().next().next().children().eq(1)
+ }
+ else{
+ comment_type = 'notes'
+ $(this).parent().parent().toggleClass('row-border-expanded3')
+ comments_box = $(this).parent().next().children().eq(1)
+ }
+ 
+ 
+ var lecture_id = $(this).parent().parent().attr('lecture_id')
+ 
+ $(this).parent().parent().find('.comment-container').toggleClass('d-none')
+ comments_box.html('')
+ if($(this).hasClass('comments-closed') == false){
+ $.ajax({
+ method: 'GET',
+ url: window.location.href + 'get_comments',
+ data: {
+ lecture_id: lecture_id,
+ comment_type: comment_type,
+ date: current_date
+ }
+ }).done(function(data) {
+ if(data.comments.length == 0){
+ comments_box.prepend(`<div id="no-comments-yet"><br><br><br><br><br>Be the first one to add a comment here</div>`)
+ } else {
+ for(i=0; i<data.comments.length; i++){
+ var comment = data.comments[i]
+ commentHTML = getCommentHTML(comment)
+ comments_box.prepend(commentHTML)
+ }
+ }
+ })
+ }
 })
 }
 
@@ -959,79 +963,67 @@ comment_section.next().prepend(commentHTML)
 }
 
 function getCommentHTML(comment){
-    return `
-    <div class="comment-wrapper ` + (comment.is_self ? 'self-comment' : '') +`" comment_id="${comment.comment_id}">
-        <div class="single-comment ` + (comment.is_professor ? 'professor-comment' : '') + `">
-            <div class="comment-text">${comment.comment_text}</div>
-            <div "comment-name-timestamp">
-                <div class="comment-name">${comment.username} &middot;</div>
-                <div class="comment-timestamp">${comment.timestamp}</div>
-            </div>
-        </div>
-    </div>`
+ return `
+ <div class="comment-wrapper ` + (comment.is_self ? 'self-comment' : '') +`" comment_id="${comment.comment_id}">
+ <div class="single-comment ` + (comment.is_professor ? 'professor-comment' : '') + `">
+ <div class="comment-text">${comment.comment_text}</div>
+ <div "comment-name-timestamp">
+ <div class="comment-name">${comment.username} &middot;</div>
+ <div class="comment-timestamp">${comment.timestamp}</div>
+ </div>
+ </div>
+ </div>`
 }
 
 function characterCounter(){
-    $('.comment-input').on('keyup', function(){
-        var characters = $(this).val().split('');
-        $(this).parent().next().children(0).html(`${characters.length}/180`);
-        if(characters.length>180){
-            var attr = $(this).parent().next().next().children(0).attr("disabled")
-            if (attr === undefined || attr == false) {
-                $(this).parent().next().next().children(0).attr("disabled","")
-            }
-        }
-        if(characters.length<=180){
-            var attr = $(this).parent().next().next().children(0).attr("disabled")
-            if (attr !== undefined || attr !== false) {
-                $(this).parent().next().next().children(0).removeAttr("disabled")
-            }
-        }
-    })
+$('.comment-input').on('keyup', function(){
+var characters = $(this).val().split('');
+console.log(characters.length)
+$(this).parent().next().children(0).html(`${characters.length}/180`);
+if(characters.length>180){
+ $(this).parent().next().next().children(0).attr("disabled","")
+}
+if(characters.length ==1 || characters.length==180){
+ $(this).parent().next().next().children(0).removeAttr("disabled")
+}
+})
 }
 
 function calendarHoverListener(){
-    $('.custom-tooltip-2').mouseover(function(){
-        let day = $(this).attr('data-day');
-        let month = $(this).attr('data-month');
-        let year = $(this).attr('data-year');
-        let strDate = `${Number(month) + 1}/${day}/${year}`;
+ $('.custom-tooltip-2').hover(function(){
+ let day = $(this).attr('data-day');
+ let month = $(this).attr('data-month');
+ let year = $(this).attr('data-year');
+ let strDate = `${Number(month) + 1}/${day}/${year}`;
+ $.ajax({
+ method: 'GET',
+ url: window.location.href + 'get_tooltip_notification',
+ data: { date: strDate }
+ }).done(function(data) {
+  let div = $(this).children(0)
+   div.css("visibility", "visible")
+ if (data.new_notes + data.new_assignments + data.new_submissions + data.submissions_due == 0) {
+     return;
+ }
+ new_notes = data.new_notes > 0 ? (
+     data.new_notes + ' new lecture notes have been uploaded<br>') : '';
+ new_assignments = data.new_assignments > 0 ? (
+     data.new_assignments + ' new assignments have been uploaded<br>') : '';
+ new_submissions = data.new_submissions > 0 ? (
+     data.new_submissions + ' new submissions have been made by students<br>') : '';
+ submissions_due = data.submissions_due > 0 ? (
+     data.submissions_due + ' submissions are due for the lectures of this day<br>') : '';
 
-        let div = $(this).find('.tooltiptext-2')
-        var index = $(this).attr('index')
-        console.log(index)
-        $.ajax({
-            method: 'GET',
-            url: window.location.href + 'get_tooltip_notification',
-            data: { date: strDate }
-            }).done(function(data) {
-                // div.css("visibility", "visible")
-                    div.html(`
-                    ${data.submissions_due ? `<div>
-                    ${data.submissions_due} submission(s) due
-                    </div>` : ''}
-
-                    ${data.new_submissions ? `<div>
-                    ${data.new_submissions} new submission(s)
-                    </div>` : ''}
-
-                    ${data.new_assignments ? `<div>
-                    ${data.new_assignments} new assignment(s)
-                    </div>` : ''}
-
-                    ${data.new_notes ? `<div>
-                    ${data.new_notes} new note(s)
-                    </div>` : ''}`)
-            })
-
-            $(this).mouseleave(function(){
-                // $(this).find('.tooltiptext-2').css("visibility", "hidden")
-            })
-    })
+ div.html(`
+ <div class="notification-title">
+${submissions_due} submissions are due
+${new_submissions} new submissions
+${new_assignments} new assignments
+${new_notes} new notes
+ </div>`)
+ })
+ })
 }
-
-
-
 
 
 
@@ -1069,7 +1061,7 @@ drawMonths();
 if (!doNotRenderTimetable) {
 renderTimeTable();
 }
-drawDays(calendarHoverListener);
+drawDays();
 drawYearAndCurrentDay();
 }
 
@@ -1080,7 +1072,7 @@ elements.currentDay.innerHTML = calendar.active.day;
 elements.currentWeekDay.innerHTML = AVAILABLE_WEEK_DAYS[calendar.active.week];
 }
 
-function drawDays(callback) {
+function drawDays() {
 let calendar = getCalendar();
 let latestDaysInPrevMonth = range(calendar.active.startWeek).map((day, idx) => {
 return {
@@ -1133,59 +1125,33 @@ getCalendarNotification(selected_date, calendar_notifications);
 
 let daysTemplate = "";
 current_date = (calendar.active.month + 1) + '/' + calendar.active.day + '/' + calendar.active.year;
-var left_counter = 6
-days.forEach(function(day,index){
-    {
-        var dateNotification = formatNotificationDate(day)
+days.forEach(day => {
 
-        var notif_position = 'tip_normal'
-        if(index == left_counter){
-            left_counter = left_counter + 7
-            notif_position = 'tip_left'
-        }
+var dateNotification = formatNotificationDate(day)
 
-        if(index + 1 == left_counter){
-            notif_position = 'tip_left'
-        }
-
-        if(index>27){
-            notif_position = 'tip_top'
-        }
-
-        if(index == 33 || index == 34){
-            notif_position = 'tip_top_left'
-        }
-        
-        if(day.currentMonth && calendar_notifications.has(dateNotification)){
-        daysTemplate += `
-        <li index="${index}" class="custom-tooltip-2 ${day.currentMonth ? '' : 'another-month'} ${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="dot"></div><div class="tooltiptext-2 ${notif_position} ">Fetching</div></li>
-        `
-        }
-        else daysTemplate += `
-        <li index="${index}" class="custom-tooltip-2 ${day.currentMonth ? '' : 'another-month'} ${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="tooltiptext-2 ${notif_position}">Fetching</div></li>
-        `
-        }
+if(day.currentMonth && calendar_notifications.has(dateNotification)){
+daysTemplate += `
+<li class="custom-tooltip-2 ${day.currentMonth ? '' : ' another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="dot"></div></li>
+`
+}
+else daysTemplate += `
+<li class="custom-tooltip-2 ${day.currentMonth ? '' : ' another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"></li>
+`
 });
 
 elements.days.innerHTML = daysTemplate;
-
-callback()
-
 }
 
 function formatNotificationDate(day){
-if(Number(day.dayNumber)<10 && Number(day.month) < 10){
-return `0${Number(day.month)+1}/0${day.dayNumber}/${day.year}` 
-}
-else if(Number(day.dayNumber)<10 && Number(day.month) > 10){
-return `${Number(day.month)+1}/0${day.dayNumber}/${day.year}`
-}
-else if(Number(day.dayNumber)>10 && Number(day.month) < 10){
-return `0${Number(day.month)+1}/${day.dayNumber}/${day.year}`
-}
-else {
-return `${Number(day.month)+1}/${day.dayNumber}/${day.year}`
-}
+    day_number = day.dayNumber + '';
+    month_number = (day.month + 1) + '';
+    if (day.dayNumber < 10) {
+        day_number = '0' + day.dayNumber
+    }
+    if (day.month < 10) {
+        month_number = '0' + (day.month + 1);
+    }
+    return month_number + '/' + day_number + '/' + day.year;
 }
 
 function drawMonths() {
