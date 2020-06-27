@@ -120,13 +120,7 @@ button[type="submit"]:disabled {
   font-weight: bold;
   color: #666666;
   font-family: medium-font;
-  font-size: 0.8rem;
-}
-
-@media all and (max-width: 720px){
-  .view-comments{
-    font-size: 0.7rem;
-  }
+  font-size: 0.75rem;
 }
 
 

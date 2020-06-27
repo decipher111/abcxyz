@@ -1207,6 +1207,7 @@ elements.week.innerHTML = weekTemplate;
 
 function eventsTrigger() {
 elements.prevYear.addEventListener('click', e => {
+updateTimeTableDate(formatDate(current_date))
 let calendar = getCalendar();
 updateTime(calendar.pYear);
 drawAll()
@@ -1215,16 +1216,17 @@ drawAll()
 
 
 elements.nextYear.addEventListener('click', e => {
+updateTimeTableDate(formatDate(current_date))
 let calendar = getCalendar();
 updateTime(calendar.nYear);
 drawAll()
 });
 
 elements.month.addEventListener('click', e => {
+updateTimeTableDate(formatDate(current_date))
 let calendar = getCalendar();
 let month = e.srcElement.getAttribute('data-month');
 if (!month || calendar.active.month == month) return false;
-
 let newMonth = new Date(calendar.active.tm).setMonth(month);
 updateTime(newMonth);
 drawAll()

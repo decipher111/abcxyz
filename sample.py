@@ -55,6 +55,7 @@ def assign_access_refresh_tokens(user_id, url):
     set_access_cookies(resp, access_token)
     set_refresh_cookies(resp, refresh_token)
     print(access_token)
+    print(resp)
     return resp
 
 def unset_jwt():
@@ -118,8 +119,7 @@ def get_time_table():
    print(username)
    date = request.args.get('date')
    print(date)
-   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False'}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Physics', 'section':'PY101', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
-   # return jsonify({"courses":[{"calendar_notifications":[],"course_name":"Operating Systems","institution":"NSIT","lectures":[{"assignment":{"available":"False"},"date_time":"06/17/2020, 17:00:00","lecture_id":65,"notes":{"available":"False"},"submission":{"total_submissions":0,"unviewed_submissions":0}}],"role":"Professor","section":"CS121"},{"calendar_notifications":[],"course_name":"Computer Architecture","institution":"NSIT","lectures":[{"assignment":{"available":"False"},"date_time":"06/17/2020, 16:00:00","lecture_id":67,"notes":{"available":"False"},"submission":{"total_submissions":0,"unviewed_submissions":0}}],"role":"Professor","section":"CS245"}],"email":"professor_1@gmail.com","user_id":1})
+   return jsonify({'courses': [{'lectures': [{'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False', 'new_comments': 10}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'new_comments': 0, 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}, {'date_time': '05/24/2020, 15:00:00', 'notes': {'available': 'False', 'new_comments': 8}, 'lecture_id': 2, 'submission': {'available': 'True', 'file_name':'submission_2.pdf', 'time_ago': '9 hours'}, 'assignment': {'available': 'True', 'new_comments': 0, 'file_name':'assignment_2.pdf', 'time_ago': '6 hours', 'to_be_seen': 'True'}}], 'course_name':'Physics', 'section':'PY101', 'calendar_notifications': ['05/24/2020', '05/22/2020', '05/21/2020', '05/24/2020'], 'role': 'Student', 'institution': 'NSIT'}], 'user_id': 4, 'email':'student_2@gmail.com'})
 
 
 @app.route('/get_tooltip_notification', methods=["GET"])
@@ -271,7 +271,6 @@ def index():
    if(get_jwt_identity() != None):
       return render_template('dashboard.html')   
    return render_template('login.html')
-
 
 # @app.route('/login', methods=['GET', 'POST'])
 # def login():
