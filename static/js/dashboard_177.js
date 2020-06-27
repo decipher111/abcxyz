@@ -1328,7 +1328,7 @@ function getFirstElementInsideIdByClassName(className) {
 return document.getElementById('calendar').getElementsByClassName(className)[0];
 }
 
-drawAll();
+drawAll(true);
 });
 
 }

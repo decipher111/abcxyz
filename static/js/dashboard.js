@@ -149,133 +149,157 @@ return strView;
 function updateTimeTableDate(formattedDate){
 $('#date-view').html(formattedDate)
 }
-
 function getCourseName(course) {
-if (course == null || course.course_name == null) {
-return "";
-}
-if (course.course_name.length > MAX_LENGTH) {
-return course.course_name.slice(0, MAX_LENGTH - 4) + ' ...';
-}
-return course.course_name;
+    if (course == null || course.course_name == null) {
+        return "";
+    }
+    if (course.course_name.length > MAX_LENGTH) {
+        return course.course_name.slice(0, MAX_LENGTH - 4) + ' ...';
+    }
+    return course.course_name;
 }
 
 function getLectureID(lecture) {
-if (lecture == null || lecture.lecture_id == null) {
-return "";
+    if (lecture == null || lecture.lecture_id == null) {
+        return "";
+    }
+    return lecture.lecture_id;
 }
-return lecture.lecture_id;
+
+function newNotesComments(lecture) {
+    if (lecture.notes.new_comments != 0) {
+        return `
+        <div class="new-comments ml-1">
+        ${lecture.notes.new_comments}
+        </div>
+        `;
+    }
+    return '';
+}
+
+function newAssignmentComments(lecture){
+    if (lecture.notes.new_comments != 0) {
+        return `
+        <div class="new-comments ml-1">
+        ${lecture.assignment.new_comments}
+        </div>
+        `;
+    }
+    return '';
 }
 
 function filename(entry, document_type) {
-if (entry.file_name == null) {
-return 'Not available';
-}
-if(entry.file_name.length > 18){
-return entry.file_name.slice(0,15) + ' ...'
-}
-if(entry.file_name.length > 12 && window.matchMedia("(max-width: 720px)").matches===true){
-return entry.file_name.slice(0,7) + ' ...'
-}
-return entry.file_name
+    if (entry.file_name == null) {
+        return document_type;
+    }
+    if (entry.file_name.length > 18) {
+        return entry.file_name.slice(0, 15) + ' ...'
+    }
+    if (entry.file_name.length > 12 && window.matchMedia("(max-width: 720px)").matches === true) {
+        return entry.file_name.slice(0, 7) + ' ...'
+    }
+    return entry.file_name
 }
 
 function isAvailable(entry) {
-if (entry.available == null) {
-return false;
-}
-return entry.available
+    if (entry.available == null) {
+        return false;
+    }
+    return entry.available
 }
 
 function notify(entry) {
-if (entry.to_be_seen == null) {
-return false;
-}
-return entry.to_be_seen
+    if (entry.to_be_seen == null) {
+        return false;
+    }
+    return entry.to_be_seen
 }
 
 function timeAgo(entry) {
-if (entry.time_ago == null) {
-return '';
-}
-return 'Uploaded ' + entry.time_ago + ' ago'
+    if (entry.time_ago == null) {
+        return '';
+    }
+    return 'uploaded ' + entry.time_ago + ' ago'
 }
 
 function getLectureTime(lecture) {
-if (lecture == null || lecture.date_time == null) {
-return "";
-}
-hours = new Date(lecture.date_time).getHours()
-minutes = new Date(lecture.date_time).getMinutes()
-period = ' AM'
-if (hours >= 12) {
-hours -= 12
-if(hours == 0){
-hours = 12
-}
-period = ' PM'
-}
-if(minutes < 10){
-return hours + ':' + '0' + minutes + period 
-}
-else return hours + ':' + minutes + period 
+    if (lecture == null || lecture.date_time == null) {
+        return "";
+    }
+    hours = new Date(lecture.date_time).getHours()
+    minutes = new Date(lecture.date_time).getMinutes()
+    period = ' AM'
+    if (hours >= 12) {
+        hours -= 12
+        if (hours == 0) {
+            hours = 12
+        }
+        period = ' PM'
+    }
+    if (minutes < 10) {
+        return hours + ':' + '0' + minutes + period
+    } else return hours + ':' + minutes + period
 }
 
 function getTotalSubmissions(submission) {
-if (submission.total_submissions == null) {
-return 0
-}
-return submission.total_submissions
+    if (submission.total_submissions == null) {
+        return 0
+    }
+    return submission.total_submissions
 }
 
 function getUnviewedSubmissions(submission) {
-if (submission.unviewed_submissions == null) {
-return 0
-}
-return submission.unviewed_submissions
+    if (submission.unviewed_submissions == null) {
+        return 0
+    }
+    return submission.unviewed_submissions
 }
 
 class Notes {
-constructor(lecture) {
-this.available = isAvailable(lecture.notes)
-this.notify = notify(lecture.notes)
-this.time_ago = timeAgo(lecture.notes)
-this.file_name = filename(lecture.notes, 'Notes')
-}
+    constructor(lecture) {
+        this.available = isAvailable(lecture.notes)
+        this.notify = notify(lecture.notes)
+        this.time_ago = timeAgo(lecture.notes)
+        this.file_name = filename(lecture.notes, 'Notes')
+        this.new_comments = lecture.notes.new_comments
+        console.log(this.new_comments)
+    }
 }
 
 class Assignment {
-constructor(lecture) {
-this.available = isAvailable(lecture.assignment)
-this.notify = notify(lecture.assignment)
-this.time_ago = timeAgo(lecture.assignment)
-this.file_name = filename(lecture.assignment, 'Assignment')
-}
+    constructor(lecture) {
+        this.available = isAvailable(lecture.assignment)
+        this.notify = notify(lecture.assignment)
+        this.time_ago = timeAgo(lecture.assignment)
+        this.file_name = filename(lecture.assignment, 'Assignment')
+        this.new_comments = lecture.assignment.new_comments
+        console.log(this.new_comments)
+    }
 }
 
 class Submission {
-constructor(lecture) {
-this.total_submissions = getTotalSubmissions(lecture.submission)
-this.unviewed_submissions = getUnviewedSubmissions(lecture.submission)
-this.available = isAvailable(lecture.submission)
-this.file_name = filename(lecture.submission, 'Submission')
-this.time_ago = timeAgo(lecture.submission)
-}
+    constructor(lecture) {
+        this.total_submissions = getTotalSubmissions(lecture.submission)
+        this.unviewed_submissions = getUnviewedSubmissions(lecture.submission)
+        this.available = isAvailable(lecture.submission)
+        this.file_name = filename(lecture.submission, 'Submission')
+        this.time_ago = timeAgo(lecture.submission)
+    }
 }
 
 class Lecture {
-constructor(course_name, section, lecture, role) {
-this.course_name = course_name
-this.section = section
-this.is_professor = (role == 'Professor')
-this.lecture_id = getLectureID(lecture)
-this.lecture_time = getLectureTime(lecture)
-this.date_time = new Date(lecture.date_time)
+    constructor(course_name, section, lecture, role) {
+        this.course_name = course_name
+        this.section = section
+        this.is_professor = (role == 'Professor')
+        this.lecture_id = getLectureID(lecture)
+        this.lecture_time = getLectureTime(lecture)
+        this.date_time = new Date(lecture.date_time)
 
-this.assignment = new Assignment(lecture)
-this.notes = new Notes(lecture)
-this.submission = new Submission(lecture)
-}
+        this.assignment = new Assignment(lecture)
+        this.notes = new Notes(lecture)
+        this.submission = new Submission(lecture)
+    }
 }
 
 function renderTimeTable() {
@@ -444,7 +468,9 @@ return `<div class="row-border ${border}" lecture_id=${lectures[i].lecture_id}>`
 <li class="col-2 pt-3 list-inline-item">${lectures[i].lecture_time}</li>
 <li class="col-2 pt-3 list-inline-item">${lectures[i].section}</li>
 <li class="col-5 pt-3 list-inline-item">${lectures[i].course_name}</li>
-<li class="down-arrow col-1 list-inline-item icon-padding" tooltip="Homework"><img src="static/images/task-icon.png" style="width:30px" height="30px">
+<li class="down-arrow custom-tooltip col-1 list-inline-item icon-padding">
+<div class="tooltiptext">Assignment</div>
+<img src="static/images/task-icon.png" style="width:30px" height="30px">
 ${(() => {
 if (lectures[i].assignment.available) {
 if (lectures[i].submission.available) {
@@ -453,11 +479,16 @@ return getAssignmentGreenDotNoOrangeDot()
 if (lectures[i].assignment.notify || lectures[i].submission.unviewed_submissions > 0) {
 return getAssignmentNoGreenDotOrangeDot()
 }
+if (lectures[i].is_professor) {
+ return getAssignmentGreenDotNoOrangeDot()
+}
 }
 return getAssignmentNoGreenDotNoOrangeDot()
 })()}
 </li>
-<li class="down-arrow2 col-1 list-inline-item icon-padding" tooltip="Notes"><img src="static/images/borrow-book-icon.png" style="width:30px" height="29px">
+<li class="custom-tooltip down-arrow2 col-1 list-inline-item icon-padding">
+<div class="tooltiptext">Notes</div>
+<img src="static/images/borrow-book-icon.png" style="width:30px" height="29px">
 ${(() => {
 if (lectures[i].notes.available) {
 if (lectures[i].notes.notify) {
@@ -490,7 +521,16 @@ return getSubmissonButtonForStudent(lectures[i])
 })()}
 </li>
 </ul>
-<div class="view-comments view-comment-assignment comments-closed">View Comments<i class="fa fa-caret-down pl-2 pr-2" aria-hidden="true"></i></div>
+<div class="view-comments view-comment-assignment comments-closed">
+View Comments
+${(() => {
+    console.log(lectures[i].assignment.new_comments)
+    if (lectures[i].assignment.new_comments != 0) {
+    return newAssignmentComments(lectures[i])
+    }
+    else return ''
+    })()}
+<i class="fa fa-caret-down pl-1 pr-2" aria-hidden="true"></i></div>
 <div class="progress progress-upload d-none">
 <div class="progress-bar" role="progressbar" style="width: 0%;"></div>
 </div>
@@ -507,7 +547,16 @@ return getNotesButtonForStudent(lectures[i])
 })()}
 </li>
 </ul>
-<div class="view-comments view-comment-notes comments-closed">View Comments<i class="fa fa-caret-down pl-2 pr-2" aria-hidden="true"></i></div>
+<div class="view-comments view-comment-notes comments-closed">
+View Comments
+<i class="fa fa-caret-down pl-1 pr-2" aria-hidden="true"></i>
+</div>
+${(() => {
+    if (lectures[i].notes.new_comments != 0) {
+    return newNotesComments(lectures[i])
+    }
+    else return ''
+    })()}
 <div class="progress progress2 progress-upload progress-upload2 d-none">
 <div class="progress-bar progress-bar2" role="progressbar" style="width: 0%;"></div>
 </div>
@@ -561,9 +610,7 @@ if (x.files.length == 0) {
 return;
 }
 var content_type = x.files[0].type
-
 var file_name = x.files[0].name
-console.log(x.files[0]) //returns BLOB
 
 var thisLecture = element.parent().parent().parent().parent()
 if (thisLecture == undefined || thisLecture.length == 0) {
@@ -808,7 +855,7 @@ function downloadListener(document_type){
 $('.btn-' + document_type).click(function(){
 var lecture = $(this).parent().parent().parent().parent();
 var lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id');
-
+let filename = null;
 $.ajax({
 method: 'GET',
 url: window.location.href + "get_download_url",
@@ -839,24 +886,27 @@ date: current_date
 }).done(function(data){
 lecture.find('.progress').addClass('d-none')
 updateUI(data)
+filename = data.file_name
 response.status = true
 })
 if(response.status==true)
 return blob
 }).then(blob => {
-createDownloadBLOB(blob)
+createDownloadBLOB(blob, filename)
 })
 .catch(() => alert('Could not fetch assignment'));
 })})
 }
 
-function createDownloadBLOB(blob){
+function createDownloadBLOB(blob, filename){
 const url = window.URL.createObjectURL(blob);
 const a = document.createElement('a');
 a.style.display = 'none';
 a.href = url;
 // the filename you want
-a.download = 'abc.pdf';
+if (filename != undefined) {
+a.download = filename;
+}
 document.body.appendChild(a);
 a.click();
 window.URL.revokeObjectURL(url);
@@ -866,7 +916,7 @@ window.URL.revokeObjectURL(url);
 function submissionListener(){
 $('.btn-submissions').click(function() {
 lecture_id = $(this).closest('div[lecture_id]').attr('lecture_id')
-window.location.href = window.location.href + `/table?lecture_id=${lecture_id}`
+window.location.href = window.location.href + `table?lecture_id=${lecture_id}&date=${current_date}`
 })
 }
 
@@ -881,152 +931,148 @@ window.location.href = window.location.href + `/table?lecture_id=${lecture_id}`
 
 
 //Comments 
-function getComments(){
-var comments_box;
-$('.view-comments').click(function(){
-    $(this).toggleClass('comments-closed')
-    if($(this).hasClass('view-comment-assignment')){
-        comment_type = 'assignment'
-        $(this).parent().parent().toggleClass('row-border-expanded3')
-        comments_box = $(this).parent().next().next().children().eq(1)
-    }
-    else{
-        comment_type = 'notes'
-        $(this).parent().parent().toggleClass('row-border-expanded3')
-        comments_box = $(this).parent().next().children().eq(1)
-    }
-    
-    
-    var lecture_id = $(this).parent().parent().attr('lecture_id')
-    
-    $(this).parent().parent().find('.comment-container').toggleClass('d-none')
-    comments_box.html('')
-    if($(this).hasClass('comments-closed') == false){
-        $.ajax({
-            method: 'GET',
-            url: window.location.href + 'get_comments',
-            data: {
-                lecture_id: lecture_id,
-                comment_type: comment_type,
-                date: current_date
-            }
+function getComments() {
+    var comments_box;
+    $('.view-comments').click(function() {
+        $(this).toggleClass('comments-closed')
+        if ($(this).hasClass('view-comment-assignment')) {
+            comment_type = 'assignment'
+            $(this).parent().parent().toggleClass('row-border-expanded3')
+            comments_box = $(this).parent().next().next().children().eq(1)
+        } else {
+            comment_type = 'notes'
+            $(this).parent().parent().toggleClass('row-border-expanded3')
+            comments_box = $(this).parent().next().children().eq(1)
+        }
+
+        var lecture_id = $(this).parent().parent().attr('lecture_id')
+        $(this).parent().parent().find('.comment-container').toggleClass('d-none')
+        comments_box.html('')
+        if ($(this).hasClass('comments-closed') == false) {
+            $.ajax({
+                method: 'GET',
+                url: window.location.href + 'get_comments',
+                data: {
+                    lecture_id: lecture_id,
+                    comment_type: comment_type,
+                    date: current_date
+                }
             }).done(function(data) {
-                if(data.comments.length == 0){
-                    comments_box.prepend(`<div id="no-comments-yet"><br><br><br><br><br>No comments yet</div>`)
+                if (data.comments.length == 0) {
+                    comments_box.prepend(`<div id="no-comments-yet"><br><br><br><br><br>Be the first one to add a comment here</div>`)
                 } else {
-                    for(i=0; i<data.comments.length; i++){
+                    for (i = 0; i < data.comments.length; i++) {
                         var comment = data.comments[i]
                         commentHTML = getCommentHTML(comment)
                         comments_box.prepend(commentHTML)
                     }
                 }
             })
-    }
-})
-}
-
-function appendComment(){
-$('.comment-form').submit(function(e){
-e.preventDefault()
-var date = new Date();
-var timestamp = date.getTime();
-var comment_text = $(this).children(0).children(0).children(0).val().trim()
-$(this).children(0).children(0).children(0).val('')
-
-if(comment_text.length>0){
-
-var lecture_id = $(this).parent().parent().attr('lecture_id')
-var comment_section = $(this)
-
-$.ajax({
-method: 'GET',
-url: window.location.href + 'add_comment',
-data: {
-lecture_id: lecture_id,
-date: current_date,
-comment_text: comment_text,
-comment_type: comment_type
-}
-}).done(function(comment) {
-var commentHTML = getCommentHTML(comment)
-if(comment.is_first_comment){
-comment_section.next().html('')
-}
-comment_section.next().prepend(commentHTML)
-})
-}
-})
-}
-
-function getCommentHTML(comment){
-    return `
-    <div class="comment-wrapper ` + (comment.is_self ? 'self-comment' : '') +`" comment_id="${comment.comment_id}">
-        <div class="single-comment ` + (comment.is_professor ? 'professor-comment' : '') + `">
-            <div class="comment-text">${comment.comment_text}</div>
-            <div "comment-name-timestamp">
-                <div class="comment-name">${comment.username} &middot;</div>
-                <div class="comment-timestamp">${comment.timestamp}</div>
-            </div>
-        </div>
-    </div>`
-}
-
-function characterCounter(){
-$('.comment-input').on('keyup', function(){
-var characters = $(this).val().split('');
-console.log(characters.length)
-$(this).parent().next().children(0).html(`${characters.length}/180`);
-if(characters.length>180){
-    $(this).parent().next().next().children(0).attr("disabled","")
-}
-if(characters.length ==1 || characters.length==180){
-    $(this).parent().next().next().children(0).removeAttr("disabled")
-}
-})
-}
-
-function calendarHoverListener(){
-    $('.custom-tooltip-2').mouseover(function(){
-        let day = $(this).attr('data-day');
-        let month = $(this).attr('data-month');
-        let year = $(this).attr('data-year');
-        let strDate = `${Number(month) + 1}/${day}/${year}`;
-
-        let div = $(this).find('.tooltiptext-2')
-        var index = $(this).attr('index')
-        console.log(index)
-        $.ajax({
-            method: 'GET',
-            url: window.location.href + 'get_tooltip_notification',
-            data: { date: strDate }
-            }).done(function(data) {
-                // div.css("visibility", "visible")
-                    div.html(`
-                    ${data.submissions_due ? `<div>
-                    ${data.submissions_due} submission(s) due
-                    </div>` : ''}
-
-                    ${data.new_submissions ? `<div>
-                    ${data.new_submissions} new submission(s)
-                    </div>` : ''}
-
-                    ${data.new_assignments ? `<div>
-                    ${data.new_assignments} new assignment(s)
-                    </div>` : ''}
-
-                    ${data.new_notes ? `<div>
-                    ${data.new_notes} new note(s)
-                    </div>` : ''}`)
-            })
-
-            $(this).mouseleave(function(){
-                // $(this).find('.tooltiptext-2').css("visibility", "hidden")
-            })
+        }
     })
 }
 
+function appendComment() {
+    $('.comment-form').submit(function(e) {
+        e.preventDefault()
+        var date = new Date();
+        var timestamp = date.getTime();
+        var comment_text = $(this).children(0).children(0).children(0).val().trim()
+        $(this).children(0).children(0).children(0).val('')
 
+        if (comment_text.length > 0) {
+            var lecture_id = $(this).parent().parent().attr('lecture_id')
+            var comment_section = $(this)
+            $.ajax({
+                method: 'GET',
+                url: window.location.href + 'add_comment',
+                data: {
+                    lecture_id: lecture_id,
+                    date: current_date,
+                    comment_text: comment_text,
+                    comment_type: comment_type
+                }
+            }).done(function(data) {
+                for (i = 0; i < data.comments.length; i++) {
+                    var comment = data.comments[i]
+                    if (comment.is_first_comment) {
+                        comment_section.next().html('')
+                    }
+                    commentHTML = getCommentHTML(comment)
+                    comment_section.next().prepend(commentHTML)
+                }
+            })
+        }
+    })
+}
 
+function getCommentHTML(comment){
+ return `
+ <div class="comment-wrapper ` + (comment.is_self ? 'self-comment' : '') +`" comment_id="${comment.comment_id}">
+ <div class="single-comment ` + (comment.is_professor ? 'professor-comment' : '') + `">
+ <div class="comment-text">${comment.comment_text}</div>
+ <div "comment-name-timestamp">
+ <div class="comment-name">${comment.username} &middot;</div>
+ <div class="comment-timestamp">${comment.timestamp}</div>
+ </div>
+ </div>
+ </div>`
+}
+
+function characterCounter() {
+    $('.comment-input').on('keyup', function() {
+        var characters = $(this).val().split('');
+        $(this).parent().next().children(0).html(`${characters.length}/180`);
+        if (characters.length > 180) {
+            var attr = $(this).parent().next().next().children(0).attr("disabled")
+            if (attr === undefined) {
+                $(this).parent().next().next().children(0).attr("disabled", "")
+            }
+        }
+        if (characters.length <= 180) {
+            var attr = $(this).parent().next().next().children(0).attr("disabled")
+            if (attr !== undefined) {
+                $(this).parent().next().next().children(0).removeAttr("disabled")
+            }
+        }
+    })
+}
+
+function calendarHoverListener(){
+ $('.custom-tooltip-2').hover(function(){
+ let day = $(this).attr('data-day');
+ let month = $(this).attr('data-month');
+ let year = $(this).attr('data-year');
+ let strDate = `${Number(month) + 1}/${day}/${year}`;
+ $.ajax({
+ method: 'GET',
+ url: window.location.href + 'get_tooltip_notification',
+ data: { date: strDate }
+ }).done(function(data) {
+ let div = $(this).children(0)
+ div.css("visibility", "visible")
+ if (data.new_notes + data.new_assignments + data.new_submissions + data.submissions_due == 0) {
+ return;
+ }
+ new_notes = data.new_notes > 0 ? (
+ data.new_notes + ' new lecture notes have been uploaded<br>') : '';
+ new_assignments = data.new_assignments > 0 ? (
+ data.new_assignments + ' new assignments have been uploaded<br>') : '';
+ new_submissions = data.new_submissions > 0 ? (
+ data.new_submissions + ' new submissions have been made by students<br>') : '';
+ submissions_due = data.submissions_due > 0 ? (
+ data.submissions_due + ' submissions are due for the lectures of this day<br>') : '';
+
+ div.html(`
+ <div class="notification-title">
+${submissions_due} submissions are due
+${new_submissions} new submissions
+${new_assignments} new assignments
+${new_notes} new notes
+ </div>`)
+ })
+ })
+}
 
 
 
@@ -1064,7 +1110,7 @@ drawMonths();
 if (!doNotRenderTimetable) {
 renderTimeTable();
 }
-drawDays(calendarHoverListener);
+drawDays();
 drawYearAndCurrentDay();
 }
 
@@ -1075,7 +1121,7 @@ elements.currentDay.innerHTML = calendar.active.day;
 elements.currentWeekDay.innerHTML = AVAILABLE_WEEK_DAYS[calendar.active.week];
 }
 
-function drawDays(callback) {
+function drawDays() {
 let calendar = getCalendar();
 let latestDaysInPrevMonth = range(calendar.active.startWeek).map((day, idx) => {
 return {
@@ -1128,61 +1174,33 @@ getCalendarNotification(selected_date, calendar_notifications);
 
 let daysTemplate = "";
 current_date = (calendar.active.month + 1) + '/' + calendar.active.day + '/' + calendar.active.year;
-var left_counter = 6
-days.forEach(function(day,index){
-    {
-        var dateNotification = formatNotificationDate(day)
+days.forEach(day => {
 
-        var notif_position = 'tip_normal'
+var dateNotification = formatNotificationDate(day)
 
-        console.log(index, left_counter)
-        if(index == left_counter){
-            left_counter = left_counter + 7
-            notif_position = 'tip_left'
-        }
-
-        if(index + 1 == left_counter){
-            notif_position = 'tip_left'
-        }
-
-        if(index>27){
-            notif_position = 'tip_top'
-        }
-
-        if(index == 33 || index == 34){
-            notif_position = 'tip_top_left'
-        }
-        
-        if(day.currentMonth && calendar_notifications.has(dateNotification)){
-        daysTemplate += `
-        <li index="${index}" class="custom-tooltip-2 ${day.currentMonth ? '' : 'another-month'} ${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="dot"></div><div class="tooltiptext-2 ${notif_position} ">Fetching</div></li>
-        `
-        }
-        else daysTemplate += `
-        <li index="${index}" class="custom-tooltip-2 ${day.currentMonth ? '' : 'another-month'} ${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="tooltiptext-2 ${notif_position}">Fetching</div></li>
-        `
-        }
+if(day.currentMonth && calendar_notifications.has(dateNotification)){
+daysTemplate += `
+<li class="custom-tooltip-2 ${day.currentMonth ? '' : ' another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"><div class="dot"></div></li>
+`
+}
+else daysTemplate += `
+<li class="custom-tooltip-2 ${day.currentMonth ? '' : ' another-month'}${day.today ? ' active-day ' : ''}${day.selected ? 'selected-day' : ''}" data-day="${day.dayNumber}" data-month="${day.month}" date-notification="yes" data-year="${day.year}"></li>
+`
 });
 
 elements.days.innerHTML = daysTemplate;
-
-callback()
-
 }
 
 function formatNotificationDate(day){
-if(Number(day.dayNumber)<10 && Number(day.month) < 10){
-return `0${Number(day.month)+1}/0${day.dayNumber}/${day.year}` 
-}
-else if(Number(day.dayNumber)<10 && Number(day.month) > 10){
-return `${Number(day.month)+1}/0${day.dayNumber}/${day.year}`
-}
-else if(Number(day.dayNumber)>10 && Number(day.month) < 10){
-return `0${Number(day.month)+1}/${day.dayNumber}/${day.year}`
-}
-else {
-return `${Number(day.month)+1}/${day.dayNumber}/${day.year}`
-}
+ day_number = day.dayNumber + '';
+ month_number = (day.month + 1) + '';
+ if (day.dayNumber < 10) {
+ day_number = '0' + day.dayNumber
+ }
+ if (day.month < 10) {
+ month_number = '0' + (day.month + 1);
+ }
+ return month_number + '/' + day_number + '/' + day.year;
 }
 
 function drawMonths() {
@@ -1207,28 +1225,29 @@ elements.week.innerHTML = weekTemplate;
 
 function eventsTrigger() {
 elements.prevYear.addEventListener('click', e => {
-updateTimeTableDate(formatDate(current_date))
 let calendar = getCalendar();
 updateTime(calendar.pYear);
+updateTimeTableDate(formatDate(current_date))
 drawAll()
 });
 
 
 
 elements.nextYear.addEventListener('click', e => {
-updateTimeTableDate(formatDate(current_date))
 let calendar = getCalendar();
 updateTime(calendar.nYear);
+updateTimeTableDate(formatDate(current_date))
 drawAll()
 });
 
 elements.month.addEventListener('click', e => {
-updateTimeTableDate(formatDate(current_date))
 let calendar = getCalendar();
 let month = e.srcElement.getAttribute('data-month');
 if (!month || calendar.active.month == month) return false;
+
 let newMonth = new Date(calendar.active.tm).setMonth(month);
 updateTime(newMonth);
+updateTimeTableDate(formatDate(current_date))
 drawAll()
 });
 
