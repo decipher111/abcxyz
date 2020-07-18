@@ -1,44 +1,73 @@
-.jumbotron-account{
-    background-color: transparent;
-    text-align: center;
-    height: 70px;
-    padding-top: 30px;
-    padding-bottom: 20px;
-  }
-  
-  
-  .a-tag{
-    text-decoration: none;
-    color: rgb(80, 80, 80);
-  }
-  
   
   .card-account {
     box-shadow: 0 4px 45px 0 rgba(0, 0, 0, 0.2);
-    max-width: 450px;
-    min-height: 550px;
-    max-height: fit-content;
+    width: 230px;
+    height: 300px;
     margin: auto;
     text-align: center;
   }
   
-  .title-account {
-    color: grey;
-    font-size: 18px;
-  }
-  
-  #user-circle{
-  max-width:40%;
-  max-height:40%;
-  align-self: center;
-  margin-top: 50px;
-  margin-bottom: 20px;
-  }
-  
-  
   .field-center {
-    background-color: rgb(231, 231, 231);
-    height: 44px;
+    height: 30px;
     width: 100%;
     text-align: center;
   }
+
+  .account-image{
+    padding-top: 8px;
+    font-size: 3rem;
+    position: relative;
+    top: 30px;
+    align-self: center;
+    background-color: rgb(106, 110, 255);
+    border-radius: 50%;
+    width: 90px;
+    height: 90px;
+    color: white;
+    display: table-cell;
+    vertical-align: middle;
+  }
+  
+  .credentials{
+    position: relative;
+    top: 50px;
+  }
+  
+  .user-creds{
+    margin-top: 10px;
+  }
+
+
+  .btn-account{
+    position: absolute;
+    right: 150px;
+    padding: 5px;
+    background-color: rgb(106, 110, 255) !important; 
+    border-radius: 50% !important;
+    width: 35px;
+    text-align: center;
+    color: white !important;
+    margin-right: 10px;
+   }
+
+   .btn-account:hover{
+     color: rgb(233, 233, 233);
+   }
+
+   @media all and (max-width: 720px){
+    .btn-account{
+      margin-right: 0px;
+      position: absolute;
+      right: 100px;
+     }
+}
+
+.account-popup{
+  position: absolute;
+  top: 70px;
+  right: 70px;
+}
+
+.account-popup:focus{
+  outline: none !important;
+}
